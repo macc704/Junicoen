@@ -17,6 +17,7 @@ import net.unicoen.node.UniIf;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniWhile;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -51,16 +52,10 @@ public class ToBlockEditorParser {
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");
-			while (true) {
-				if (nextNodeId == null)
-					break;
-				Node next = map.get(nextNodeId);
-				// add body
-				UniExpr expr = parseToExpr(next, map);
-				body.add(expr);
-				nextNodeId = getChildText(next, "AfterBlockId");
+			if(nextNodeId != null){
+				body = parseBody(map.get(nextNodeId), map);	
 			}
-
+			
 			d.body = body;
 			ret.add(d);
 		}
@@ -144,7 +139,12 @@ public class ToBlockEditorParser {
 				
 				return uniIf;
 			} else if ("while".equals(blockType)) {// while statement
-
+				UniWhile uniWhile = new UniWhile();
+				uniWhile.cond = args.get(0).get(0);
+				if (args.get(1) != null) {
+					uniWhile.body = args.get(1);
+				}
+				return uniWhile;
 			} else {
 				UniMethodCall mcall = getProtoType(blockType);
 				if (mcall != null) {
