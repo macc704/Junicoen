@@ -2,7 +2,6 @@ package net.unicoen.parser.blockeditor;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,20 +9,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import net.unicoen.node.UniBoolLiteral;
+import net.unicoen.node.UniExpr;
+import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniIdent;
+import net.unicoen.node.UniIf;
+import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniNode;
+import net.unicoen.node.UniStringLiteral;
+
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import net.unicoen.node.UniArg;
-import net.unicoen.node.UniExpr;
-import net.unicoen.node.UniFuncDec;
-import net.unicoen.node.UniIdent;
-import net.unicoen.node.UniMethodCall;
-import net.unicoen.node.UniNode;
-import net.unicoen.node.UniStringLiteral;
 
 public class ToBlockEditorParser {
 
@@ -67,6 +67,26 @@ public class ToBlockEditorParser {
 		return ret;
 	}
 
+	private static List<UniExpr> parseBody(Node bodyNode,
+			HashMap<String, Node> map) {
+		List<UniExpr> body = new ArrayList<>();
+
+		body.add(parseToExpr(bodyNode, map));
+
+		String nextNodeId = getChildText(bodyNode, "AfterBlockId");
+		while (true) {
+			if (nextNodeId == null)
+				break;
+			Node next = map.get(nextNodeId);
+			// add body
+			UniExpr expr = parseToExpr(next, map);
+			body.add(expr);
+			nextNodeId = getChildText(next, "AfterBlockId");
+		}
+
+		return body;
+	}
+
 	private static UniExpr parseToExpr(Node node, HashMap<String, Node> map) {
 		String blockKind = getAttribute(node, "kind");
 		String blockType = getAttribute(node, "genus-name");
@@ -80,22 +100,57 @@ public class ToBlockEditorParser {
 				UniStringLiteral lit = new UniStringLiteral();
 				lit.value = value;
 				return lit;
+			case "true":
+				UniBoolLiteral trueValue = new UniBoolLiteral();
+				trueValue.value = true;
+				return trueValue;
+			case "false":
+				UniBoolLiteral falseValue = new UniBoolLiteral();
+				falseValue.value = false;
+				return falseValue;
 			}
 			break;
 		case "command":
 			Node argsNode = getChildNode(node, "Sockets");
-			List<UniExpr> args = new ArrayList<>();
+			List<List<UniExpr>> args = new ArrayList<>();
 			for (Node argNode : eachChild(argsNode)) {
 				assert argNode.getNodeName().equals("BlockConnector");
 				String argElemId = getAttribute(argNode, "con-block-id");
 				Node realArgNode = map.get(argElemId);
-				UniExpr argExpr = parseToExpr(realArgNode, map);
-				args.add(argExpr);
+				// 先読みして，afterを持ってなかったらexpression
+				// con-block-id がnullの場合は，空
+				if (realArgNode != null) {
+					if (getChildText(realArgNode, "BeforeBlockId") == null) {
+						List<UniExpr> arg = new ArrayList<>();
+						arg.add(parseToExpr(realArgNode, map));
+						args.add(arg);
+					} else {
+						args.add(parseBody(realArgNode, map));
+					}
+				}else{
+					args.add(null);
+				}
 			}
-			UniMethodCall mcall = getProtoType(blockType);
-			if (mcall != null) {
-				mcall.args = args;
-				return mcall;
+
+			if ("ifelse".equals(blockType)) {// if statement
+				UniIf uniIf = new UniIf();
+				uniIf.cond = args.get(0).get(0);
+				if (args.get(1) != null) {
+					uniIf.trueBlock = args.get(1);
+				}
+				if(args.get(2) != null){
+					uniIf.falseBlock = args.get(2);					
+				}
+				
+				return uniIf;
+			} else if ("while".equals(blockType)) {// while statement
+
+			} else {
+				UniMethodCall mcall = getProtoType(blockType);
+				if (mcall != null) {
+					mcall.args = args.get(0);
+					return mcall;
+				}
 			}
 		}
 		return null;
@@ -114,6 +169,7 @@ public class ToBlockEditorParser {
 			mcall.methodName = "print";
 			return mcall;
 		}
+
 		return null;
 	}
 
@@ -201,6 +257,12 @@ public class ToBlockEditorParser {
 							return start;
 						}
 						return -1;
+					}
+
+					@Override
+					public void remove() {
+						// TODO Auto-generated method stub
+
 					}
 				};
 			}
