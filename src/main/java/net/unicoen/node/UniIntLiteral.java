@@ -5,6 +5,6 @@ public class UniIntLiteral extends UniExpr implements UniNode {
 
 	@Override
 	public String toString() {
-		return "Lit(" + value + ")";
+		return "LitI(" + value + ")";
 	}
 }

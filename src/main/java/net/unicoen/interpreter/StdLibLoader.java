@@ -23,6 +23,13 @@ public class StdLibLoader {
 				return null;
 			}
 		});
+		scope.setTop("print", new FunctionWithEngine() {
+			@Override
+			public Object invoke(Engine engine, Object[] args) {
+				engine.out.println(args[0]);
+				return null;
+			}
+		});
 		global.setTop("MyLib", scope);
 	}
 

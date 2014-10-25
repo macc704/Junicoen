@@ -72,7 +72,7 @@
 					</Plug>
 				</Block>
 				<Block genus-name="procedure" id="1138">
-					<Label>XXをする</Label>
+					<Label>start</Label>
 					<Location>
 						<X>29</X>
 						<Y>36</Y>

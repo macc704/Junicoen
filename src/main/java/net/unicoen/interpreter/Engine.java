@@ -14,6 +14,7 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
+import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniWhile;
 
 public class Engine {
@@ -100,6 +101,9 @@ public class Engine {
 		}
 		if (expr instanceof UniIntLiteral) {
 			return ((UniIntLiteral) expr).value;
+		}
+		if (expr instanceof UniStringLiteral) {
+			return ((UniStringLiteral) expr).value;
 		}
 		if (expr instanceof UniBoolLiteral) {
 			return ((UniBoolLiteral) expr).value;
