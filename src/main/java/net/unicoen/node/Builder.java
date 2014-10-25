@@ -15,36 +15,28 @@ public class Builder {
 	}
 
 	public static UniIntLiteral lit(int num) {
-		return new UniIntLiteral() {
-			{
-				value = num;
-			}
-		};
+		UniIntLiteral lit = new UniIntLiteral();
+		lit.value = num;
+		return lit;
 	}
 
 	public static UniBoolLiteral lit(boolean flag) {
-		return new UniBoolLiteral() {
-			{
-				value = flag;
-			}
-		};
+		UniBoolLiteral lit = new UniBoolLiteral();
+		lit.value = flag;
+		return lit;
 	}
 
 	public static UniIdent ident(String identName) {
-		return new UniIdent() {
-			{
-				name = identName;
-			}
-		};
+		UniIdent ident = new UniIdent();
+		ident.name = identName;
+		return ident;
 	}
 
 	public static UniBinOp bin(UniExpr leftExpr, String op, UniExpr rightExpr) {
-		return new UniBinOp() {
-			{
-				operator = op;
-				left = leftExpr;
-				right = rightExpr;
-			}
-		};
+		UniBinOp bin = new UniBinOp();
+		bin.operator = op;
+		bin.left = leftExpr;
+		bin.right = rightExpr;
+		return bin;
 	}
 }

@@ -68,10 +68,21 @@ public class ToBlockEditorParser {
 	}
 
 	private static UniExpr parseToExpr(Node node, HashMap<String, Node> map) {
+		String blockKind = getAttribute(node, "kind");
 		String blockType = getAttribute(node, "genus-name");
-		switch (blockType) {
-		case "Turtle-print[@string]":
-			// 引数の処理
+		switch (blockKind) {
+		case "procedure":
+			break;
+		case "data":
+			switch (blockType) {
+			case "string":
+				String value = getChildText(node, "Label");
+				UniStringLiteral lit = new UniStringLiteral();
+				lit.value = value;
+				return lit;
+			}
+			break;
+		case "command":
 			Node argsNode = getChildNode(node, "Sockets");
 			List<UniExpr> args = new ArrayList<>();
 			for (Node argNode : eachChild(argsNode)) {
@@ -81,18 +92,27 @@ public class ToBlockEditorParser {
 				UniExpr argExpr = parseToExpr(realArgNode, map);
 				args.add(argExpr);
 			}
+			UniMethodCall mcall = getProtoType(blockType);
+			if (mcall != null) {
+				mcall.args = args;
+				return mcall;
+			}
+		}
+		return null;
+	}
+
+	private static UniMethodCall getProtoType(String blockType) {
+		/*
+		 * 最初にテーブルを作って、呼ばれるたびに、nodeのクローンを作って返す。
+		 */
+		switch (blockType) {
+		case "Turtle-print[@string]":
 			UniMethodCall mcall = new UniMethodCall();
-			mcall.args = args;
 			UniIdent ident = new UniIdent();
 			ident.name = "MyLib";
 			mcall.receiver = ident;
 			mcall.methodName = "print";
 			return mcall;
-		case "string":
-			String value = getChildText(node, "Label");
-			UniStringLiteral lit = new UniStringLiteral();
-			lit.value = value;
-			return lit;
 		}
 		return null;
 	}

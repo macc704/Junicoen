@@ -35,7 +35,7 @@ public class EngineTest {
 				modifiers = list("public");
 				members = list(new UniFuncDec() {
 					{
-						funcName = "main";
+						funcName = "start";
 						modifiers = list("public", "static");
 						returnType = "void";
 						args = list(new UniArg() {
