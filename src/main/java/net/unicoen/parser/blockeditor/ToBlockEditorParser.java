@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
+import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
@@ -90,6 +92,11 @@ public class ToBlockEditorParser {
 			break;
 		case "data":
 			switch (blockType) {
+			case "number":
+//				String num = getChildText(node, "Label");
+				UniIntLiteral num = new UniIntLiteral();
+				num.value = Integer.parseInt(getChildText(node, "Label"));
+				return num;
 			case "string":
 				String value = getChildText(node, "Label");
 				UniStringLiteral lit = new UniStringLiteral();
@@ -107,55 +114,91 @@ public class ToBlockEditorParser {
 			break;
 		case "command":
 			Node argsNode = getChildNode(node, "Sockets");
-			List<List<UniExpr>> args = new ArrayList<>();
-			for (Node argNode : eachChild(argsNode)) {
-				assert argNode.getNodeName().equals("BlockConnector");
-				String argElemId = getAttribute(argNode, "con-block-id");
-				Node realArgNode = map.get(argElemId);
-				// 先読みして，afterを持ってなかったらexpression
-				// con-block-id がnullの場合は，空
-				if (realArgNode != null) {
-					if (getChildText(realArgNode, "BeforeBlockId") == null) {
-						List<UniExpr> arg = new ArrayList<>();
-						arg.add(parseToExpr(realArgNode, map));
-						args.add(arg);
-					} else {
-						args.add(parseBody(realArgNode, map));
-					}
-				}else{
-					args.add(null);
-				}
-			}
-
-			if ("ifelse".equals(blockType)) {// if statement
-				UniIf uniIf = new UniIf();
-				uniIf.cond = args.get(0).get(0);
-				if (args.get(1) != null) {
-					uniIf.trueBlock = args.get(1);
-				}
-				if(args.get(2) != null){
-					uniIf.falseBlock = args.get(2);					
-				}
-				
-				return uniIf;
-			} else if ("while".equals(blockType)) {// while statement
-				UniWhile uniWhile = new UniWhile();
-				uniWhile.cond = args.get(0).get(0);
-				if (args.get(1) != null) {
-					uniWhile.body = args.get(1);
-				}
-				return uniWhile;
-			} else {
-				UniMethodCall mcall = getProtoType(blockType);
-				if (mcall != null) {
-					mcall.args = args.get(0);
-					return mcall;
-				}
-			}
+			List<List<UniExpr>> args = parseSocket(argsNode, map);
+			return parseCommand(args, blockType);
+		case "function":
+			Node functionArgsNode = getChildNode(node, "Sockets");	
+			List<List<UniExpr>> functionArgs = parseSocket(functionArgsNode, map);
+			return parseFunction(functionArgs, blockType);
 		}
 		return null;
 	}
+	
+	private static  UniExpr parseFunction(List<List<UniExpr>> functionArgs,  String blockType){
+		UniBinOp binOp = new UniBinOp();
+		
+		binOp.left = functionArgs.get(0).get(0);
+		binOp.right = functionArgs.get(1).get(0);
+		
+		if("equals-boolean".equals(blockType)){
+			return null;
+//			binOp.operator = "==";
+		}else if("lessthan".equals(blockType)){
+			return null;
+//			binOp.operator = "<";
+		} else if("and".equals(blockType)){
+			binOp.operator = "&&";
+		} else if("or".equals(blockType)){
+			binOp.operator = "||";
+		} else{
+			return null;	
+		}
+		
+		return binOp;
+	}
 
+	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map){
+		List<List<UniExpr>> args = new ArrayList<>();
+		for (Node argNode : eachChild(argsNode)) {
+			assert argNode.getNodeName().equals("BlockConnector");
+			String argElemId = getAttribute(argNode, "con-block-id");
+			Node realArgNode = map.get(argElemId);
+			// 先読みして，afterを持ってなかったらexpression
+			if (realArgNode != null) {
+				if (getChildText(realArgNode, "BeforeBlockId") == null) {
+					List<UniExpr> arg = new ArrayList<>();
+					arg.add(parseToExpr(realArgNode, map));
+					args.add(arg);
+				} else {
+					args.add(parseBody(realArgNode, map));
+				}
+			}else{
+				// con-block-id がnullの場合は，空
+				args.add(null);
+			}
+		}
+		return args;
+	}
+	
+	private static UniExpr parseCommand(List<List<UniExpr>> args, String blockType){
+		if ("ifelse".equals(blockType)) {// if statement
+			UniIf uniIf = new UniIf();
+			uniIf.cond = args.get(0).get(0);
+			if (args.get(1) != null) {
+				uniIf.trueBlock = args.get(1);
+			}
+			if(args.get(2) != null){
+				uniIf.falseBlock = args.get(2);					
+			}
+			return uniIf;
+		} else if ("while".equals(blockType)) {// while statement
+			UniWhile uniWhile = new UniWhile();
+			uniWhile.cond = args.get(0).get(0);
+			if (args.get(1) != null) {
+				uniWhile.body = args.get(1);
+			}
+			return uniWhile;
+		} else {
+			UniMethodCall mcall = getProtoType(blockType);
+			if (mcall != null) {
+				mcall.args = args.get(0);
+				return mcall;
+			}else{
+				return null;
+			}
+		}
+	}
+	
 	private static UniMethodCall getProtoType(String blockType) {
 		/*
 		 * 最初にテーブルを作って、呼ばれるたびに、nodeのクローンを作って返す。
