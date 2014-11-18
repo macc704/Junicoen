@@ -239,7 +239,7 @@ public class ToBlockEditorParser {
 		return null;
 	}
 
-	private static String getAttribute(Node node, String attributeName) {
+	public static String getAttribute(Node node, String attributeName) {
 		assert node != null;
 		assert attributeName != null;
 
@@ -249,7 +249,7 @@ public class ToBlockEditorParser {
 		return attrNode.getNodeValue();
 	}
 
-	private static Node getChildNode(Node node, String... nodeName) {
+	public static Node getChildNode(Node node, String... nodeName) {
 		outer: for (int depth = 0; depth < nodeName.length; depth++) {
 			for (Node item : eachChild(node)) {
 				if (item.getNodeName().equals(nodeName[depth])) {
