@@ -24,10 +24,7 @@ public class UniToBlockParseTest {
 
 	@Test
 	public void test() throws UnsupportedEncodingException {
-		// TODO Auto-generated method stub
-
-		UniToBlockParser parser = new UniToBlockParser();
-		
+		// TODO Auto-generated method stub		
 		UniClassDec classDec = new UniClassDec();
 		classDec.className = "UniToBlockHelloTest";
 		
@@ -62,7 +59,7 @@ public class UniToBlockParseTest {
 		executeTest(classDec, "Hello World" + System.lineSeparator());
 		
 		try {
-			parser.parse(classDec);
+			UniToBlockParser.parse(classDec);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

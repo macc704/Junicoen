@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,13 +21,19 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.unicoen.node.UniBinOp;
+import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
+import net.unicoen.node.UniIf;
+import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniWhile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,10 +49,20 @@ public class UniToBlockParser {
 	
 	private static long ID_COUNTER = 1100; 
 	
-//	private HashMap<String, String> idMap = new HashMap<String , String>();
+	private static String[] turtleMethods = {"rt[@int]","lt[@int]", "fd[@int]", "bk[@int]"};
+	
+	private static Map<String, Element> addedModels = new HashMap<String, Element>();
+	
+//	private HashMap<Uni, String> idMap = new HashMap<String , String>();
 
-	public void parse(UniClassDec classDec) throws IOException{
+	public static Map<String, Element> getAddedModels(){
+		return addedModels;
+	}
+	
+	public static  void parse(UniClassDec classDec) throws IOException{
 		//クラス名のxmlファイルを作成する
+		addedModels.clear();		//cash初期化
+		
 		File file = new File("blockEditor/" + classDec.className + ".xml");
 		
 		FileWriter fileWriter = null;
@@ -56,7 +74,59 @@ public class UniToBlockParser {
 				fileWriter.close();
 			}
 		}
+	}
+	
+	
+	public static void parseClass(UniClassDec classDec, Document document, Element pageElement){
+		for(UniMemberDec member : classDec.members){
+			if(member instanceof UniFuncDec){
+				parseFunctionDec((UniFuncDec)member, document, pageElement);
+			}
+		}
+	}
+	
+	public static List<Element> getFunctionNodes(UniFuncDec funcDec, Document document, Element pageElement){
+		List<Element> blocks = new ArrayList<Element>();
+		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++ ,"procedure");
+
+		addLabelElement(document, funcDec.funcName, procedureElement);
+		addLocationElement(document, "50", "50", procedureElement);
+
+		blocks.add(procedureElement);
+		if(funcDec.args != null){
+			throw new RuntimeException("function args parsing has not been supported yet");
+		}
 		
+		//funcDec.body ボディのパース
+		//TODO 綺麗に
+		if(funcDec.body != null){
+			addAfterBlockNode(document, blocks.get(blocks.size()-1), String.valueOf(ID_COUNTER));
+			String beforeId = procedureElement.getAttribute("id");
+			for(int i = 0; i<funcDec.body.size();i++){
+				UniExpr expr = funcDec.body.get(i);
+				List<Element> elements = parseExpr(expr, document, null);
+				
+				if(i+1<funcDec.body.size()){
+					addAfterBlockNode(document, elements.get(0), String.valueOf(ID_COUNTER));	
+				}
+				
+				blocks.addAll(elements);				
+				addBeforeBlockNode(document, elements.get(0), beforeId);
+				beforeId = blocks.get(blocks.size()-elements.size()).getAttribute("id");
+			}		
+		}
+		
+		blocks.add(blocks.size(), procedureElement);
+		blocks.remove(0);
+		
+		for(Element element : blocks){
+			pageElement.appendChild(element);
+		}
+
+		//メソッドノード登録
+		addedModels.put(Integer.toString(((UniNode)funcDec).hashCode()), procedureElement);
+		
+		return blocks;
 	}
 	
 	public static void parseFunctionDec(UniFuncDec funcDec, Document document, Element pageElement){
@@ -73,11 +143,17 @@ public class UniToBlockParser {
 		
 		//funcDec.body ボディのパース
 		if(funcDec.body != null){
-			for(UniExpr expr : funcDec.body){
-				addAfterBlockNode(document, blocks.get(blocks.size()-1), String.valueOf(ID_COUNTER));
+			addAfterBlockNode(document, blocks.get(blocks.size()-1), String.valueOf(ID_COUNTER));
+			String beforeId = procedureElement.getAttribute("id");
+			for(int i = 0; i<funcDec.body.size();i++){
+				UniExpr expr = funcDec.body.get(i);
 				List<Element> elements = parseExpr(expr, document, null);
-				addBeforeBlockNode(document, elements.get(0), blocks.get(blocks.size()-1).getAttribute("id"));
-				blocks.addAll(elements);
+				if(i+1<funcDec.body.size()){
+					addAfterBlockNode(document, elements.get(0), String.valueOf(ID_COUNTER));	
+				}				
+				blocks.addAll(elements);				
+				addBeforeBlockNode(document, elements.get(0), beforeId);
+				beforeId = blocks.get(blocks.size()-elements.size()).getAttribute("id");
 			}		
 		}
 		
@@ -101,9 +177,49 @@ public class UniToBlockParser {
 			return parseMethodCall((UniMethodCall)expr, document, parent);
 		} else if(expr instanceof UniStringLiteral){
 			return parseStringLiteral((UniStringLiteral)expr, document, parent);
+		} else if(expr instanceof UniIntLiteral){
+			return parseIntLiteral((UniIntLiteral)expr, document, parent);
+		} else if(expr instanceof UniBoolLiteral){
+			return parseBoolLiteral((UniBoolLiteral)expr, document, parent);
+		} else if(expr instanceof UniIf){
+			return parseIf((UniIf)expr, document, parent);
+		} else if(expr instanceof UniWhile){
+			return parseWhile((UniWhile)expr, document, parent);
+		} else if(expr instanceof UniBinOp){
+			return parseBinOp((UniBinOp)expr, document, parent);
 		} else{
 			throw new RuntimeException("The expr has not been supported yet");			
 		}
+	}
+	
+	public static List<Element> parseBinOp(UniBinOp binopExpr , Document document, Node parent){
+		return null;
+	}
+	
+	public static List<Element> parseWhile(UniWhile whileExpr , Document document, Node parent){
+		return null;
+	}
+	
+	public static List<Element> parseBoolLiteral(UniBoolLiteral boolexpr ,Document document, Node parent){
+		return null;
+	}
+	
+	public static List<Element> parseIf(UniIf ifexpr ,Document document, Node parent){
+		return null;
+	}
+	
+	public static List<Element> parseIntLiteral(UniIntLiteral num, Document document, Node parent){
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement = createBlockElement(document, "number", ID_COUNTER++, "data");
+		
+		addLabelElement(document, Integer.toString(num.value), blockElement);
+		addPlugElement(document, blockElement, parent, "number");
+		
+		elements.add(blockElement);
+		
+		addedModels.put(String.valueOf(num.hashCode()), blockElement);
+		
+		return elements;
 	}
 	
 	public static List<Element> parseStringLiteral(UniStringLiteral str, Document document, Node parent){
@@ -111,10 +227,13 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, "string", ID_COUNTER++, "data");
 		
 		addLabelElement(document, str.value, blockElement);
-//		addLocationElement(document, "50", "50", blockElement);
+
 		addPlugElement(document, blockElement, parent, "string");
 		
 		elements.add(blockElement);
+		
+		addedModels.put(Integer.toString(((UniNode)str).hashCode()), blockElement);
+		
 		return elements;
 	}
 	
@@ -141,8 +260,6 @@ public class UniToBlockParser {
 
 		Element element = createBlockElement(document, genusName, ID_COUNTER++, kind);
 		
-		
-		
 		if(method.args != null){
 			//引数パース
 			for(UniExpr expr : method.args){
@@ -156,35 +273,55 @@ public class UniToBlockParser {
 
 		exprs.add(0, element);
 		
+		addedModels.put(Integer.toString(((UniNode)method).hashCode()), element);
+		
 		return exprs;
 	}
 	
 	private static String calcMethodCallGenusName(UniMethodCall method){
 		String genusName = "";
-		//名前空間補完
-		if(method.receiver instanceof UniIdent){
-			if(((UniIdent)method.receiver).name.equals("MyLib")){
-				genusName += "Turtle-";
-			}
-		}
+		//名前空間補完}
 		
 		genusName += method.methodName + "[";		
 		
 		for(UniExpr arg : method.args){
-			genusName += "@" + calcParamType(arg);
+			genusName += "@" + convertParamTypeName(calcParamType(arg));
 		}
 		
 		genusName += "]";
 		
+		
+		if(isTurtleMethod(genusName) || method.receiver instanceof UniIdent){
+			genusName = "Turtle-" + genusName;
+		}
 		return genusName;
+	}
+	
+	public static String convertParamTypeName(String name){
+		if(name.equals("number") || name.equals("double-number")){
+			return "int";
+		}else{
+			return name;
+		}
+	}
+	
+	private static boolean isTurtleMethod(String name){
+		for(String methdName :  turtleMethods){
+			if(methdName.equals(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private static String calcParamType(UniExpr param){
 		String type = "";
 		if(param instanceof UniStringLiteral){
 			type = "string";
+		}else if(param instanceof UniIntLiteral){
+			type = "number";
 		}else{
-			throw new RuntimeException("the param type calculate has not been supported yet");
+			throw new RuntimeException(param.toString() + "has not been supported yet.");
 		}
 		return type;
 	}
@@ -252,12 +389,7 @@ public class UniToBlockParser {
 		return element;
 	}
 	
-	
-	public static void parseBody(List<UniExpr> body){
-		
-	}
-	
-	public String getSaveString(UniClassDec classDec) {
+	public static  String getSaveString(UniClassDec classDec) {
 		try {
 			Node node = getSaveNode(classDec);
 
@@ -276,7 +408,6 @@ public class UniToBlockParser {
 		}
 	}
 
-	
 	public  static Node getSaveNode(UniClassDec classDec) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
@@ -308,7 +439,6 @@ public class UniToBlockParser {
 
 			Element pageBlocksElement = document.createElement("PageBlocks");
 			
-			
 			//クラスのパース
 			parseClass(classDec, document, pageBlocksElement);
 
@@ -320,14 +450,6 @@ public class UniToBlockParser {
 			return document;
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);
-		}
-	}
-	
-	public static void parseClass(UniClassDec classDec, Document document, Element pageElement){
-		for(UniMemberDec member : classDec.members){
-			if(member instanceof UniFuncDec){
-				parseFunctionDec((UniFuncDec)member, document, pageElement);
-			}
 		}
 	}
 	
