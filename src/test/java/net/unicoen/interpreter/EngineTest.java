@@ -29,49 +29,46 @@ public class EngineTest {
 		 *     }
 		 * }
 		 */
-		return new UniClassDec() {
+		UniClassDec cDec = new UniClassDec();
+		cDec.className = "Main";
+		cDec.modifiers = list("public");
+
+		UniFuncDec fDec = new UniFuncDec();
+		{
+			fDec.funcName = "start";
+			fDec.modifiers = list("public", "static");
+			fDec.returnType = "void";
+			UniArg arg = new UniArg();
 			{
-				className = "Main";
-				modifiers = list("public");
-				members = list(new UniFuncDec() {
-					{
-						funcName = "start";
-						modifiers = list("public", "static");
-						returnType = "void";
-						args = list(new UniArg() {
-							{
-								type = "String[]";
-								name = "args";
-							}
-						});
-						body = list(new UniIf() {
-							{
-								cond = bin(lit(true), "&&", lit(false));
-								trueBlock = list(new UniMethodCall() {
-									{
-										receiver = ident("MyLib");
-										methodName = "printInt";
-										args = list(lit(1));
-									}
-								});
-								falseBlock = list(new UniMethodCall() {
-									{
-										receiver = ident("MyLib");
-										methodName = "printInt";
-										args = list(bin(lit(1), "+", lit(2)));
-									}
-								});
-							}
-						}, new UniWhile() {
-							{
-								cond = lit(false);
-								body = list(lit(1));
-							}
-						});
-					}
-				});
+				arg.type = "String[]";
+				arg.name = "args";
 			}
-		};
+			fDec.args = list(arg);
+			UniIf uIf = new UniIf();
+			{
+				uIf.cond = bin(lit(true), "&&", lit(false));
+				UniMethodCall mCallT = new UniMethodCall();
+				{
+					mCallT.receiver = ident("MyLib");
+					mCallT.methodName = "printInt";
+					mCallT.args = list(lit(1));
+				}
+				uIf.trueBlock = list(mCallT);
+				UniMethodCall mCallF = new UniMethodCall();
+				{
+					mCallF.receiver = ident("MyLib");
+					mCallF.methodName = "printInt";
+					mCallF.args = list(bin(lit(1), "+", lit(2)));
+				}
+				uIf.falseBlock = list(mCallF);
+			}
+			UniWhile uWhile = new UniWhile();
+			uWhile.cond = lit(false);
+			uWhile.body = list(lit(1));
+			fDec.body = list(uIf, uWhile);
+		}
+		cDec.members = list(fDec);
+		return cDec;
 	}
 
 	@Test
