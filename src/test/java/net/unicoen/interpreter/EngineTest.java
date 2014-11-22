@@ -1,16 +1,25 @@
 package net.unicoen.interpreter;
 
+import static net.unicoen.node_helper.Builder.bin;
+import static net.unicoen.node_helper.Builder.ident;
+import static net.unicoen.node_helper.Builder.list;
+import static net.unicoen.node_helper.Builder.lit;
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.function.IntUnaryOperator;
 
-import net.unicoen.interpreter.Engine;
-import net.unicoen.node.*;
-import static org.junit.Assert.*;
+import net.unicoen.node.UniArg;
+import net.unicoen.node.UniClassDec;
+import net.unicoen.node.UniExpr;
+import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniIf;
+import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniWhile;
 
 import org.junit.Test;
-
-import static net.unicoen.node_helper.Builder.*;
 
 public class EngineTest {
 
@@ -82,5 +91,14 @@ public class EngineTest {
 
 		String expect = "3" + System.lineSeparator();
 		assertEquals(expect, output);
+	}
+
+	@Test
+	public void testFunctionObject() {
+		// f(100)
+		UniExpr expr = new UniMethodCall(null, "f", list(lit(100)));
+		IntUnaryOperator twice = n -> n * 2;
+		Object result = Engine.executeSimple(expr, "f", twice);
+		assertEquals(result, 200);
 	}
 }

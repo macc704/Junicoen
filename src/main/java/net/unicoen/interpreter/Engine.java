@@ -1,6 +1,10 @@
 package net.unicoen.interpreter;
 
 import java.io.PrintStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +66,13 @@ public class Engine {
 		}
 	}
 
+	public static Object executeSimple(UniExpr expr, String key, Object value) {
+		Engine engine = new Engine();
+		Scope scope = Scope.createGlobal();
+		scope.setTop(key, value);
+		return engine.execExpr(expr, scope);
+	}
+
 	public Object execute(UniClassDec dec) {
 		UniFuncDec fdec = getEntryPoint(dec);
 		if (fdec != null) {
@@ -118,12 +129,18 @@ public class Engine {
 
 		if (expr instanceof UniMethodCall) {
 			UniMethodCall mc = (UniMethodCall) expr;
-			Object receiver = mc.receiver == null ? scope : execExpr(mc.receiver, scope);
+
 			Object[] args = new Object[mc.args == null ? 0 : mc.args.size()];
 			for (int i = 0; i < args.length; i++) {
 				args[i] = execExpr(mc.args.get(i), scope);
 			}
-			return execMethodCall(receiver, mc.methodName, args);
+			if (mc.receiver != null) {
+				Object receiver = execExpr(mc.receiver, scope);
+				return execMethodCall(receiver, mc.methodName, args);
+			} else {
+				Object func = scope.get(mc.methodName);
+				return execFuncCall(func, args);
+			}
 		}
 		if (expr instanceof UniIdent) {
 			return scope.get(((UniIdent) expr).name);
@@ -161,6 +178,8 @@ public class Engine {
 	}
 
 	private Object execMethodCall(Object receiver, String methodName, Object[] args) {
+		assert receiver != null;
+
 		if (receiver instanceof Scope) {
 			Object func = ((Scope) receiver).get(methodName);
 			return execFuncCall(func, args);
@@ -169,8 +188,19 @@ public class Engine {
 	}
 
 	private Object execFuncCall(Object func, Object[] args) {
+		assert func != null;
+
 		if (func instanceof FunctionWithEngine) {
 			return ((FunctionWithEngine) func).invoke(this, args);
+		} else {
+			Method m = findFunctionMethod(func.getClass());
+			if (m != null) {
+				try {
+					return m.invoke(func, args);
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					throw new RuntimeException("Fail to invoke", e);
+				}
+			}
 		}
 		throw new RuntimeException("Not support function type: " + func);
 	}
@@ -208,5 +238,45 @@ public class Engine {
 			return ((Boolean) obj).booleanValue();
 		}
 		throw new RuntimeException("Cannot covert to boolean: " + obj);
+	}
+
+	private static Method findFunctionMethod(final Class<?> clazz) {
+		boolean isFunction = false;
+		Class<?> funcClazz = clazz;
+		find: while (funcClazz != null && Object.class != funcClazz) {
+			for (Annotation an : funcClazz.getAnnotations()) {
+				if (an instanceof FunctionalInterface) {
+					isFunction = true;
+					break find;
+				}
+			}
+			for (Class<?> ic : funcClazz.getInterfaces()) {
+				for (Annotation an : ic.getAnnotations()) {
+					if (an instanceof FunctionalInterface) {
+						funcClazz = ic;
+						isFunction = true;
+						break find;
+					}
+				}
+			}
+		}
+		if (isFunction == false) {
+			return null;
+		}
+		Method ret = null;
+		for (Method m : funcClazz.getMethods()) {
+			if ((m.getModifiers() & Modifier.ABSTRACT) == 0) {
+				// Its not abstract.
+				continue;
+			}
+			if (ret != null) {
+				throw new RuntimeException(String.format("Ambiguous: %s or %s", ret, m));
+			}
+			ret = m;
+		}
+		if (ret == null) {
+			throw new RuntimeException("Method not found.");
+		}
+		return ret;
 	}
 }
