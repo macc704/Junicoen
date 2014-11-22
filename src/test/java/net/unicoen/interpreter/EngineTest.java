@@ -15,6 +15,7 @@ import net.unicoen.node.UniArg;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniWhile;
@@ -100,5 +101,14 @@ public class EngineTest {
 		IntUnaryOperator twice = n -> n * 2;
 		Object result = Engine.executeSimple(expr, "f", twice);
 		assertEquals(result, 200);
+	}
+
+	@Test
+	public void testNativeMethod() {
+		String str = "1234567890";
+		// str.substring(3,7)
+		UniExpr expr = new UniMethodCall(new UniIdent("str"), "substring", list(lit(3), lit(7)));
+		Object result = Engine.executeSimple(expr, "str", str);
+		assertEquals(result, str.substring(3, 7));
 	}
 }

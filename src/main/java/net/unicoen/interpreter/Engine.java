@@ -183,8 +183,18 @@ public class Engine {
 		if (receiver instanceof Scope) {
 			Object func = ((Scope) receiver).get(methodName);
 			return execFuncCall(func, args);
+		} else {
+			Method m = findMethod(receiver, methodName, args);
+			String msg = String.format("Method not found: %s.%s", receiver.getClass().getName(), methodName);
+			if (m == null) {
+				throw new RuntimeException(msg);
+			}
+			try {
+				return m.invoke(receiver, args);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				throw new RuntimeException(msg, e);
+			}
 		}
-		throw new RuntimeException("Not support method type: " + receiver);
 	}
 
 	private Object execFuncCall(Object func, Object[] args) {
@@ -240,6 +250,32 @@ public class Engine {
 		throw new RuntimeException("Cannot covert to boolean: " + obj);
 	}
 
+	private static Method findMethod(Object receiver, String methodName, Object[] args) {
+		Class<?> clazz = receiver.getClass();
+		for (Method m : clazz.getMethods()) {
+			if (methodName.equals(m.getName()) == false) {
+				continue;
+			}
+			Class<?>[] argTypes = m.getParameterTypes();
+			if (argTypes.length != args.length) {
+				continue;
+			}
+			for (int i = 0; i < argTypes.length; i++) {
+				Object obj = args[i];
+				Class<?> argType = argTypes[i];
+				if (argType.isPrimitive()) {
+					argType = getBoxType(argType);
+				}
+				boolean isOK = (obj == null || argType.isAssignableFrom(obj.getClass()));
+				if (!isOK) {
+					continue;
+				}
+			}
+			return m;
+		}
+		return null;
+	}
+
 	private static Method findFunctionMethod(final Class<?> clazz) {
 		boolean isFunction = false;
 		Class<?> funcClazz = clazz;
@@ -278,5 +314,19 @@ public class Engine {
 			throw new RuntimeException("Method not found.");
 		}
 		return ret;
+	}
+
+	private static Class<?> getBoxType(Class<?> clazz) {
+		assert clazz.isPrimitive();
+		if (clazz == int.class) {
+			return Integer.class;
+		}
+		if (clazz == boolean.class) {
+			return Boolean.class;
+		}
+		if (clazz == double.class) {
+			return Double.class;
+		}
+		throw new RuntimeException("Not supported primitive type: " + clazz);
 	}
 }
