@@ -100,7 +100,7 @@ public class EngineTest {
 		UniExpr expr = new UniMethodCall(null, "f", list(lit(100)));
 		IntUnaryOperator twice = n -> n * 2;
 		Object result = Engine.executeSimple(expr, "f", twice);
-		assertEquals(result, 200);
+		assertEquals(200, result);
 	}
 
 	@Test
@@ -109,6 +109,14 @@ public class EngineTest {
 		// str.substring(3,7)
 		UniExpr expr = new UniMethodCall(new UniIdent("str"), "substring", list(lit(3), lit(7)));
 		Object result = Engine.executeSimple(expr, "str", str);
-		assertEquals(result, str.substring(3, 7));
+		assertEquals(str.substring(3, 7), result);
+	}
+
+	@Test
+	public void testStaticMethod() {
+		// Integer.toString(100)
+		UniExpr expr = new UniMethodCall(new UniIdent("Integer"), "toString", list(lit(100)));
+		Object result = Engine.executeSimple(expr, "Integer", Integer.class);
+		assertEquals("100", result);
 	}
 }

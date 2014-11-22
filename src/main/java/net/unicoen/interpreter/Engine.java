@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
@@ -180,17 +181,28 @@ public class Engine {
 	private Object execMethodCall(Object receiver, String methodName, Object[] args) {
 		assert receiver != null;
 
+		String msg = String.format("Method not found: %s.%s", receiver.getClass().getName(), methodName);
 		if (receiver instanceof Scope) {
 			Object func = ((Scope) receiver).get(methodName);
 			return execFuncCall(func, args);
-		} else {
-			Method m = findMethod(receiver, methodName, args);
-			String msg = String.format("Method not found: %s.%s", receiver.getClass().getName(), methodName);
-			if (m == null) {
+		} else if (receiver instanceof Class<?>) {
+			Predicate<Method> isStatic = m -> (m.getModifiers() | Modifier.STATIC) != 0;
+			Method method = findMethod((Class<?>) receiver, methodName, args, isStatic);
+			if (method == null) {
 				throw new RuntimeException(msg);
 			}
 			try {
-				return m.invoke(receiver, args);
+				return method.invoke(null, args);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				throw new RuntimeException(msg, e);
+			}
+		} else {
+			Method method = findMethod(receiver.getClass(), methodName, args, m -> true);
+			if (method == null) {
+				throw new RuntimeException(msg);
+			}
+			try {
+				return method.invoke(receiver, args);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				throw new RuntimeException(msg, e);
 			}
@@ -250,10 +262,15 @@ public class Engine {
 		throw new RuntimeException("Cannot covert to boolean: " + obj);
 	}
 
-	private static Method findMethod(Object receiver, String methodName, Object[] args) {
-		Class<?> clazz = receiver.getClass();
+	private static Method findMethod(Class<?> clazz, String methodName, Object[] args, Predicate<Method> cond) {
 		for (Method m : clazz.getMethods()) {
 			if (methodName.equals(m.getName()) == false) {
+				continue;
+			}
+			if (cond != null && cond.test(m) == false) {
+				continue;
+			}
+			if ((m.getModifiers() | Modifier.STATIC) == 0) {
 				continue;
 			}
 			Class<?>[] argTypes = m.getParameterTypes();
