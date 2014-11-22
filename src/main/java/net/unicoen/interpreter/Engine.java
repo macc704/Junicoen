@@ -87,10 +87,12 @@ public class Engine {
 	}
 
 	private Object _execExpr(UniExpr expr, Scope scope) {
+		assert expr != null;
+
 		if (expr instanceof UniMethodCall) {
 			UniMethodCall mc = (UniMethodCall) expr;
-			Object receiver = execExpr(mc.receiver, scope);
-			Object[] args = new Object[mc.args.size()];
+			Object receiver = mc.receiver == null ? scope : execExpr(mc.receiver, scope);
+			Object[] args = new Object[mc.args == null ? 0 : mc.args.size()];
 			for (int i = 0; i < args.length; i++) {
 				args[i] = execExpr(mc.args.get(i), scope);
 			}

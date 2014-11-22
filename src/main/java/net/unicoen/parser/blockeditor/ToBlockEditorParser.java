@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniExpr;
@@ -54,18 +56,17 @@ public class ToBlockEditorParser {
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");
-			if(nextNodeId != null){
-				body = parseBody(map.get(nextNodeId), map);	
+			if (nextNodeId != null) {
+				body = parseBody(map.get(nextNodeId), map);
 			}
-			
+
 			d.body = body;
 			ret.add(d);
 		}
 		return ret;
 	}
 
-	private static List<UniExpr> parseBody(Node bodyNode,
-			HashMap<String, Node> map) {
+	private static List<UniExpr> parseBody(Node bodyNode, HashMap<String, Node> map) {
 		List<UniExpr> body = new ArrayList<>();
 
 		body.add(parseToExpr(bodyNode, map));
@@ -93,7 +94,7 @@ public class ToBlockEditorParser {
 		case "data":
 			switch (blockType) {
 			case "number":
-//				String num = getChildText(node, "Label");
+				//				String num = getChildText(node, "Label");
 				UniIntLiteral num = new UniIntLiteral();
 				num.value = Integer.parseInt(getChildText(node, "Label"));
 				return num;
@@ -117,37 +118,35 @@ public class ToBlockEditorParser {
 			List<List<UniExpr>> args = parseSocket(argsNode, map);
 			return parseCommand(args, blockType);
 		case "function":
-			Node functionArgsNode = getChildNode(node, "Sockets");	
+			Node functionArgsNode = getChildNode(node, "Sockets");
 			List<List<UniExpr>> functionArgs = parseSocket(functionArgsNode, map);
 			return parseFunction(functionArgs, blockType);
 		}
-		return null;
+		throw new RuntimeException("Unsupported node: " + node);
 	}
-	
-	private static  UniExpr parseFunction(List<List<UniExpr>> functionArgs,  String blockType){
+
+	private static UniExpr parseFunction(List<List<UniExpr>> functionArgs, String blockType) {
 		UniBinOp binOp = new UniBinOp();
-		
+
 		binOp.left = functionArgs.get(0).get(0);
 		binOp.right = functionArgs.get(1).get(0);
-		
-		if("equals-boolean".equals(blockType)){
-			return null;
-//			binOp.operator = "==";
-		}else if("lessthan".equals(blockType)){
-			return null;
-//			binOp.operator = "<";
-		} else if("and".equals(blockType)){
+
+		if ("equals-boolean".equals(blockType)) {
+			binOp.operator = "==";
+		} else if ("lessthan".equals(blockType)) {
+			binOp.operator = "<";
+		} else if ("and".equals(blockType)) {
 			binOp.operator = "&&";
-		} else if("or".equals(blockType)){
+		} else if ("or".equals(blockType)) {
 			binOp.operator = "||";
-		} else{
-			return null;	
+		} else {
+			throw new RuntimeException("Unknown operator type: " + blockType);
 		}
-		
+
 		return binOp;
 	}
 
-	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map){
+	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map) {
 		List<List<UniExpr>> args = new ArrayList<>();
 		for (Node argNode : eachChild(argsNode)) {
 			assert argNode.getNodeName().equals("BlockConnector");
@@ -162,23 +161,23 @@ public class ToBlockEditorParser {
 				} else {
 					args.add(parseBody(realArgNode, map));
 				}
-			}else{
+			} else {
 				// con-block-id がnullの場合は，空
 				args.add(null);
 			}
 		}
 		return args;
 	}
-	
-	private static UniExpr parseCommand(List<List<UniExpr>> args, String blockType){
+
+	private static UniExpr parseCommand(List<List<UniExpr>> args, String blockType) {
 		if ("ifelse".equals(blockType)) {// if statement
 			UniIf uniIf = new UniIf();
 			uniIf.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
 				uniIf.trueBlock = args.get(1);
 			}
-			if(args.get(2) != null){
-				uniIf.falseBlock = args.get(2);					
+			if (args.get(2) != null) {
+				uniIf.falseBlock = args.get(2);
 			}
 			return uniIf;
 		} else if ("while".equals(blockType)) {// while statement
@@ -193,27 +192,34 @@ public class ToBlockEditorParser {
 			if (mcall != null) {
 				mcall.args = args.get(0);
 				return mcall;
-			}else{
-				return null;
+			} else {
+				throw new RuntimeException("Unknown method type: " + blockType);
 			}
 		}
 	}
-	
+
 	private static UniMethodCall getProtoType(String blockType) {
 		/*
 		 * 最初にテーブルを作って、呼ばれるたびに、nodeのクローンを作って返す。
 		 */
 		switch (blockType) {
-		case "Turtle-print[@string]":
+		case "Turtle-print[@string]": {
 			UniMethodCall mcall = new UniMethodCall();
-			UniIdent ident = new UniIdent();
-			ident.name = "MyLib";
-			mcall.receiver = ident;
+			mcall.receiver = new UniIdent("MyLib");
 			mcall.methodName = "print";
 			return mcall;
 		}
+		case "Turtle-rt[@int]":
+			return new UniMethodCall(null, "rt", null);
+		case "Turtle-lt[@int]":
+			return new UniMethodCall(null, "lt", null);
+		case "Turtle-fd[@int]":
+			return new UniMethodCall(null, "fd", null);
+		case "Turtle-bk[@int]":
+			return new UniMethodCall(null, "bk", null);
+		}
 
-		return null;
+		throw new RuntimeException("Unknown method call: " + blockType);
 	}
 
 	private static Node getRooteNote(File xmlFile) {
@@ -221,7 +227,7 @@ public class ToBlockEditorParser {
 
 		NodeList list = d.getElementsByTagName("PageBlocks");
 		if (list.getLength() != 1)
-			return null;
+			throw new RuntimeException("Root node must be one.");
 		Node pageBlock = list.item(0);
 		return pageBlock;
 	}
@@ -235,8 +241,8 @@ public class ToBlockEditorParser {
 			return dParser.getDocument();
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();
+			throw new RuntimeException("Fail to parse", e);
 		}
-		return null;
 	}
 
 	public static String getAttribute(Node node, String attributeName) {
