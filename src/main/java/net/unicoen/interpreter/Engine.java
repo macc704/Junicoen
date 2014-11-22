@@ -1,6 +1,7 @@
 package net.unicoen.interpreter;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.unicoen.node.UniBinOp;
@@ -22,6 +23,29 @@ public class Engine {
 	public PrintStream out = System.out;
 	public List<ExecutionListener> listeners;
 
+	public void addListener(ExecutionListener listener) {
+		if (listeners == null) {
+			listeners = new ArrayList<>();
+		}
+		listeners.add(listener);
+	}
+
+	private void firePreExecAll(Scope global) {
+		if (listeners != null) {
+			for (ExecutionListener listener : listeners) {
+				listener.preExecuteAll(global);
+			}
+		}
+	}
+
+	private void firePostExecAll(Scope global, Object value) {
+		if (listeners != null) {
+			for (ExecutionListener listener : listeners) {
+				listener.postExecuteAll(global);
+			}
+		}
+	}
+
 	private void firePreExec(UniNode node, Scope scope) {
 		if (listeners != null) {
 			for (ExecutionListener listener : listeners) {
@@ -38,12 +62,15 @@ public class Engine {
 		}
 	}
 
-	public void execute(UniClassDec dec) {
+	public Object execute(UniClassDec dec) {
 		UniFuncDec fdec = getEntryPoint(dec);
 		if (fdec != null) {
 			Scope global = Scope.createGlobal();
 			StdLibLoader.initialize(global);
-			execFunc(fdec, global);
+			firePreExecAll(global);
+			Object value = execFunc(fdec, global);
+			firePostExecAll(global, value);
+			return value;
 		} else {
 			throw new RuntimeException("No entry point in " + dec);
 		}
@@ -61,10 +88,10 @@ public class Engine {
 		return null;
 	}
 
-	private void execFunc(UniFuncDec fdec, Scope global) {
+	private Object execFunc(UniFuncDec fdec, Scope global) {
 		Scope funcScope = Scope.createLocal(global);
 		// TODO: set argument to func scope
-		execExprMany(fdec.body, funcScope);
+		return execExprMany(fdec.body, funcScope);
 	}
 
 	private Object execExprMany(List<UniExpr> exprs, Scope scope) {
