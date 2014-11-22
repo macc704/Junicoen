@@ -1,7 +1,7 @@
 require_relative 'dsl.rb'
 require_relative 'writer.rb'
 
-d = define_node do |x|
+Dsl.define_node do |x|
   x.package = "net.unicoen.node"
   x.prefix = "Uni"
 
@@ -61,8 +61,3 @@ d = define_node do |x|
     end
   end
 end
-
-# d.show
-
-outdir = ENV.fetch('OUTDIR', File.dirname(__FILE__) + "/out")
-Writer.write(d, outdir)

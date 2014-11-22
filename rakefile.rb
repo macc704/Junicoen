@@ -4,7 +4,7 @@ java_src = "src/main/java"
 
 task :gen do
   ENV['OUTDIR'] = java_src
-  load "src/main/ruby/nodes.rb"
+  load "src/main/ruby/main.rb"
 end
 
 task :format do

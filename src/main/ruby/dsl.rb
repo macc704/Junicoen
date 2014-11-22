@@ -47,10 +47,14 @@ class Dsl
       puts "}"
     end
   end
-end
 
-def define_node(&block)
-  x = Dsl.new
-  x.instance_eval(&block)
-  x
+  def self.define_node(&block)
+    x = Dsl.new
+    x.instance_eval(&block)
+    @current = x
+  end
+
+  def self.current
+    @current
+  end
 end
