@@ -40,31 +40,29 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class UniToBlockParser {
-	
+
 	/** Name space definition */
 	private static String XML_CODEBLOCKS_NS = "http://education.mit.edu/openblocks/ns";
-	
+
 	/** Location of schema */
 	private static String XML_CODEBLOCKS_SCHEMA_URI = "http://education.mit.edu/openblocks/codeblocks.xsd";
-	
-	private static long ID_COUNTER = 1100; 
-	
-	private static String[] turtleMethods = {"rt[@int]","lt[@int]", "fd[@int]", "bk[@int]"};
-	
-	private static Map<String, Element> addedModels = new HashMap<String, Element>();
-	
-//	private HashMap<Uni, String> idMap = new HashMap<String , String>();
 
-	public static Map<String, Element> getAddedModels(){
+	private long ID_COUNTER = 1100;
+
+	private static String[] turtleMethods = { "rt[@int]", "lt[@int]", "fd[@int]", "bk[@int]" };
+
+	private static Map<String, Element> addedModels = new HashMap<String, Element>();
+
+	public static Map<String, Element> getAddedModels() {
 		return addedModels;
 	}
-	
-	public static  void parse(UniClassDec classDec) throws IOException{
-		//クラス名のxmlファイルを作成する
-		addedModels.clear();		//cash初期化
-		
+
+	public void parse(UniClassDec classDec) throws IOException {
+		// クラス名のxmlファイルを作成する
+		addedModels.clear(); // cash初期化
+
 		File file = new File("blockEditor/" + classDec.className + ".xml");
-		
+
 		FileWriter fileWriter = null;
 		try {
 			fileWriter = new FileWriter(file);
@@ -75,321 +73,441 @@ public class UniToBlockParser {
 			}
 		}
 	}
-	
-	
-	public static void parseClass(UniClassDec classDec, Document document, Element pageElement){
-		for(UniMemberDec member : classDec.members){
-			if(member instanceof UniFuncDec){
-				parseFunctionDec((UniFuncDec)member, document, pageElement);
+
+	public void parseClass(UniClassDec classDec, Document document,
+			Element pageElement) {
+		for (UniMemberDec member : classDec.members) {
+			if (member instanceof UniFuncDec) {
+				parseFunctionDec((UniFuncDec) member, document, pageElement);
 			}
 		}
 	}
-	
-	public static List<Element> getFunctionNodes(UniFuncDec funcDec, Document document, Element pageElement){
+
+	public List<Element> getFunctionNodes(UniFuncDec funcDec,
+			Document document, Element pageElement) {
 		List<Element> blocks = new ArrayList<Element>();
-		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++ ,"procedure");
+		Element procedureElement = createBlockElement(document, "procedure",
+				ID_COUNTER++, "procedure");
 
 		addLabelElement(document, funcDec.funcName, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);
-		if(funcDec.args != null){
-			throw new RuntimeException("function args parsing has not been supported yet");
-		}
-		
-		//funcDec.body ボディのパース
-		//TODO 綺麗に
-		if(funcDec.body != null){
-			addAfterBlockNode(document, blocks.get(blocks.size()-1), String.valueOf(ID_COUNTER));
-			String beforeId = procedureElement.getAttribute("id");
-			for(int i = 0; i<funcDec.body.size();i++){
-				UniExpr expr = funcDec.body.get(i);
-				List<Element> elements = parseExpr(expr, document, null);
-				
-				if(i+1<funcDec.body.size()){
-					addAfterBlockNode(document, elements.get(0), String.valueOf(ID_COUNTER));	
-				}
-				
-				blocks.addAll(elements);				
-				addBeforeBlockNode(document, elements.get(0), beforeId);
-				beforeId = blocks.get(blocks.size()-elements.size()).getAttribute("id");
-			}		
-		}
-		
-		blocks.add(blocks.size(), procedureElement);
-		blocks.remove(0);
-		
-		for(Element element : blocks){
-			pageElement.appendChild(element);
+		if (funcDec.args != null) {
+			throw new RuntimeException(
+					"function args parsing has not been supported yet");
 		}
 
-		//メソッドノード登録
-		addedModels.put(Integer.toString(((UniNode)funcDec).hashCode()), procedureElement);
-		
+		// funcDec.body ボディのパース
+		blocks = parseBody(document, procedureElement, funcDec.body);
+
+		blocks.add(blocks.size(), procedureElement);
+		blocks.remove(0);
+
+		for (Element element : blocks) {
+			pageElement.appendChild(element);
+		}
+		// メソッドノード登録
+		addedModels.put(Integer.toString(((UniNode) funcDec).hashCode()),
+				procedureElement);
+
 		return blocks;
 	}
-	
-	public static void parseFunctionDec(UniFuncDec funcDec, Document document, Element pageElement){
+
+	public List<Element> parseBody(Document document, Element parentElement, List<UniExpr> body) {
 		List<Element> blocks = new ArrayList<Element>();
-		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++ ,"procedure");
+		if (body != null) {
+			String beforeId = parentElement.getAttribute("id");
+			for (int i = 0; i < body.size(); i++) {
+				UniExpr expr = body.get(i);
+				List<Element> elements = parseExpr(expr, document, null);
+
+				if (i + 1 < body.size()) {
+					addAfterBlockNode(document, elements.get(0),
+							String.valueOf(ID_COUNTER));
+				}
+
+				blocks.addAll(elements);
+				addBeforeBlockNode(document, elements.get(0), beforeId);
+				beforeId = blocks.get(blocks.size() - elements.size())
+						.getAttribute("id");
+			}
+		}
+		return blocks;
+	}
+
+	public void parseFunctionDec(UniFuncDec funcDec, Document document, Element pageElement) {
+		List<Element> blocks = new ArrayList<Element>();
+		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++, "procedure");
 
 		addLabelElement(document, funcDec.funcName, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);
-		if(funcDec.args != null){
-			throw new RuntimeException("function args parsing has not been supported yet");
+		if (funcDec.args != null) {
+			throw new RuntimeException(
+					"function args parsing has not been supported yet");
 		}
-		
-		//funcDec.body ボディのパース
-		if(funcDec.body != null){
-			addAfterBlockNode(document, blocks.get(blocks.size()-1), String.valueOf(ID_COUNTER));
+
+		// funcDec.body ボディのパース
+		if (funcDec.body != null) {
+			addAfterBlockNode(document, blocks.get(blocks.size() - 1),
+					String.valueOf(ID_COUNTER));
 			String beforeId = procedureElement.getAttribute("id");
-			for(int i = 0; i<funcDec.body.size();i++){
+			for (int i = 0; i < funcDec.body.size(); i++) {
+				// expressionの解析
 				UniExpr expr = funcDec.body.get(i);
-				List<Element> elements = parseExpr(expr, document, null);
-				if(i+1<funcDec.body.size()){
-					addAfterBlockNode(document, elements.get(0), String.valueOf(ID_COUNTER));	
-				}				
-				blocks.addAll(elements);				
+				List<Element> elements = parseExpr(expr, document, null);// 木で返す．
+				// 木の最上部が左辺ブロックになる　左辺ブロックに次のブロックのidをセットする
+				if (i + 1 < funcDec.body.size()) {
+					addAfterBlockNode(document, elements.get(0),
+							String.valueOf(ID_COUNTER));
+				}
+
+				blocks.addAll(elements);
+
+				// 左辺ブロックに直前のブロックのIDを追加する
 				addBeforeBlockNode(document, elements.get(0), beforeId);
-				beforeId = blocks.get(blocks.size()-elements.size()).getAttribute("id");
-			}		
+				beforeId = blocks.get(blocks.size() - elements.size())
+						.getAttribute("id");
+			}
 		}
-		
+
 		blocks.add(blocks.size(), procedureElement);
 		blocks.remove(0);
-		
-		for(Element element : blocks){
+
+		for (Element element : blocks) {
 			pageElement.appendChild(element);
 		}
 	}
-	
-	public static void addAfterBlockNode(Document document, Element blockNode, String id){
+
+	public static void addAfterBlockNode(Document document, Element blockNode,
+			String id) {
 		Element element = document.createElement("AfterBlockId");
 		element.setTextContent(id);
-		
+
 		blockNode.appendChild(element);
 	}
-	
-	public static List<Element> parseExpr(UniExpr expr, Document document, Element parent){
-		if(expr instanceof UniMethodCall){
-			return parseMethodCall((UniMethodCall)expr, document, parent);
-		} else if(expr instanceof UniStringLiteral){
-			return parseStringLiteral((UniStringLiteral)expr, document, parent);
-		} else if(expr instanceof UniIntLiteral){
-			return parseIntLiteral((UniIntLiteral)expr, document, parent);
-		} else if(expr instanceof UniBoolLiteral){
-			return parseBoolLiteral((UniBoolLiteral)expr, document, parent);
-		} else if(expr instanceof UniIf){
-			return parseIf((UniIf)expr, document, parent);
-		} else if(expr instanceof UniWhile){
-			return parseWhile((UniWhile)expr, document, parent);
-		} else if(expr instanceof UniBinOp){
-			return parseBinOp((UniBinOp)expr, document, parent);
-		} else{
-			throw new RuntimeException("The expr has not been supported yet");			
+
+	public List<Element> parseExpr(UniExpr expr, Document document,
+			Element parent) {
+		if (expr instanceof UniMethodCall) {
+			return parseMethodCall((UniMethodCall) expr, document, parent);
+		} else if (expr instanceof UniStringLiteral) {
+			return parseStringLiteral((UniStringLiteral) expr, document, parent);
+		} else if (expr instanceof UniIntLiteral) {
+			return parseIntLiteral((UniIntLiteral) expr, document, parent);
+		} else if (expr instanceof UniBoolLiteral) {
+			return parseBoolLiteral((UniBoolLiteral) expr, document, parent);
+		} else if (expr instanceof UniIf) {
+			return parseIf((UniIf) expr, document, parent);
+		} else if (expr instanceof UniWhile) {
+			return parseWhile((UniWhile) expr, document, parent);
+		} else if (expr instanceof UniBinOp) {
+			return parseBinOp((UniBinOp) expr, document, parent);
+		} else {
+			throw new RuntimeException("The expr has not been supported yet");
 		}
 	}
-	
-	public static List<Element> parseBinOp(UniBinOp binopExpr , Document document, Node parent){
+
+	public List<Element> parseBinOp(UniBinOp binopExpr, Document document,
+			Node parent) {
 		return null;
 	}
-	
-	public static List<Element> parseWhile(UniWhile whileExpr , Document document, Node parent){
+
+	public List<Element> parseWhile(UniWhile whileExpr, Document document,
+			Node parent) {
 		return null;
 	}
-	
-	public static List<Element> parseBoolLiteral(UniBoolLiteral boolexpr ,Document document, Node parent){
-		return null;
-	}
-	
-	public static List<Element> parseIf(UniIf ifexpr ,Document document, Node parent){
-		return null;
-	}
-	
-	public static List<Element> parseIntLiteral(UniIntLiteral num, Document document, Node parent){
+
+	public List<Element> parseBoolLiteral(UniBoolLiteral boolexpr,
+			Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
-		Element blockElement = createBlockElement(document, "number", ID_COUNTER++, "data");
-		
-		addLabelElement(document, Integer.toString(num.value), blockElement);
-		addPlugElement(document, blockElement, parent, "number");
-		
+		Element blockElement;
+		if(boolexpr.value){
+			blockElement = createBlockElement(document, "true",	ID_COUNTER++, "data");
+			
+			addLabelElement(document, "真", blockElement);
+			addPlugElement(document, blockElement, parent, "boolean");
+		}else{
+			blockElement = createBlockElement(document, "false", ID_COUNTER++, "data");			
+			
+			addLabelElement(document, "偽", blockElement);
+			addPlugElement(document, blockElement, parent, "boolean");
+		}
+
 		elements.add(blockElement);
 		
-		addedModels.put(String.valueOf(num.hashCode()), blockElement);
-		
+		addedModels.put(Integer.toString(((UniNode) boolexpr).hashCode()), blockElement);
+
 		return elements;
 	}
-	
-	public static List<Element> parseStringLiteral(UniStringLiteral str, Document document, Node parent){
+
+	public List<Element> parseIf(UniIf ifexpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
-		Element blockElement = createBlockElement(document, "string", ID_COUNTER++, "data");
+		Element blockElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
+
+		List<Element> sockets = parseExpr(ifexpr.cond, document, blockElement);
+		List<Element> trueBlock = parseBody(document, blockElement,
+				ifexpr.trueBlock);
+		List<Element> falseBlock = parseBody(document, blockElement,
+				ifexpr.falseBlock);
+
+		List<Element> blockSockets = new ArrayList<>();
+		if (sockets.size() > 0) {
+			blockSockets.add(sockets.get(0));
+		}
 		
+		if (trueBlock.size() > 0) {
+			blockSockets.add(trueBlock.get(0));
+		}else{
+			blockSockets.add(null);
+		}
+		
+		if (falseBlock.size() > 0) {
+			blockSockets.add(falseBlock.get(0));
+		}else{
+			blockSockets.add(null);
+		}
+
+		// ソケットの出力
+		String[] socketLabels = new String[3];
+		socketLabels[0] = "かどうか調べて";
+		socketLabels[1] = "真のとき";
+		socketLabels[2] = "偽のとき";
+		
+		addSocketsNode(blockSockets, document, blockElement, socketLabels);
+
+		elements.add(blockElement);
+		
+		elements.addAll(sockets);
+		elements.addAll(trueBlock);
+		elements.addAll(falseBlock);
+		
+		addedModels.put(Integer.toString(((UniNode) ifexpr).hashCode()), blockElement);
+
+		return elements;
+	}
+
+	public List<Element> parseIntLiteral(UniIntLiteral num, Document document,
+			Node parent) {
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement = createBlockElement(document, "number",
+				ID_COUNTER++, "data");
+
+		addLabelElement(document, Integer.toString(num.value), blockElement);
+		addPlugElement(document, blockElement, parent, "number");
+
+		elements.add(blockElement);
+
+		addedModels.put(String.valueOf(num.hashCode()), blockElement);
+
+		return elements;
+	}
+
+	public List<Element> parseStringLiteral(UniStringLiteral str,
+			Document document, Node parent) {
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement = createBlockElement(document, "string",
+				ID_COUNTER++, "data");
+
 		addLabelElement(document, str.value, blockElement);
 
 		addPlugElement(document, blockElement, parent, "string");
-		
+
 		elements.add(blockElement);
-		
-		addedModels.put(Integer.toString(((UniNode)str).hashCode()), blockElement);
-		
+
+		addedModels.put(Integer.toString(((UniNode) str).hashCode()),
+				blockElement);
+
 		return elements;
 	}
-	
-	public static void addPlugElement(Document document, Element target, Node parentBlockNode, String plugType){
+
+	public static void addPlugElement(Document document, Element target,
+			Node parentBlockNode, String plugType) {
 		Element plugNode = document.createElement("Plug");
 		Element blockConnectorNode = document.createElement("BlockConnector");
 
-		blockConnectorNode.setAttribute("con-block-id", ToBlockEditorParser.getAttribute(parentBlockNode, "id"));
+		blockConnectorNode.setAttribute("con-block-id",
+				ToBlockEditorParser.getAttribute(parentBlockNode, "id"));
 		blockConnectorNode.setAttribute("connector-kind", "plug");
-		blockConnectorNode.setAttribute("connector-type",plugType);
+		blockConnectorNode.setAttribute("connector-type", plugType);
 		blockConnectorNode.setAttribute("init-type", plugType);
 		blockConnectorNode.setAttribute("label", "");
 		blockConnectorNode.setAttribute("position-type", "mirror");
-		
+
 		plugNode.appendChild(blockConnectorNode);
-		
+
 		target.appendChild(plugNode);
 	}
-	
-	public static List<Element> parseMethodCall(UniMethodCall method, Document document, Node parent){
+
+	public List<Element> parseMethodCall(UniMethodCall method, Document document, Node parent) {
 		String genusName = calcMethodCallGenusName(method);
 		String kind = "command";
 		List<Element> exprs = new ArrayList<Element>();
 
-		Element element = createBlockElement(document, genusName, ID_COUNTER++, kind);
+		Element element = createBlockElement(document, genusName, ID_COUNTER++,
+				kind);
 		
-		if(method.args != null){
-			//引数パース
-			for(UniExpr expr : method.args){
-				for(Element arg : parseExpr(expr, document, element)){
-					exprs.add(arg);	
+		if (method.args != null) {
+			// 引数パース
+			String[] paramsLabel = new String[method.args.size()];
+			int i = 0;
+			for (UniExpr expr : method.args) {
+				for (Element arg : parseExpr(expr, document, element)) {
+					exprs.add(arg);
 				}
+				paramsLabel[i] = "";
 			}
-			//socketの追加
-			addSocketsNode(exprs, document, element);			
+			// socketの追加
+			addSocketsNode(exprs, document, element, paramsLabel);
 		}
 
 		exprs.add(0, element);
-		
-		addedModels.put(Integer.toString(((UniNode)method).hashCode()), element);
-		
+
+		addedModels.put(Integer.toString(((UniNode) method).hashCode()),
+				element);
+
 		return exprs;
 	}
-	
-	private static String calcMethodCallGenusName(UniMethodCall method){
+
+	private static String calcMethodCallGenusName(UniMethodCall method) {
 		String genusName = "";
-		//名前空間補完}
-		
-		genusName += method.methodName + "[";		
-		
-		for(UniExpr arg : method.args){
+		// 名前空間補完}
+
+		genusName += method.methodName + "[";
+
+		for (UniExpr arg : method.args) {
 			genusName += "@" + convertParamTypeName(calcParamType(arg));
 		}
-		
+
 		genusName += "]";
-		
-		
-		if(isTurtleMethod(genusName) || method.receiver instanceof UniIdent){
+
+		if (isTurtleMethod(genusName) || method.receiver instanceof UniIdent) {
 			genusName = "Turtle-" + genusName;
 		}
 		return genusName;
 	}
-	
-	public static String convertParamTypeName(String name){
-		if(name.equals("number") || name.equals("double-number")){
+
+	public static String convertParamTypeName(String name) {
+		if (name.equals("number") || name.equals("double-number")) {
 			return "int";
-		}else{
+		} else {
 			return name;
 		}
 	}
-	
-	private static boolean isTurtleMethod(String name){
-		for(String methdName :  turtleMethods){
-			if(methdName.equals(name)){
+
+	private static boolean isTurtleMethod(String name) {
+		for (String methdName : turtleMethods) {
+			if (methdName.equals(name)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	private static String calcParamType(UniExpr param){
+
+	private static String calcParamType(UniExpr param) {
 		String type = "";
-		if(param instanceof UniStringLiteral){
+		if (param instanceof UniStringLiteral) {
 			type = "string";
-		}else if(param instanceof UniIntLiteral){
+		} else if (param instanceof UniIntLiteral) {
 			type = "number";
-		}else{
-			throw new RuntimeException(param.toString() + "has not been supported yet.");
+		} else {
+			throw new RuntimeException(param.toString()
+					+ "has not been supported yet.");
 		}
 		return type;
 	}
-	
-	public static void addBeforeBlockNode(Document document, Element blockNode,  String id){
+
+	public static void addBeforeBlockNode(Document document, Element blockNode,
+			String id) {
 		Element element = document.createElement("BeforeBlockId");
 		element.setTextContent(id);
-		
+
 		blockNode.appendChild(element);
 	}
-	
-	public static void addSocketsNode(List<Element> args, Document document, Element blockNode){
+
+	public static void addSocketsNode(List<Element> args, Document document, Element blockNode, String[] socketLabels) {
 		Element sockets = document.createElement("Sockets");
 		sockets.setAttribute("num-sockets", String.valueOf(args.size()));
 		
-		for(Element arg : args){
-			addSocketNode(document, arg, sockets);	
+		if(socketLabels != null){
+			for (int i = 0; i < args.size();i++) {
+				addSocketNode(document, args.get(i), sockets, socketLabels[i]);
+			}	
 		}
-		
+
 		blockNode.appendChild(sockets);
 	}
-	
-	public static void addSocketNode(Document document, Element argElement, Node socketsNode){
+
+	public static void addSocketNode(Document document, Element argElement,	Node socketsNode , String socketLabel) {
 		Element connector = document.createElement("BlockConnector");
-		Node plugNode = ToBlockEditorParser.getChildNode(ToBlockEditorParser.getChildNode(argElement, "Plug"), "BlockConnector");
+		Node plugNode = null;
 		
-		connector.setAttribute("con-block-id", argElement.getAttribute("id"));
 		connector.setAttribute("connector-kind", "socket");
-		connector.setAttribute("connector-type", ToBlockEditorParser.getAttribute(plugNode, "connector-type"));
-		connector.setAttribute("init-type", ToBlockEditorParser.getAttribute(plugNode, "init-type"));
-		connector.setAttribute("label", "");
 		connector.setAttribute("position-type", "single");
+		connector.setAttribute("label", socketLabel);
+		
+		if(argElement != null){
+			connector.setAttribute("con-block-id", getSocketConnectorType(ToBlockEditorParser.getAttribute(argElement, "id")));
+			if(ToBlockEditorParser.getChildNode(argElement, "Plug") != null){
+				plugNode = ToBlockEditorParser.getChildNode(ToBlockEditorParser.getChildNode(argElement, "Plug"), "BlockConnector");
+				connector.setAttribute("connector-type", getSocketConnectorType(ToBlockEditorParser.getAttribute(plugNode, "connector-type")));
+				connector.setAttribute("init-type", getSocketConnectorType(ToBlockEditorParser.getAttribute(plugNode, "connector-type")));
+			}else{
+				connector.setAttribute("connector-type", "cmd");
+				connector.setAttribute("init-type", "cmd");
+			}
+		}else{ 
+			connector.setAttribute("connector-type", "cmd");
+			connector.setAttribute("init-type", "cmd");
+		}
 		
 		socketsNode.appendChild(connector);
 	}
-	
-	public static void addLocationElement(Document document, String x, String y, Element blockElement){
+
+	public static String getSocketConnectorType(String kind) {
+		if (kind == null) {
+			return "cmd";
+		} else {
+			return kind;
+		}
+	}
+
+	public static void addLocationElement(Document document, String x,
+			String y, Element blockElement) {
 		Element locationElement = document.createElement("Location");
 		Element xElement = document.createElement("X");
 		Element yElement = document.createElement("Y");
-		
+
 		xElement.setTextContent(x);
 		yElement.setTextContent(y);
-		
+
 		locationElement.appendChild(xElement);
 		locationElement.appendChild(yElement);
-		
+
 		blockElement.appendChild(locationElement);
 	}
-	
-	
-	public static Element addLabelElement(Document document, String label, Element blockElement){
+
+	public static Element addLabelElement(Document document, String label,
+			Element blockElement) {
 		Element element = document.createElement("Label");
 		element.setTextContent(label);
 		blockElement.appendChild(element);
 		return element;
 	}
-	
-	public static Element createBlockElement(Document document, String genusName, long id, String kind){
+
+	public static Element createBlockElement(Document document,
+			String genusName, long id, String kind) {
 		Element element = document.createElement("Block");
 		element.setAttribute("genus-name", genusName);
 		element.setAttribute("id", String.valueOf(id));
 		element.setAttribute("kind", kind);
-		
+
 		return element;
 	}
-	
-	public static  String getSaveString(UniClassDec classDec) {
+
+	public String getSaveString(UniClassDec classDec) {
 		try {
 			Node node = getSaveNode(classDec);
 
@@ -408,7 +526,7 @@ public class UniToBlockParser {
 		}
 	}
 
-	public  static Node getSaveNode(UniClassDec classDec) {
+	public Node getSaveNode(UniClassDec classDec) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
@@ -425,32 +543,32 @@ public class UniToBlockParser {
 					XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
 					"xsi:schemaLocation", XML_CODEBLOCKS_NS + " "
 							+ XML_CODEBLOCKS_SCHEMA_URI);
-			
-			//Pagesノードの作成
+
+			// Pagesノードの作成
 			Element pagesElement = document.createElement("Pages");
 			pagesElement.setAttribute("collapsible-pages", "no");
-			//Pageノードの作成
+			// Pageノードの作成
 			Element pageElement = document.createElement("Page");
-			pageElement.setAttribute("page-color", "40 40 40");			
+			pageElement.setAttribute("page-color", "40 40 40");
 			pageElement.setAttribute("page-drawer", "");
 			pageElement.setAttribute("page-infullview", "yes");
 			pageElement.setAttribute("page-name", classDec.className);
 			pageElement.setAttribute("page-width", "1366");
 
 			Element pageBlocksElement = document.createElement("PageBlocks");
-			
-			//クラスのパース
+
+			// クラスのパース
 			parseClass(classDec, document, pageBlocksElement);
 
 			pageElement.appendChild(pageBlocksElement);
 			pagesElement.appendChild(pageElement);
 			documentElement.appendChild(pagesElement);
 			document.appendChild(documentElement);
-	
+
 			return document;
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

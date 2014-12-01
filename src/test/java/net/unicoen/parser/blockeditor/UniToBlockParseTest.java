@@ -58,8 +58,10 @@ public class UniToBlockParseTest {
 		
 		executeTest(classDec, "Hello World" + System.lineSeparator());
 		
+		UniToBlockParser parser = new UniToBlockParser();
+		
 		try {
-			UniToBlockParser.parse(classDec);
+			parser.parse(classDec);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
