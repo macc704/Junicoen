@@ -211,9 +211,49 @@ public class UniToBlockParser {
 	}
 
 	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
-		return null;
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement;
+		String plugType = "boolean";//or number or double
+		
+		if(binopExpr.operator.equals("&&")){ 
+			 blockElement = createBlockElement(document, "and", ID_COUNTER++, "function");
+		}else if(binopExpr.operator.equals("||")){
+			blockElement = createBlockElement(document, "or", ID_COUNTER++, "function");
+		}else if(binopExpr.operator.equals("!")){
+			blockElement = createBlockElement(document, "not", ID_COUNTER++, "function");
+		}else{
+			throw new RuntimeException("unequipment operator");
+		}
+		
+		addPlugElement(document, blockElement,parent, "boolean");
+		
+		List<Element> leftBlocks = parseExpr(binopExpr.left, document, blockElement);
+		List<Element> rightBlocks = parseExpr(binopExpr.right, document, blockElement);
+		
+		List<Element> args = new ArrayList<Element>();
+		args.add(leftBlocks.get(0));
+		args.add(rightBlocks.get(0));
+		
+		addSocketsNode(args, document, blockElement, createSocketLabels("bottom", "bottom") ,createSocketLabels("", ""));
+		
+		elements.add(blockElement);
+		elements.addAll(leftBlocks);
+		elements.addAll(rightBlocks);
+		
+		addedModels.put(Integer.toString(((UniNode) binopExpr).hashCode()), blockElement);
+		
+		return elements;
 	}
 
+	public static String[] createSocketLabels(String... labels){
+		String[] socketLabels = new String[labels.length];
+		for(int i = 0; i< labels.length;i++){
+			socketLabels[i] = labels[i];
+		}
+		
+		return socketLabels;
+	}
+	
 	public List<Element> parseWhile(UniWhile whileExpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
 		Element blockElement = createBlockElement(document, "while", ID_COUNTER++, "command");
@@ -233,11 +273,7 @@ public class UniToBlockParser {
 		}
 		
 		// ソケットの出力
-		String[] socketLabels = new String[3];
-		socketLabels[0] = "かどうか調べて";
-		socketLabels[1] = "真の間";
-		
-		addSocketsNode(blockSockets, document, blockElement, socketLabels);
+		addSocketsNode(blockSockets, document, blockElement, createSocketLabels("single", "single"), createSocketLabels("かどうか調べて", "真の間"));
 
 		elements.add(blockElement);
 		
@@ -298,12 +334,7 @@ public class UniToBlockParser {
 		}
 
 		// ソケットの出力
-		String[] socketLabels = new String[3];
-		socketLabels[0] = "かどうか調べて";
-		socketLabels[1] = "真のとき";
-		socketLabels[2] = "偽のとき";
-		
-		addSocketsNode(blockSockets, document, blockElement, socketLabels);
+		addSocketsNode(blockSockets, document, blockElement, createSocketLabels("single", "single", "single"), createSocketLabels("かどうか調べて", "真のとき", "偽のとき"));
 
 		elements.add(blockElement);
 		
@@ -373,27 +404,27 @@ public class UniToBlockParser {
 		String kind = "command";
 		List<Element> exprs = new ArrayList<Element>();
 
-		Element element = createBlockElement(document, genusName, ID_COUNTER++,
-				kind);
+		Element element = createBlockElement(document, genusName, ID_COUNTER++, kind);
 		
 		if (method.args != null) {
 			// 引数パース
 			String[] paramsLabel = new String[method.args.size()];
+			String[] argsPositionType = new String[method.args.size()];
 			int i = 0;
 			for (UniExpr expr : method.args) {
 				for (Element arg : parseExpr(expr, document, element)) {
 					exprs.add(arg);
 				}
 				paramsLabel[i] = "";
+				argsPositionType[i] ="single";
 			}
 			// socketの追加
-			addSocketsNode(exprs, document, element, paramsLabel);
+			addSocketsNode(exprs, document, element, argsPositionType, paramsLabel);
 		}
 
 		exprs.add(0, element);
 
-		addedModels.put(Integer.toString(((UniNode) method).hashCode()),
-				element);
+		addedModels.put(Integer.toString(((UniNode) method).hashCode()), element);
 
 		return exprs;
 	}
@@ -454,40 +485,40 @@ public class UniToBlockParser {
 		blockNode.appendChild(element);
 	}
 
-	public static void addSocketsNode(List<Element> args, Document document, Element blockNode, String[] socketLabels) {
+	public static void addSocketsNode(List<Element> args, Document document, Element blockNode, String[] connectorTypes,String[] socketLabels) {
 		Element sockets = document.createElement("Sockets");
 		sockets.setAttribute("num-sockets", String.valueOf(args.size()));
 		
 		if(socketLabels != null){
 			for (int i = 0; i < args.size();i++) {
-				addSocketNode(document, args.get(i), sockets, socketLabels[i]);
+				addSocketNode(document, args.get(i), sockets, connectorTypes[i], socketLabels[i]);
 			}	
 		}
 
 		blockNode.appendChild(sockets);
 	}
 
-	public static void addSocketNode(Document document, Element argElement,	Node socketsNode , String socketLabel) {
+	public static void addSocketNode(Document document, Element argElement,	Node socketsNode , String positionType, String socketLabel) {
 		Element connector = document.createElement("BlockConnector");
-		Node plugNode = null;
 		
 		connector.setAttribute("connector-kind", "socket");
-		connector.setAttribute("position-type", "single");
+		connector.setAttribute("position-type", positionType);
 		connector.setAttribute("label", socketLabel);
+		Node plugNode;
 		
 		if(argElement != null){
-			connector.setAttribute("con-block-id", getSocketConnectorType(ToBlockEditorParser.getAttribute(argElement, "id")));
-			if(ToBlockEditorParser.getChildNode(argElement, "Plug") != null){
+			connector.setAttribute("con-block-id", ToBlockEditorParser.getAttribute(argElement, "id"));
+			if(ToBlockEditorParser.getChildNode(ToBlockEditorParser.getChildNode(argElement, "Plug") )!= null){
 				plugNode = ToBlockEditorParser.getChildNode(ToBlockEditorParser.getChildNode(argElement, "Plug"), "BlockConnector");
 				connector.setAttribute("connector-type", getSocketConnectorType(ToBlockEditorParser.getAttribute(plugNode, "connector-type")));
 				connector.setAttribute("init-type", getSocketConnectorType(ToBlockEditorParser.getAttribute(plugNode, "connector-type")));
 			}else{
 				connector.setAttribute("connector-type", "cmd");
-				connector.setAttribute("init-type", "cmd");
+				connector.setAttribute("init-type", "cmd");			
 			}
-		}else{ 
+		}else{
 			connector.setAttribute("connector-type", "cmd");
-			connector.setAttribute("init-type", "cmd");
+			connector.setAttribute("init-type", "cmd");					
 		}
 		
 		socketsNode.appendChild(connector);

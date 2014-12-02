@@ -11,13 +11,8 @@ import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
-import net.unicoen.node.UniIdent;
-import net.unicoen.node.UniMemberDec;
-import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
-import net.unicoen.node.UniStringLiteral;
 
 import org.junit.Test;
 
