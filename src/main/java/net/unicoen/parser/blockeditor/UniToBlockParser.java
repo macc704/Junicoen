@@ -210,14 +210,43 @@ public class UniToBlockParser {
 		}
 	}
 
-	public List<Element> parseBinOp(UniBinOp binopExpr, Document document,
-			Node parent) {
+	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
 		return null;
 	}
 
-	public List<Element> parseWhile(UniWhile whileExpr, Document document,
-			Node parent) {
-		return null;
+	public List<Element> parseWhile(UniWhile whileExpr, Document document, Node parent) {
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement = createBlockElement(document, "while", ID_COUNTER++, "command");
+		
+		List<Element> sockets = parseExpr(whileExpr.cond, document, blockElement);
+		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.body);
+
+		List<Element> blockSockets = new ArrayList<>();
+		if (sockets.size() > 0) {
+			blockSockets.add(sockets.get(0));
+		}
+		
+		if (trueBlock.size() > 0) {
+			blockSockets.add(trueBlock.get(0));
+		}else{
+			blockSockets.add(null);
+		}
+		
+		// ソケットの出力
+		String[] socketLabels = new String[3];
+		socketLabels[0] = "かどうか調べて";
+		socketLabels[1] = "真の間";
+		
+		addSocketsNode(blockSockets, document, blockElement, socketLabels);
+
+		elements.add(blockElement);
+		
+		elements.addAll(sockets);
+		elements.addAll(trueBlock);
+		
+		addedModels.put(Integer.toString(((UniNode) whileExpr).hashCode()), blockElement);
+
+		return elements;
 	}
 
 	public List<Element> parseBoolLiteral(UniBoolLiteral boolexpr,
@@ -248,10 +277,8 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
 
 		List<Element> sockets = parseExpr(ifexpr.cond, document, blockElement);
-		List<Element> trueBlock = parseBody(document, blockElement,
-				ifexpr.trueBlock);
-		List<Element> falseBlock = parseBody(document, blockElement,
-				ifexpr.falseBlock);
+		List<Element> trueBlock = parseBody(document, blockElement, ifexpr.trueBlock);
+		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock);
 
 		List<Element> blockSockets = new ArrayList<>();
 		if (sockets.size() > 0) {
