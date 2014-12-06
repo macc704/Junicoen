@@ -49,10 +49,15 @@ public class UniToBlockParser {
 
 	private long ID_COUNTER = 1100;
 
-	private static String[] turtleMethods = { "rt[@int]", "lt[@int]", "fd[@int]", "bk[@int]" };
+	private static Map<String, String> turtleMethods;
 
 	private static Map<String, Element> addedModels = new HashMap<String, Element>();
 
+	public UniToBlockParser(){
+		BlockNameResolver.parseTurtleXml();
+		turtleMethods = BlockNameResolver.getTurtleMethodsName();
+	}
+	
 	public static Map<String, Element> getAddedModels() {
 		return addedModels;
 	}
@@ -439,10 +444,9 @@ public class UniToBlockParser {
 		}
 
 		genusName += "]";
-
-		if (isTurtleMethod(genusName) || method.receiver instanceof UniIdent) {
-			genusName = "Turtle-" + genusName;
-		}
+		
+		genusName = getNamespace(genusName) + genusName;
+		
 		return genusName;
 	}
 
@@ -454,13 +458,12 @@ public class UniToBlockParser {
 		}
 	}
 
-	private static boolean isTurtleMethod(String name) {
-		for (String methdName : turtleMethods) {
-			if (methdName.equals(name)) {
-				return true;
-			}
+	private static String getNamespace(String name) {
+		String namespace = turtleMethods.get(name);
+		if(namespace != null){
+			return namespace + "-";
 		}
-		return false;
+		return "";
 	}
 
 	private static String calcParamType(UniExpr param) {

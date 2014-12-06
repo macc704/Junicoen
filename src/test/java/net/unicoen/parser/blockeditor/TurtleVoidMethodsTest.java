@@ -1,15 +1,12 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniMethodCall;
