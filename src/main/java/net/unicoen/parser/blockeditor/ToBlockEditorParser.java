@@ -92,7 +92,7 @@ public class ToBlockEditorParser {
 		case "data":
 			switch (blockType) {
 			case "number":
-				//				String num = getChildText(node, "Label");
+				// String num = getChildText(node, "Label");
 				UniIntLiteral num = new UniIntLiteral();
 				num.value = Integer.parseInt(getChildText(node, "Label"));
 				return num;
@@ -114,7 +114,8 @@ public class ToBlockEditorParser {
 		case "command":
 			Node argsNode = getChildNode(node, "Sockets");
 			List<List<UniExpr>> args = parseSocket(argsNode, map);
-			return parseCommand(args, blockType);
+			String methodName = getChildText(node, "Name");
+			return parseCommand(args, blockType, methodName);
 		case "function":
 			Node functionArgsNode = getChildNode(node, "Sockets");
 			List<List<UniExpr>> functionArgs = parseSocket(functionArgsNode, map);
@@ -146,29 +147,35 @@ public class ToBlockEditorParser {
 
 	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map) {
 		List<List<UniExpr>> args = new ArrayList<>();
-		for (Node argNode : eachChild(argsNode)) {
-			assert argNode.getNodeName().equals("BlockConnector");
-			String argElemId = getAttribute(argNode, "con-block-id");
-			Node realArgNode = map.get(argElemId);
-			// 先読みして，afterを持ってなかったらexpression
-			if (realArgNode != null) {
-				if (getChildText(realArgNode, "BeforeBlockId") == null) {
-					List<UniExpr> arg = new ArrayList<>();
-					arg.add(parseToExpr(realArgNode, map));
-					args.add(arg);
+		if(argsNode != null){
+			for (Node argNode : eachChild(argsNode)) {
+				assert argNode.getNodeName().equals("BlockConnector");
+				String argElemId = getAttribute(argNode, "con-block-id");
+				Node realArgNode = map.get(argElemId);
+				// 先読みして，afterを持ってなかったらexpression
+				if (realArgNode != null) {
+					if (getChildText(realArgNode, "BeforeBlockId") == null) {
+						List<UniExpr> arg = new ArrayList<>();
+						arg.add(parseToExpr(realArgNode, map));
+						args.add(arg);
+					} else {
+						args.add(parseBody(realArgNode, map));
+					}
 				} else {
-					args.add(parseBody(realArgNode, map));
+					// con-block-id がnullの場合は，空
+					args.add(null);
 				}
-			} else {
-				// con-block-id がnullの場合は，空
-				args.add(null);
 			}
+		}else{
+			List<UniExpr> arg = new ArrayList<>();
+			args.add(arg);
 		}
 		return args;
 	}
 
-	private static UniExpr parseCommand(List<List<UniExpr>> args, String blockType) {
-		if ("ifelse".equals(blockType)) {// if statement
+	private static UniExpr parseCommand(List<List<UniExpr>> args, String blockType, String methodName) {
+		switch (blockType) {
+		case "ifelse": {
 			UniIf uniIf = new UniIf();
 			uniIf.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
@@ -178,15 +185,17 @@ public class ToBlockEditorParser {
 				uniIf.falseBlock = args.get(2);
 			}
 			return uniIf;
-		} else if ("while".equals(blockType)) {// while statement
+		}
+		case "while": {
 			UniWhile uniWhile = new UniWhile();
 			uniWhile.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
 				uniWhile.body = args.get(1);
 			}
 			return uniWhile;
-		} else {
-			UniMethodCall mcall = getProtoType(blockType);
+		}
+		default: {
+			UniMethodCall mcall = getProtoType(methodName);
 			if (mcall != null) {
 				mcall.args = args.get(0);
 				return mcall;
@@ -194,30 +203,38 @@ public class ToBlockEditorParser {
 				throw new RuntimeException("Unknown method type: " + blockType);
 			}
 		}
+		}
 	}
 
-	private static UniMethodCall getProtoType(String blockType) {
+	private static UniMethodCall getProtoType(String methodName) {
 		/*
 		 * 最初にテーブルを作って、呼ばれるたびに、nodeのクローンを作って返す。
 		 */
-		switch (blockType) {
-		case "Turtle-print[@string]": {
-			UniMethodCall mcall = new UniMethodCall();
-			mcall.receiver = new UniIdent("MyLib");
-			mcall.methodName = "print";
+		if (methodName != null) {
+			UniMethodCall mcall = new UniMethodCall(new UniIdent("MyLib"), methodName, null);
 			return mcall;
+		} else {
+			throw new RuntimeException("method name is null");
 		}
-		case "Turtle-rt[@int]":
-			return new UniMethodCall(null, "rt", null);
-		case "Turtle-lt[@int]":
-			return new UniMethodCall(null, "lt", null);
-		case "Turtle-fd[@int]":
-			return new UniMethodCall(null, "fd", null);
-		case "Turtle-bk[@int]":
-			return new UniMethodCall(null, "bk", null);
-		}
+//		switch (blockType) {
+//		case "Turtle-print[@string]": {
+//			UniMethodCall mcall = new UniMethodCall();
 
-		throw new RuntimeException("Unknown method call: " + blockType);
+//			mcall.methodName = "print";
+//			return mcall;
+//		}
+//		case "Turtle-rt[@int]":
+//			return new UniMethodCall(null, "rt", null);
+//		case "Turtle-lt[@int]":
+//			return new UniMethodCall(null, "lt", null);
+//		case "Turtle-fd[@int]":
+//			return new UniMethodCall(null, "fd", null);
+//		case "Turtle-bk[@int]":
+//			return new UniMethodCall(null, "bk", null);
+//		}
+//
+//		throw new RuntimeException("Unknown method call: " + blockType);
+
 	}
 
 	private static Node getRooteNote(File xmlFile) {

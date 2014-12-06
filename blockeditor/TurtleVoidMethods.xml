@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd"
+	xmlns:cb="http://education.mit.edu/openblocks/ns">
+	<Pages collapsible-pages="no">
+		<Page page-color="40 40 40" page-drawer="" page-infullview="yes"
+			page-name="" page-width="1366">
+			<PageBlocks>
+				<Block genus-name="Turtle-sleep[@int]" id="180" kind="command">
+					<Label>待つ</Label>
+					<Name>sleep</Name>
+					<Location>
+						<X>89</X>
+						<Y>682</Y>
+					</Location>
+					<BeforeBlockId>179</BeforeBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="181" connector-kind="socket"
+							connector-type="number" init-type="number" label="秒"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="181" kind="data">
+					<Label>1</Label>
+					<Location>
+						<X>153</X>
+						<Y>685</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="180" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-update[]" id="179" kind="command">
+					<Label>再描画する</Label>
+					<Name>update</Name>
+					<Location>
+						<X>89</X>
+						<Y>658</Y>
+					</Location>
+					<BeforeBlockId>177</BeforeBlockId>
+					<AfterBlockId>180</AfterBlockId>
+				</Block>
+				<Block genus-name="Turtle-hide[]" id="177" kind="command">
+					<Label>非表示にする</Label>
+					<Name>hide</Name>
+					<Location>
+						<X>89</X>
+						<Y>634</Y>
+					</Location>
+					<BeforeBlockId>176</BeforeBlockId>
+					<AfterBlockId>179</AfterBlockId>
+				</Block>
+				<Block genus-name="Turtle-show[]" id="176" kind="command">
+					<Label>表示する</Label>
+					<Name>show</Name>
+					<Location>
+						<X>89</X>
+						<Y>610</Y>
+					</Location>
+					<BeforeBlockId>174</BeforeBlockId>
+					<AfterBlockId>177</AfterBlockId>
+				</Block>
+				<Block genus-name="Turtle-little[@int]" id="174" kind="command">
+					<Label>縦の幅を小さくする</Label>
+					<Name>little</Name>
+					<Location>
+						<X>89</X>
+						<Y>580</Y>
+					</Location>
+					<BeforeBlockId>172</BeforeBlockId>
+					<AfterBlockId>176</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="175" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="175" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>247</X>
+						<Y>583</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="174" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-tall[@int]" id="172" kind="command">
+					<Label>縦の幅を大きくする</Label>
+					<Name>tall</Name>
+					<Location>
+						<X>89</X>
+						<Y>550</Y>
+					</Location>
+					<BeforeBlockId>170</BeforeBlockId>
+					<AfterBlockId>174</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="173" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="173" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>247</X>
+						<Y>553</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="172" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-narrow[@int]" id="170" kind="command">
+					<Label>横の幅を小さくする</Label>
+					<Name>narrow</Name>
+					<Location>
+						<X>89</X>
+						<Y>520</Y>
+					</Location>
+					<BeforeBlockId>168</BeforeBlockId>
+					<AfterBlockId>172</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="171" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="171" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>247</X>
+						<Y>523</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="170" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-wide[@int]" id="168" kind="command">
+					<Label>横の幅を大きくする</Label>
+					<Name>wide</Name>
+					<Location>
+						<X>89</X>
+						<Y>490</Y>
+					</Location>
+					<BeforeBlockId>166</BeforeBlockId>
+					<AfterBlockId>170</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="169" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="169" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>247</X>
+						<Y>493</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="168" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-small[@int]" id="166" kind="command">
+					<Label>縦・横の幅を小さくする</Label>
+					<Name>small</Name>
+					<Location>
+						<X>89</X>
+						<Y>460</Y>
+					</Location>
+					<BeforeBlockId>164</BeforeBlockId>
+					<AfterBlockId>168</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="167" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="167" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>271</X>
+						<Y>463</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="166" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-large[@int]" id="164" kind="command">
+					<Label>縦・横の幅を大きくする</Label>
+					<Name>large</Name>
+					<Location>
+						<X>89</X>
+						<Y>430</Y>
+					</Location>
+					<BeforeBlockId>161</BeforeBlockId>
+					<AfterBlockId>166</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="165" connector-kind="socket"
+							connector-type="number" init-type="number" label="長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="165" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>271</X>
+						<Y>433</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="164" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-size[@int@int]" id="161" kind="command">
+					<Label>大きさを変える</Label>
+					<Name>size</Name>
+					<Location>
+						<X>89</X>
+						<Y>376</Y>
+					</Location>
+					<BeforeBlockId>159</BeforeBlockId>
+					<AfterBlockId>164</AfterBlockId>
+					<Sockets num-sockets="2">
+						<BlockConnector con-block-id="162" connector-kind="socket"
+							connector-type="number" init-type="number" label="横の長さ"
+							position-type="single" />
+						<BlockConnector con-block-id="163" connector-kind="socket"
+							connector-type="number" init-type="number" label="縦の長さ"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="163" kind="data">
+					<Label>100</Label>
+					<Location>
+						<X>243</X>
+						<Y>403</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="161" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="number" id="162" kind="data">
+					<Label>100</Label>
+					<Location>
+						<X>243</X>
+						<Y>379</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="161" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-scale[@int]" id="159" kind="command">
+					<Label>大きさを変える</Label>
+					<Name>scale</Name>
+					<Location>
+						<X>89</X>
+						<Y>346</Y>
+					</Location>
+					<BeforeBlockId>156</BeforeBlockId>
+					<AfterBlockId>161</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="160" connector-kind="socket"
+							connector-type="number" init-type="number" label="倍率"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="160" kind="data">
+					<Label>100</Label>
+					<Location>
+						<X>223</X>
+						<Y>349</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="159" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-warp[@int@int]" id="156" kind="command">
+					<Label>ワープする</Label>
+					<Name>warp</Name>
+					<Location>
+						<X>89</X>
+						<Y>292</Y>
+					</Location>
+					<BeforeBlockId>151</BeforeBlockId>
+					<AfterBlockId>159</AfterBlockId>
+					<Sockets num-sockets="2">
+						<BlockConnector con-block-id="157" connector-kind="socket"
+							connector-type="number" init-type="number" label="X座標"
+							position-type="single" />
+						<BlockConnector con-block-id="158" connector-kind="socket"
+							connector-type="number" init-type="number" label="Y座標"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="158" kind="data">
+					<Label>100</Label>
+					<Location>
+						<X>205</X>
+						<Y>319</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="156" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="number" id="157" kind="data">
+					<Label>100</Label>
+					<Location>
+						<X>205</X>
+						<Y>295</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="156" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-print[@string]" id="151" kind="command">
+					<Label>コンソールに出力する</Label>
+					<Name>print</Name>
+					<Location>
+						<X>89</X>
+						<Y>262</Y>
+					</Location>
+					<BeforeBlockId>147</BeforeBlockId>
+					<AfterBlockId>156</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="152" connector-kind="socket"
+							connector-type="string" init-type="string" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="string" id="152" kind="data">
+					<Label>あいうえお</Label>
+					<Location>
+						<X>231</X>
+						<Y>265</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="151" connector-kind="plug"
+							connector-type="string" init-type="string" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-down[]" id="147" kind="command">
+					<Label>ペンを下ろす</Label>
+					<Name>down</Name>
+					<Location>
+						<X>89</X>
+						<Y>238</Y>
+					</Location>
+					<BeforeBlockId>146</BeforeBlockId>
+					<AfterBlockId>151</AfterBlockId>
+				</Block>
+				<Block genus-name="Turtle-up[]" id="146" kind="command">
+					<Label>ペンを上げる</Label>
+					<Name>up</Name>
+					<Location>
+						<X>89</X>
+						<Y>214</Y>
+					</Location>
+					<BeforeBlockId>144</BeforeBlockId>
+					<AfterBlockId>147</AfterBlockId>
+				</Block>
+				<Block genus-name="Turtle-lt[@int]" id="144" kind="command">
+					<Label>左へ回る</Label>
+					<Name>lt</Name>
+					<Location>
+						<X>89</X>
+						<Y>184</Y>
+					</Location>
+					<BeforeBlockId>142</BeforeBlockId>
+					<AfterBlockId>146</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="145" connector-kind="socket"
+							connector-type="number" init-type="number" label="角度"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="145" kind="data">
+					<Label>90</Label>
+					<Location>
+						<X>193</X>
+						<Y>187</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="144" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-rt[@int]" id="142" kind="command">
+					<Label>右へ回る</Label>
+					<Name>rt</Name>
+					<Location>
+						<X>89</X>
+						<Y>154</Y>
+					</Location>
+					<BeforeBlockId>140</BeforeBlockId>
+					<AfterBlockId>144</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="143" connector-kind="socket"
+							connector-type="number" init-type="number" label="角度"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="143" kind="data">
+					<Label>90</Label>
+					<Location>
+						<X>193</X>
+						<Y>157</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="142" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-bk[@int]" id="140" kind="command">
+					<Label>戻る</Label>
+					<Name>bk</Name>
+					<Location>
+						<X>89</X>
+						<Y>124</Y>
+					</Location>
+					<BeforeBlockId>138</BeforeBlockId>
+					<AfterBlockId>142</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="141" connector-kind="socket"
+							connector-type="number" init-type="number" label="歩数"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="141" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>169</X>
+						<Y>127</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="140" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="Turtle-fd[@int]" id="138" kind="command">
+					<Label>進む</Label>
+					<Name>fd</Name>
+					<Location>
+						<X>89</X>
+						<Y>94</Y>
+					</Location>
+					<BeforeBlockId>136</BeforeBlockId>
+					<AfterBlockId>140</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="139" connector-kind="socket"
+							connector-type="number" init-type="number" label="歩数"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="139" kind="data">
+					<Label>50</Label>
+					<Location>
+						<X>169</X>
+						<Y>97</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="138" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="procedure" id="136" kind="procedure">
+					<Label>start</Label>
+					<Location>
+						<X>89</X>
+						<Y>64</Y>
+					</Location>
+					<AfterBlockId>138</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+			</PageBlocks>
+		</Page>
+	</Pages>
+</cb:CODEBLOCKS>

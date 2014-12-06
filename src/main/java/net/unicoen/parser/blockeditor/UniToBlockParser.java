@@ -213,7 +213,6 @@ public class UniToBlockParser {
 	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
 		Element blockElement;
-		String plugType = "boolean";//or number or double
 		
 		if(binopExpr.operator.equals("&&")){ 
 			 blockElement = createBlockElement(document, "and", ID_COUNTER++, "function");
