@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="" page-width="1366">
+<PageBlocks>
+<Block genus-name="Turtle-print[@string]" id="160" kind="command">
+<Label>コンソールに出力する</Label>
+<Name>print</Name>
+<Location>
+<X>480</X>
+<Y>391</Y>
+</Location>
+<BeforeBlockId>163</BeforeBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="162" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="string" id="162" kind="data">
+<Label>Hello World</Label>
+<Location>
+<X>622</X>
+<Y>394</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="160" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="true" id="167" kind="data">
+<Label>真</Label>
+<Location>
+<X>483</X>
+<Y>362</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="163" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="ifelse" id="163" kind="command">
+<Label>分岐</Label>
+<Location>
+<X>359</X>
+<Y>359</Y>
+</Location>
+<BeforeBlockId>155</BeforeBlockId>
+<Sockets num-sockets="3">
+<BlockConnector con-block-id="167" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="160" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="ifelse" id="155" kind="command">
+<Label>分岐</Label>
+<Location>
+<X>238</X>
+<Y>327</Y>
+</Location>
+<BeforeBlockId>150</BeforeBlockId>
+<Sockets num-sockets="3">
+<BlockConnector con-block-id="159" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="163" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="true" id="159" kind="data">
+<Label>真</Label>
+<Location>
+<X>362</X>
+<Y>330</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="155" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="ifelse" id="150" kind="command">
+<Label>分岐</Label>
+<Location>
+<X>117</X>
+<Y>295</Y>
+</Location>
+<BeforeBlockId>138</BeforeBlockId>
+<Sockets num-sockets="3">
+<BlockConnector con-block-id="154" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="155" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="true" id="154" kind="data">
+<Label>真</Label>
+<Location>
+<X>241</X>
+<Y>298</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="150" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="string" id="149" kind="data">
+<Label>Hello World</Label>
+<Location>
+<X>500</X>
+<Y>214</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="148" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="Turtle-print[@string]" id="148" kind="command">
+<Label>コンソールに出力する</Label>
+<Name>print</Name>
+<Location>
+<X>358</X>
+<Y>211</Y>
+</Location>
+<BeforeBlockId>143</BeforeBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="149" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="false" id="147" kind="data">
+<Label>偽</Label>
+<Location>
+<X>362</X>
+<Y>147</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="143" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="equals-number" id="144" kind="function">
+<Label>等しい</Label>
+<Location>
+<X>192</X>
+<Y>398</Y>
+</Location>
+<Plug>
+<BlockConnector connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="145" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="146" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<Block genus-name="number" id="146" kind="data">
+<Label>1</Label>
+<Location>
+<X>308</X>
+<Y>401</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="144" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="number" id="145" kind="data">
+<Label>1</Label>
+<Location>
+<X>202</X>
+<Y>401</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="144" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="ifelse" id="143" kind="command">
+<Label>分岐</Label>
+<Location>
+<X>238</X>
+<Y>144</Y>
+</Location>
+<BeforeBlockId>138</BeforeBlockId>
+<Sockets num-sockets="3">
+<BlockConnector con-block-id="147" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector con-block-id="148" connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="true" id="142" kind="data">
+<Label>真</Label>
+<Location>
+<X>241</X>
+<Y>115</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="138" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="ifelse" id="138" kind="command">
+<Label>分岐</Label>
+<Location>
+<X>117</X>
+<Y>112</Y>
+</Location>
+<BeforeBlockId>136</BeforeBlockId>
+<AfterBlockId>150</AfterBlockId>
+<Sockets num-sockets="3">
+<BlockConnector con-block-id="142" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="143" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="procedure" id="136" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>117</X>
+<Y>82</Y>
+</Location>
+<AfterBlockId>138</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" is-expandable="yes" label="" position-type="single"/>
+</Sockets>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>

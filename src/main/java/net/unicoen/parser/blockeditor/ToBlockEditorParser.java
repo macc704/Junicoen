@@ -36,8 +36,11 @@ public class ToBlockEditorParser {
 		ArrayList<Node> procs = new ArrayList<>();
 		for (Node node : eachChild(pageBlock)) {
 			String name = node.getNodeName();
-			if (name.startsWith("#"))
-				continue;
+			if (name.startsWith("#")){
+				continue;	
+			}else if(name.equals("BlockStub")){
+				node = getChildNode(node, "Block");
+			}
 
 			String nodeId = getAttribute(node, "id");
 			String blockType = getAttribute(node, "genus-name");
