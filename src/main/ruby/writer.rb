@@ -67,21 +67,25 @@ module Writer
           f.puts "\tpublic #{t} #{name};"
         end
 
-        # -- ctor
         if is_concrete
+          # -- empty ctor
           f.puts
           f.puts "\tpublic #{node.name}() {"
           f.puts "\t}"
-          f.puts
-          args = node.members.map do |name, type, opt|
-            t = opt[:list] ? "List<#{type}>" : type
-            "#{t} #{name}"
-          end.join(", ")
-          f.puts "\tpublic #{node.name}(#{args}) {"
-          node.members.map do |name, type, opt|
-            f.puts "\t\tthis.#{name} = #{name};"
+
+          # -- ctor with values
+          if node.members.size > 0
+            f.puts
+            args = node.members.map do |name, type, opt|
+              t = opt[:list] ? "List<#{type}>" : type
+              "#{t} #{name}"
+            end.join(", ")
+            f.puts "\tpublic #{node.name}(#{args}) {"
+            node.members.map do |name, type, opt|
+              f.puts "\t\tthis.#{name} = #{name};"
+            end
+            f.puts "\t}"
           end
-          f.puts "\t}"
 
           # -- toString
           names = node.members

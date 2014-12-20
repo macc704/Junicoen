@@ -46,6 +46,14 @@ Dsl.define_node do |x|
         d.mem "falseExpr", "Expr"
       end
       #
+      # Control flow
+      #
+      x.node "Return" do |d|
+        d.mem "value", "Expr"
+      end
+      x.node "Break"
+      x.node "Continue"
+      #
       # Block
       #
       x.node "If" do |d|
@@ -69,6 +77,9 @@ Dsl.define_node do |x|
         d.mem "catchBlock", "Expr", list: true
         d.mem "finallyBlock", "Expr", list: true
       end
+      #
+      # Var Dec
+      #
       x.node "DecVar", doc: '変数宣言' do |d|
         d.mem "modifiers", String, list: true
         d.mem "type", String

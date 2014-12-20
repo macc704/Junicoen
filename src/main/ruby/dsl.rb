@@ -32,7 +32,7 @@ class Dsl
     inherits = parent.nil? ? [] : Array(parent) + @parents
     node = Node.new(prefix + name, inherits, opt, [])
     @parents.unshift(node)
-    NodeDsl.new(node, self).instance_eval(&block)
+    NodeDsl.new(node, self).instance_eval(&block) if block
     @parents.shift
     @nodes << node
   end

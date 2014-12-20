@@ -11,8 +11,10 @@ import java.util.function.Predicate;
 
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
+import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniCondOp;
+import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDecVar;
 import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
@@ -24,11 +26,33 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
+import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniWhile;
 
 public class Engine {
+
+	@SuppressWarnings("serial")
+	private static class ControlException extends RuntimeException {
+	}
+
+	@SuppressWarnings("serial")
+	private static class Break extends ControlException {
+	}
+
+	@SuppressWarnings("serial")
+	private static class Continue extends ControlException {
+	}
+
+	@SuppressWarnings("serial")
+	private static class Return extends ControlException {
+		public final Object value;
+
+		public Return(Object value) {
+			this.value = value;
+		}
+	}
 
 	public PrintStream out = System.out;
 	public List<ExecutionListener> listeners;
@@ -171,6 +195,17 @@ public class Engine {
 			return toBool(execExpr(condOp.cond, scope)) ? execExpr(condOp.trueExpr, scope) : execExpr(condOp.falseExpr,
 					scope);
 		}
+		if (expr instanceof UniBreak) {
+			throw new Break();
+		}
+		if (expr instanceof UniContinue) {
+			throw new Continue();
+		}
+		if (expr instanceof UniReturn) {
+			UniReturn uniRet = (UniReturn) expr;
+			Object retValue = execExpr(uniRet, scope);
+			throw new Return(retValue);
+		}
 		if (expr instanceof UniDecVar) {
 			UniDecVar decVar = (UniDecVar) expr;
 			scope.setTop(decVar.name, null);
@@ -193,20 +228,34 @@ public class Engine {
 		if (expr instanceof UniFor) {
 			UniFor uniFor = (UniFor) expr;
 			Scope forScope = Scope.createLocal(scope);
-			Object lastEval = null;
-			for (execExpr(uniFor.init, forScope); toBool(execExpr(uniFor.cond, forScope)); execExpr(uniFor.step,
-					forScope)) {
-				lastEval = execExprMany(uniFor.body, Scope.createLocal(forScope));
+			try {
+				Object lastEval = null;
+				for (execExpr(uniFor.init, forScope); toBool(execExpr(uniFor.cond, forScope)); execExpr(uniFor.step,
+						forScope)) {
+					try {
+						lastEval = execExprMany(uniFor.body, Scope.createLocal(forScope));
+					} catch (Continue e) { /* do nothing*/
+					}
+				}
+				return lastEval;
+			} catch (Break e) {
+				return null;
 			}
-			return lastEval;
 		}
 		if (expr instanceof UniWhile) {
 			UniWhile uniWhile = (UniWhile) expr;
-			Object lastEval = null;
-			while (toBool(execExpr(uniWhile.cond, scope))) {
-				lastEval = execExprMany(uniWhile.body, Scope.createLocal(scope));
+			try {
+				Object lastEval = null;
+				while (toBool(execExpr(uniWhile.cond, scope))) {
+					try {
+						lastEval = execExprMany(uniWhile.body, Scope.createLocal(scope));
+					} catch (Continue e) { /* do nothing*/
+					}
+				}
+				return lastEval;
+			} catch (Break e) {
+				return null;
 			}
-			return lastEval;
 		}
 		throw new RuntimeException("Not support expr type: " + expr);
 	}
