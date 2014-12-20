@@ -22,6 +22,7 @@ import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniWhile;
 
 import org.junit.Test;
@@ -135,5 +136,29 @@ public class EngineTest {
 
 		Object result = Engine.executeSimple(program);
 		assertEquals(2, result);
+	}
+
+	@Test
+	public void testIncrement() {
+		// { int i = 0; ???; j; }
+		UniExpr exp1 = new UniDecVarWithValue(null, "int", "i", lit(0));
+		UniExpr exp2;
+		UniExpr exp3 = ident("j");
+
+		// int j = i++;
+		exp2 = new UniDecVarWithValue(null, "int", "j", new UniUnaryOp("_++", ident("i")));
+		assertEquals(0, Engine.executeSimple(block(exp1, exp2, exp3)));
+
+		// int j = ++i;
+		exp2 = new UniDecVarWithValue(null, "int", "j", new UniUnaryOp("++_", ident("i")));
+		assertEquals(1, Engine.executeSimple(block(exp1, exp2, exp3)));
+
+		// int j = i--;
+		exp2 = new UniDecVarWithValue(null, "int", "j", new UniUnaryOp("_--", ident("i")));
+		assertEquals(0, Engine.executeSimple(block(exp1, exp2, exp3)));
+
+		// int j = --i;
+		exp2 = new UniDecVarWithValue(null, "int", "j", new UniUnaryOp("--_", ident("i")));
+		assertEquals(-1, Engine.executeSimple(block(exp1, exp2, exp3)));
 	}
 }

@@ -332,6 +332,8 @@ public class Engine {
 
 	private Object execUnaryOp(UniUnaryOp uniOp, Scope scope) {
 		switch (uniOp.operator) {
+		case "!":
+			return !toBool(execExpr(uniOp.expr, scope));
 		case "-": {
 			Object value = execExpr(uniOp.expr, scope);
 			if (value instanceof Double) {
@@ -344,8 +346,39 @@ public class Engine {
 				return -((Integer) value).intValue();
 			}
 		}
-		case "!":
-			return !toBool(execExpr(uniOp.expr, scope));
+		case "_++":
+		case "++_":
+		case "_--":
+		case "--_":
+			if (uniOp.expr instanceof UniIdent) {
+				UniIdent ident = (UniIdent)uniOp.expr;
+				Number num = (Number) execExpr(uniOp.expr, scope);
+				Calc.Operation<?> calculater = null;
+				if (num instanceof Double) {
+					calculater = Calc.doubleOperation;
+				}
+				if (num instanceof Long) {
+					calculater = Calc.longOperation;
+				}
+				if (num instanceof Integer) {
+					calculater = Calc.intOperation;
+				}
+				if (calculater != null) {
+					switch(uniOp.operator){
+					case "_++":
+						execAssign(ident, calculater.add(num, 1), scope);
+						return num;
+					case "++_":
+						return execAssign(ident, calculater.add(num, 1), scope);
+					case "_--":
+						execAssign(ident, calculater.sub(num, 1), scope);
+						return num;
+					case "--_":
+						return execAssign(ident, calculater.sub(num, 1), scope);
+					}
+				}
+			}
+
 		}
 		throw new RuntimeException("Unkown binary operator: " + uniOp.operator);
 	}
