@@ -19,6 +19,7 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniWhile;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -129,24 +130,38 @@ public class ToBlockEditorParser {
 	}
 
 	private static UniExpr parseFunction(List<List<UniExpr>> functionArgs, String blockType) {
-		UniBinOp binOp = new UniBinOp();
+		if(isUnaryOp(blockType)){
+			UniUnaryOp unaryOp = new UniUnaryOp();
+			unaryOp.operator = "!";
+			unaryOp.expr = functionArgs.get(0).get(0);
+			return unaryOp;
+		}else{
+			UniBinOp binOp = new UniBinOp();
 
-		binOp.left = functionArgs.get(0).get(0);
-		binOp.right = functionArgs.get(1).get(0);
+			binOp.left = functionArgs.get(0).get(0);
+			binOp.right = functionArgs.get(1).get(0);
 
-		if ("equals-boolean".equals(blockType)) {
-			binOp.operator = "==";
-		} else if ("lessthan".equals(blockType)) {
-			binOp.operator = "<";
-		} else if ("and".equals(blockType)) {
-			binOp.operator = "&&";
-		} else if ("or".equals(blockType)) {
-			binOp.operator = "||";
-		} else {
-			throw new RuntimeException("Unknown operator type: " + blockType);
+			if ("equals-boolean".equals(blockType)) {
+				binOp.operator = "==";
+			} else if ("lessthan".equals(blockType)) {
+				binOp.operator = "<";
+			} else if ("and".equals(blockType)) {
+				binOp.operator = "&&";
+			} else if ("or".equals(blockType)) {
+				binOp.operator = "||";
+			}else {
+				throw new RuntimeException("Unknown operator type: " + blockType);
+			}
+			return binOp;
 		}
-
-		return binOp;
+	}
+	
+	private static boolean isUnaryOp(String blockType){
+		if("not".equals(blockType)){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map) {
