@@ -332,8 +332,18 @@ public class Engine {
 
 	private Object execUnaryOp(UniUnaryOp uniOp, Scope scope) {
 		switch (uniOp.operator) {
-		case "-":
-			return -toInt(execExpr(uniOp.expr, scope));
+		case "-": {
+			Object value = execExpr(uniOp.expr, scope);
+			if (value instanceof Double) {
+				return -((Double) value).doubleValue();
+			}
+			if (value instanceof Long) {
+				return -((Long) value).longValue();
+			}
+			if (value instanceof Integer) {
+				return -((Integer) value).intValue();
+			}
+		}
 		case "!":
 			return !toBool(execExpr(uniOp.expr, scope));
 		}
@@ -356,17 +366,53 @@ public class Engine {
 			return Eq.eq(execExpr(left, scope), execExpr(right, scope));
 		case "!=":
 			return Eq.eq(execExpr(left, scope), execExpr(right, scope)) == false;
-		case "+":
-			return toInt(execExpr(left, scope)) + toInt(execExpr(right, scope));
-		case "-":
-			return toInt(execExpr(left, scope)) - toInt(execExpr(right, scope));
-		case "*":
-			return toInt(execExpr(left, scope)) * toInt(execExpr(right, scope));
-		case "/":
-			return toInt(execExpr(left, scope)) / toInt(execExpr(right, scope));
-		case "%":
-			return toInt(execExpr(left, scope)) % toInt(execExpr(right, scope));
 
+		case "<":
+			return toDouble(execExpr(left, scope)) < toDouble(execExpr(right, scope));
+		case "<=":
+			return toDouble(execExpr(left, scope)) <= toDouble(execExpr(right, scope));
+		case ">":
+			return toDouble(execExpr(left, scope)) > toDouble(execExpr(right, scope));
+		case ">=":
+			return toDouble(execExpr(left, scope)) >= toDouble(execExpr(right, scope));
+
+		case "+":
+		case "-":
+		case "*":
+		case "/":
+		case "%": {
+			Object objL = execExpr(left, scope);
+			Object objR = execExpr(right, scope);
+			if (objL instanceof Number && objR instanceof Number) {
+				Number numL = (Number) objL;
+				Number numR = (Number) objR;
+				Calc.Operation<?> calculater = null;
+				if (numL instanceof Double || numR instanceof Double) {
+					calculater = Calc.doubleOperation;
+				}
+				if (numL instanceof Long || numR instanceof Long) {
+					calculater = Calc.longOperation;
+				}
+				if (numL instanceof Integer || numR instanceof Integer) {
+					calculater = Calc.intOperation;
+				}
+				if (calculater != null) {
+					switch (op) {
+					case "+":
+						return calculater.add(numL, numR);
+					case "-":
+						return calculater.sub(numL, numR);
+					case "*":
+						return calculater.mul(numL, numR);
+					case "/":
+						return calculater.div(numL, numR);
+					case "%":
+						return calculater.mod(numL, numR);
+					}
+				}
+			}
+			break;
+		}
 		case "&&":
 			return toBool(execExpr(left, scope)) && toBool(execExpr(right, scope));
 		case "||":
@@ -390,6 +436,13 @@ public class Engine {
 	public static int toInt(Object obj) {
 		if (obj instanceof Integer) {
 			return ((Integer) obj).intValue();
+		}
+		throw new RuntimeException("Cannot covert to integer: " + obj);
+	}
+
+	public static double toDouble(Object obj) {
+		if (obj instanceof Number) {
+			return ((Number) obj).doubleValue();
 		}
 		throw new RuntimeException("Cannot covert to integer: " + obj);
 	}

@@ -17,16 +17,8 @@ public class Eq {
 		if (left instanceof Number && right instanceof Number) {
 			Number numL = (Number) left;
 			Number numR = (Number) right;
-			if (left instanceof Double || right instanceof Double) {
-				return numL.doubleValue() == numR.doubleValue();
-			}
-			if (left instanceof Long || right instanceof Long) {
-				return numL.longValue() == numR.longValue();
-			}
-			if (left instanceof Integer || right instanceof Integer) {
-				return numL.intValue() == numR.intValue();
-			}
+			return numL.doubleValue() == numR.doubleValue();
 		}
-		return left.equals(right);
+		return left == right;
 	}
 }
