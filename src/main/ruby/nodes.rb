@@ -14,6 +14,8 @@ Dsl.define_node do |x|
       {
         "Bool" => :boolean,
         "Int" => :int,
+        "Long" => :long,
+        "Double" => :double,
         "String" => String
       }.each do |name, type|
         x.node "#{name}Literal" do |d|

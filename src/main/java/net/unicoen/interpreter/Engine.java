@@ -18,12 +18,14 @@ import net.unicoen.node.UniCondOp;
 import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDecVar;
 import net.unicoen.node.UniDecVarWithValue;
+import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFor;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
+import net.unicoen.node.UniLongLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
@@ -176,14 +178,20 @@ public class Engine {
 		if (expr instanceof UniIdent) {
 			return scope.get(((UniIdent) expr).name);
 		}
+		if (expr instanceof UniBoolLiteral) {
+			return ((UniBoolLiteral) expr).value;
+		}
 		if (expr instanceof UniIntLiteral) {
 			return ((UniIntLiteral) expr).value;
 		}
+		if (expr instanceof UniLongLiteral) {
+			return ((UniLongLiteral) expr).value;
+		}
+		if (expr instanceof UniDoubleLiteral) {
+			return ((UniDoubleLiteral) expr).value;
+		}
 		if (expr instanceof UniStringLiteral) {
 			return ((UniStringLiteral) expr).value;
-		}
-		if (expr instanceof UniBoolLiteral) {
-			return ((UniBoolLiteral) expr).value;
 		}
 		if (expr instanceof UniUnaryOp) {
 			return execUnaryOp((UniUnaryOp) expr, scope);
