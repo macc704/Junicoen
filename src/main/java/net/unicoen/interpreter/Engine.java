@@ -18,12 +18,14 @@ import net.unicoen.node.UniCondOp;
 import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDecVar;
 import net.unicoen.node.UniDecVarWithValue;
+import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFor;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
+import net.unicoen.node.UniLongLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
@@ -104,6 +106,10 @@ public class Engine {
 		return engine.execExpr(expr, scope);
 	}
 
+	public static Object executeSimple(UniExpr expr) {
+		return new Engine().execExpr(expr, Scope.createGlobal());
+	}
+
 	public Object execute(UniClassDec dec) {
 		UniFuncDec fdec = getEntryPoint(dec);
 		if (fdec != null) {
@@ -172,14 +178,20 @@ public class Engine {
 		if (expr instanceof UniIdent) {
 			return scope.get(((UniIdent) expr).name);
 		}
+		if (expr instanceof UniBoolLiteral) {
+			return ((UniBoolLiteral) expr).value;
+		}
 		if (expr instanceof UniIntLiteral) {
 			return ((UniIntLiteral) expr).value;
 		}
+		if (expr instanceof UniLongLiteral) {
+			return ((UniLongLiteral) expr).value;
+		}
+		if (expr instanceof UniDoubleLiteral) {
+			return ((UniDoubleLiteral) expr).value;
+		}
 		if (expr instanceof UniStringLiteral) {
 			return ((UniStringLiteral) expr).value;
-		}
-		if (expr instanceof UniBoolLiteral) {
-			return ((UniBoolLiteral) expr).value;
 		}
 		if (expr instanceof UniUnaryOp) {
 			return execUnaryOp((UniUnaryOp) expr, scope);
@@ -210,9 +222,12 @@ public class Engine {
 		}
 		if (expr instanceof UniDecVarWithValue) {
 			UniDecVarWithValue decVar = (UniDecVarWithValue) expr;
-			Object value = execExpr(decVar, scope);
+			Object value = execExpr(decVar.value, scope);
 			scope.setTop(decVar.name, value);
 			return value;
+		}
+		if (expr instanceof UniBlock) {
+			return execBlock((UniBlock) expr, scope);
 		}
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;
@@ -289,9 +304,10 @@ public class Engine {
 	}
 
 	private Object execBlock(UniBlock block, Scope scope) {
+		Scope blockScope = Scope.createLocal(scope);
 		Object lastValue = null;
 		for (UniExpr expr : block.body) {
-			lastValue = execExpr(expr, scope);
+			lastValue = execExpr(expr, blockScope);
 		}
 		return lastValue;
 	}
@@ -325,10 +341,21 @@ public class Engine {
 	}
 
 	private Object execBinOp(UniBinOp binOp, Scope scope) {
-		String op = binOp.operator;
-		UniExpr left = binOp.left;
-		UniExpr right = binOp.right;
+		return execBinOp(binOp.operator, binOp.left, binOp.right, scope);
+	}
+
+	private Object execBinOp(String op, UniExpr left, UniExpr right, Scope scope) {
 		switch (op) {
+		case "=": {
+			if (left instanceof UniIdent) {
+				return execAssign((UniIdent) left, execExpr(right, scope), scope);
+			}
+			throw new RuntimeException("Assignment failure: " + left);
+		}
+		case "==":
+			return Eq.eq(execExpr(left, scope), execExpr(right, scope));
+		case "!=":
+			return Eq.eq(execExpr(left, scope), execExpr(right, scope)) == false;
 		case "+":
 			return toInt(execExpr(left, scope)) + toInt(execExpr(right, scope));
 		case "-":
@@ -345,7 +372,19 @@ public class Engine {
 		case "||":
 			return toBool(execExpr(left, scope)) || toBool(execExpr(right, scope));
 		}
+		if (op.length() > 1 && op.charAt(op.length() - 1) == '=') {
+			if (left instanceof UniIdent) {
+				String nextOp = op.substring(0, op.length() - 1);
+				Object value = execBinOp(nextOp, left, right, scope);
+				return execAssign((UniIdent) left, value, scope);
+			}
+		}
 		throw new RuntimeException("Unkown binary operator: " + op);
+	}
+
+	private Object execAssign(UniIdent left, Object value, Scope scope) {
+		scope.set(left.name, value);
+		return value;
 	}
 
 	public static int toInt(Object obj) {

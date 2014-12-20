@@ -2,6 +2,8 @@ package net.unicoen.interpreter;
 
 import java.util.HashMap;
 
+import net.unicoen.node.UniExpr;
+
 public class Scope {
 	public enum Type {
 		GLOBAL, OBJECT, LOCAL,
@@ -10,6 +12,12 @@ public class Scope {
 	public final Type type;
 	public final Scope parent;
 	public final HashMap<String, Object> variables = new HashMap<>();
+
+	private static void assertNotUnicoen(Object value) {
+		if (value instanceof UniExpr){
+			throw new RuntimeException("Maybe programming miss!");
+		}
+	}
 
 	private Scope(Type type, Scope parent) {
 		this.parent = parent;
@@ -27,8 +35,23 @@ public class Scope {
 		}
 	}
 
+	/** 現在のスコープに新しい変数を定義し、代入します */
 	public void setTop(String key, Object value) {
+		assertNotUnicoen(value);
 		variables.put(key, value);
+	}
+
+	/** 定義済みの変数に対し、代入します */
+	public void set(String key, Object value) {
+		assertNotUnicoen(value);
+		if (variables.containsKey(key)) {
+			variables.put(key, value);
+			return;
+		}
+		if (parent != null) {
+			parent.set(key, value);
+		}
+		throw new RuntimeException("variable " + key + "is not declared.");
 	}
 
 	public static Scope createGlobal() {

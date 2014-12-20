@@ -13,7 +13,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.function.IntUnaryOperator;
 
 import net.unicoen.node.UniArg;
+import net.unicoen.node.UniBinOp;
+import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniClassDec;
+import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
@@ -123,9 +126,14 @@ public class EngineTest {
 
 	@Test
 	public void testScope() {
-		// Integer.toString(100)
-		UniExpr expr = new UniMethodCall(new UniIdent("Integer"), "toString", list(lit(100)));
-		Object result = Engine.executeSimple(expr, "Integer", Integer.class);
-		assertEquals("100", result);
+		// { int i = 1; { int i = 100; }; i += 1; i }
+		UniExpr exp1 = new UniDecVarWithValue(null, "int", "i", lit(1));
+		UniExpr exp2 = new UniDecVarWithValue(null, "int", "i", lit(100));
+		UniExpr exp3 = new UniBinOp("+=", ident("i"), lit(1));
+		UniExpr exp4 = ident("i");
+		UniBlock program = block(exp1, block(exp2), exp3, exp4);
+
+		Object result = Engine.executeSimple(program);
+		assertEquals(2, result);
 	}
 }
