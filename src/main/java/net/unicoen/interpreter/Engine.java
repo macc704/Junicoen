@@ -13,6 +13,8 @@ import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniCondOp;
+import net.unicoen.node.UniDecVar;
+import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFor;
 import net.unicoen.node.UniFuncDec;
@@ -168,6 +170,17 @@ public class Engine {
 			UniCondOp condOp = (UniCondOp) expr;
 			return toBool(execExpr(condOp.cond, scope)) ? execExpr(condOp.trueExpr, scope) : execExpr(condOp.falseExpr,
 					scope);
+		}
+		if (expr instanceof UniDecVar) {
+			UniDecVar decVar = (UniDecVar) expr;
+			scope.setTop(decVar.name, null);
+			return null;
+		}
+		if (expr instanceof UniDecVarWithValue) {
+			UniDecVarWithValue decVar = (UniDecVarWithValue) expr;
+			Object value = execExpr(decVar, scope);
+			scope.setTop(decVar.name, value);
+			return value;
 		}
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;

@@ -1,5 +1,6 @@
 package net.unicoen.node;
 
+/** 条件式/条件演算子 */
 public class UniCondOp extends UniExpr {
 	public UniExpr cond;
 	public UniExpr trueExpr;

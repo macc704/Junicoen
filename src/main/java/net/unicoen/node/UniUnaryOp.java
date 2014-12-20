@@ -1,5 +1,6 @@
 package net.unicoen.node;
 
+/** 単項式 */
 public class UniUnaryOp extends UniExpr {
 	public String operator;
 	public UniExpr expr;

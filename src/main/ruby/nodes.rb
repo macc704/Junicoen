@@ -26,21 +26,21 @@ Dsl.define_node do |x|
       #
       # Expressions
       #
-      x.node "MethodCall" do |d|
+      x.node "MethodCall", doc: '関数/メソッド呼び出し' do |d|
         d.mem "receiver", "Expr"
         d.mem "methodName", String
         d.mem "args", "Expr", list: true
       end
-      x.node "UnaryOp" do |d|
+      x.node "UnaryOp", doc: '単項式' do |d|
         d.mem "operator", String
         d.mem "expr", "Expr"
       end
-      x.node "BinOp" do |d|
+      x.node "BinOp", doc: '二項式' do |d|
         d.mem "operator", String
         d.mem "left", "Expr"
         d.mem "right", "Expr"
       end
-      x.node "CondOp" do |d|
+      x.node "CondOp", doc: '条件式/条件演算子' do |d|
         d.mem "cond", "Expr"
         d.mem "trueExpr", "Expr"
         d.mem "falseExpr", "Expr"
@@ -69,10 +69,16 @@ Dsl.define_node do |x|
         d.mem "catchBlock", "Expr", list: true
         d.mem "finallyBlock", "Expr", list: true
       end
-      x._node "DecVar" do |d|
+      x.node "DecVar", doc: '変数宣言' do |d|
         d.mem "modifiers", String, list: true
         d.mem "type", String
         d.mem "name", String
+      end
+      x.node "DecVarWithValue", doc: '変数宣言＋代入' do |d|
+        d.mem "modifiers", String, list: true
+        d.mem "type", String
+        d.mem "name", String
+        d.mem "value", "Expr"
       end
     end
   

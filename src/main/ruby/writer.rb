@@ -56,6 +56,9 @@ module Writer
           is_concrete = false
           type = "abstract class"
         end
+        if doc = node.opt[:doc]
+          f.puts "/** #{doc} */"
+        end
         f.puts "public #{type} #{node.name}#{inherit} {"
 
         # -- member
