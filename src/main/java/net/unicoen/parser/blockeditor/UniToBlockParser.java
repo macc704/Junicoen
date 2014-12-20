@@ -26,6 +26,7 @@ import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
@@ -46,7 +47,7 @@ public class UniToBlockParser {
 	/** Location of schema */
 	private static String XML_CODEBLOCKS_SCHEMA_URI = "http://education.mit.edu/openblocks/codeblocks.xsd";
 
-	private long ID_COUNTER = 1100;
+	private long ID_COUNTER = 1000;
 
 	private static Map<String, String> turtleMethods;
 
@@ -159,7 +160,7 @@ public class UniToBlockParser {
 					String.valueOf(ID_COUNTER));
 			String beforeId = procedureElement.getAttribute("id");
 			for (int i = 0; i < funcDec.body.size(); i++) {
-				// expressionの解析
+				// expressionの解析 行き掛け順
 				UniExpr expr = funcDec.body.get(i);
 				List<Element> elements = parseExpr(expr, document, null);// 木で返す．
 				// 木の最上部が左辺ブロックになる　左辺ブロックに次のブロックのidをセットする
@@ -209,6 +210,8 @@ public class UniToBlockParser {
 			return parseWhile((UniWhile) expr, document, parent);
 		} else if (expr instanceof UniBinOp) {
 			return parseBinOp((UniBinOp) expr, document, parent);
+		} else if(expr instanceof UniIdent){
+			throw new RuntimeException("The expr has not been supported yet");
 		} else {
 			throw new RuntimeException("The expr has not been supported yet");
 		}
@@ -265,9 +268,8 @@ public class UniToBlockParser {
 		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.body);
 
 		List<Element> blockSockets = new ArrayList<>();
-		if (sockets.size() > 0) {
-			blockSockets.add(sockets.get(0));
-		}
+		//socket will have an element
+		blockSockets.add(sockets.get(0));
 		
 		if (trueBlock.size() > 0) {
 			blockSockets.add(trueBlock.get(0));
@@ -320,9 +322,8 @@ public class UniToBlockParser {
 		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock);
 
 		List<Element> blockSockets = new ArrayList<>();
-		if (sockets.size() > 0) {
-			blockSockets.add(sockets.get(0));
-		}
+		//socket will have an element
+		blockSockets.add(sockets.get(0));
 		
 		if (trueBlock.size() > 0) {
 			blockSockets.add(trueBlock.get(0));
@@ -431,7 +432,10 @@ public class UniToBlockParser {
 
 		return exprs;
 	}
-
+	
+	/*
+	 *	UniMethodCallの関数名からBlockの名前を計算する 
+	 */
 	private static String calcMethodCallGenusName(UniMethodCall method) {
 		String genusName = "";
 		// 名前空間補完}
@@ -472,8 +476,7 @@ public class UniToBlockParser {
 		} else if (param instanceof UniIntLiteral) {
 			type = "number";
 		} else {
-			throw new RuntimeException(param.toString()
-					+ "has not been supported yet.");
+			throw new RuntimeException(param.toString() + "has not been supported yet.");
 		}
 		return type;
 	}

@@ -16,13 +16,7 @@ public class BlockNameResolver {
 
 	private static String path = "blockeditor/blocks/";
 	
-	private static Map<String, String> calcReturnType = new HashMap<String, String>();
-	
 	private static Map<String, String> turtleMethods = new HashMap<String, String>();
-	
-	public Map<String, String> getCalcReturnType(){
-		return calcReturnType;
-	}
 	
 	public static Map<String, String> getTurtleMethodsName(){
 		return turtleMethods;
@@ -67,73 +61,5 @@ public class BlockNameResolver {
 		}
 		return methodName;
 	}
-	
-//	private static String getReturnType(Node genusNode) {
-//		NodeList genusChildren = genusNode.getChildNodes();
-//		Node genusChild;
-//
-//		for (int j = 0; j < genusChildren.getLength(); j++) {
-//			genusChild = genusChildren.item(j);
-//			if (genusChild.getNodeName().equals("BlockConnectors")) {
-//				return parsePlugInfo(genusChild.getChildNodes());
-//			}
-//		}
-//		return null;
-//	}
-	
-//	private static int getParameterNum(Node genusNode){
-//		NodeList genusChildren = genusNode.getChildNodes();
-//		Node genusChild;
-//
-//		for (int j = 0; j < genusChildren.getLength(); j++) {
-//			genusChild = genusChildren.item(j);
-//			if (genusChild.getNodeName().equals("BlockConnectors")) {
-//				return parseSocketInfo(genusChild.getChildNodes());
-//			}
-//		}
-//		return 0;
-//	}
-//	
-//	private static int parseSocketInfo(NodeList connectors){
-//		Pattern attrExtractor = Pattern.compile("\"(.*)\"");
-//		Matcher nameMatcher;
-////		Node opt_item;
-//		Node connector;
-//		int socketNum = 0;
-//		for (int k = 0; k < connectors.getLength(); k++) {
-//			connector = connectors.item(k);
-//			if (connector.getNodeName().equals("BlockConnector")) {
-//				nameMatcher = attrExtractor.matcher(connector
-//						.getAttributes().getNamedItem("connector-kind")
-//						.toString());
-//				if (nameMatcher.find() && nameMatcher.group(1).equals("socket")){
-//					nameMatcher = attrExtractor.matcher(connector
-//							.getAttributes().getNamedItem("connector-type")
-//							.toString());
-//					if (nameMatcher.find()) { // will be true
-//						socketNum++;
-//					}
-//				}
-//			}
-//		}
-//		return socketNum;
-//	}
-	
-	
-//	private static String convertJavaType(String type){
-//		if("number".equals(type)){
-//			return "int";
-//		}else if("double-number".equals(type)){
-//			return "double";
-//		}else if("string".equals(type)){
-//			return "String";
-//		}else if("boolean".equals(type)){
-//			return "boolean";
-//		}else if("object".equals(type)){
-//			return "Object";
-//		}else{
-//			return null;
-//		}
-//	}
 
 }

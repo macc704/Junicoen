@@ -60,6 +60,7 @@ public class ToBlockEditorParser {
 			if (nextNodeId != null) {
 				body = parseBody(map.get(nextNodeId), map);
 			}
+			
 
 			d.body = body;
 			ret.add(d);
