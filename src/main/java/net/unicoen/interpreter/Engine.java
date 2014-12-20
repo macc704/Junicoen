@@ -269,6 +269,21 @@ public class Engine {
 				return null;
 			}
 		}
+		if (expr instanceof UniWhile) {
+			UniWhile uniWhile = (UniWhile) expr;
+			try {
+				Object lastEval = null;
+				do {
+					try {
+						lastEval = execBlock(uniWhile.block, scope);
+					} catch (Continue e) { /* do nothing*/
+					}
+				} while (toBool(execExpr(uniWhile.cond, scope)));
+				return lastEval;
+			} catch (Break e) {
+				return null;
+			}
+		}
 		throw new RuntimeException("Not support expr type: " + expr);
 	}
 
@@ -351,7 +366,7 @@ public class Engine {
 		case "_--":
 		case "--_":
 			if (uniOp.expr instanceof UniIdent) {
-				UniIdent ident = (UniIdent)uniOp.expr;
+				UniIdent ident = (UniIdent) uniOp.expr;
 				Number num = (Number) execExpr(uniOp.expr, scope);
 				Calc.Operation<?> calculater = null;
 				if (num instanceof Double) {
@@ -364,7 +379,7 @@ public class Engine {
 					calculater = Calc.intOperation;
 				}
 				if (calculater != null) {
-					switch(uniOp.operator){
+					switch (uniOp.operator) {
 					case "_++":
 						execAssign(ident, calculater.add(num, 1), scope);
 						return num;

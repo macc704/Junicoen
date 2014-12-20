@@ -76,6 +76,10 @@ Dsl.define_node do |x|
         d.mem "cond", "Expr"
         d.mem "block", "Block"
       end
+      x.node "DoWhile" do |d|
+        d.mem "block", "Block"
+        d.mem "cond", "Expr"
+      end
       x._node "Try" do |d|
         d.mem "tryExpr", "Block"
         d.mem "tryBlock", "Block"
