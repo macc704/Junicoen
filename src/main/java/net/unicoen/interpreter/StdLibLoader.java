@@ -1,5 +1,7 @@
 package net.unicoen.interpreter;
 
+import java.util.function.Consumer;
+
 public class StdLibLoader {
 
 	private final Scope global;
@@ -16,10 +18,14 @@ public class StdLibLoader {
 	}
 
 	private void initJavaLang() {
-		Class<?>[] javaLangClass = { Object.class, String.class, Integer.class, Double.class };
-		for (Class<?> clazz : javaLangClass) {
-			global.setTop(clazz.getSimpleName(), clazz);
-		}
+		// find java.lang.* class dynamically
+		global.setListener((String key, Consumer<Object> setDefault) -> {
+			try {
+				Class<?> clazz = Class.forName("java.lang." + key);
+				setDefault.accept(clazz);
+			} catch (Exception e) {
+			}
+		});
 	}
 
 	private void initMyLib() {
