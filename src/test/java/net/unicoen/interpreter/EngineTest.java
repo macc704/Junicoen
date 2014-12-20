@@ -126,11 +126,12 @@ public class EngineTest {
 
 	@Test
 	public void testScope() {
-		// { int i = 1; { int i = 100; }; i + 1 }
+		// { int i = 1; { int i = 100; }; i += 1; i }
 		UniExpr exp1 = new UniDecVarWithValue(null, "int", "i", lit(1));
 		UniExpr exp2 = new UniDecVarWithValue(null, "int", "i", lit(100));
-		UniExpr exp3 = new UniBinOp("+", ident("i"), lit(1));
-		UniBlock program = block(exp1, block(exp2), exp3);
+		UniExpr exp3 = new UniBinOp("+=", ident("i"), lit(1));
+		UniExpr exp4 = ident("i");
+		UniBlock program = block(exp1, block(exp2), exp3, exp4);
 
 		Object result = Engine.executeSimple(program);
 		assertEquals(2, result);

@@ -226,8 +226,8 @@ public class Engine {
 			scope.setTop(decVar.name, value);
 			return value;
 		}
-		if (expr instanceof UniBlock){
-			return execBlock((UniBlock)expr, scope);
+		if (expr instanceof UniBlock) {
+			return execBlock((UniBlock) expr, scope);
 		}
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;
@@ -341,10 +341,21 @@ public class Engine {
 	}
 
 	private Object execBinOp(UniBinOp binOp, Scope scope) {
-		String op = binOp.operator;
-		UniExpr left = binOp.left;
-		UniExpr right = binOp.right;
+		return execBinOp(binOp.operator, binOp.left, binOp.right, scope);
+	}
+
+	private Object execBinOp(String op, UniExpr left, UniExpr right, Scope scope) {
 		switch (op) {
+		case "=": {
+			if (left instanceof UniIdent) {
+				return execAssign((UniIdent) left, execExpr(right, scope), scope);
+			}
+			throw new RuntimeException("Assignment failure: " + left);
+		}
+		case "==":
+			return Eq.eq(execExpr(left, scope), execExpr(right, scope));
+		case "!=":
+			return Eq.eq(execExpr(left, scope), execExpr(right, scope)) == false;
 		case "+":
 			return toInt(execExpr(left, scope)) + toInt(execExpr(right, scope));
 		case "-":
@@ -361,7 +372,19 @@ public class Engine {
 		case "||":
 			return toBool(execExpr(left, scope)) || toBool(execExpr(right, scope));
 		}
+		if (op.length() > 1 && op.charAt(op.length() - 1) == '=') {
+			if (left instanceof UniIdent) {
+				String nextOp = op.substring(0, op.length() - 1);
+				Object value = execBinOp(nextOp, left, right, scope);
+				return execAssign((UniIdent) left, value, scope);
+			}
+		}
 		throw new RuntimeException("Unkown binary operator: " + op);
+	}
+
+	private Object execAssign(UniIdent left, Object value, Scope scope) {
+		scope.set(left.name, value);
+		return value;
 	}
 
 	public static int toInt(Object obj) {
