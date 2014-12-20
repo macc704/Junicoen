@@ -1,0 +1,1 @@
+変換対応リスト・Block>>UniFunctionDecl:If statement:While statement：Literal：Boolean, string, int, 	MethodCall：		Turtle全般（void），自作定義ブロック（void）	BinaryOperator：		&&, ||, !Uni>>BlockFunctionDecl:If statement:While statement：Literal：Bool, string, int, 	MethodCall：		Turtle全般（void），定義メソッド（void）	BinaryOperator：		&&, ||, !
