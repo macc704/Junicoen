@@ -99,15 +99,18 @@ public class Engine {
 		}
 	}
 
-	public static Object executeSimple(UniExpr expr, String key, Object value) {
-		Engine engine = new Engine();
-		Scope scope = Scope.createGlobal();
-		scope.setTop(key, value);
-		return engine.execExpr(expr, scope);
+	public static Object executeSimple(UniExpr expr, Scope scope) {
+		return new Engine().execExpr(expr, scope);
 	}
 
 	public static Object executeSimple(UniExpr expr) {
-		return new Engine().execExpr(expr, Scope.createGlobal());
+		return executeSimple(expr, Scope.createGlobal());
+	}
+
+	public static Object executeSimple(UniExpr expr, String key, Object value) {
+		Scope scope = Scope.createGlobal();
+		scope.setTop(key, value);
+		return executeSimple(expr, scope);
 	}
 
 	public Object execute(UniClassDec dec) {

@@ -161,4 +161,12 @@ public class EngineTest {
 		exp2 = new UniDecVarWithValue(null, "int", "j", new UniUnaryOp("--_", ident("i")));
 		assertEquals(-1, Engine.executeSimple(block(exp1, exp2, exp3)));
 	}
+
+	@Test
+	public void testLibLoader() {
+		Scope global = Scope.createGlobal();
+		StdLibLoader.initialize(global);
+
+		assertEquals(Integer.class, Engine.executeSimple(ident("Integer"), global));
+	}
 }

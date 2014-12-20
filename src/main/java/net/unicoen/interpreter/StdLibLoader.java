@@ -10,8 +10,16 @@ public class StdLibLoader {
 
 	public static void initialize(Scope global) {
 		StdLibLoader loader = new StdLibLoader(global);
+		loader.initJavaLang();
 		loader.initMyLib();
 		loader.initTurtle();
+	}
+
+	private void initJavaLang() {
+		Class<?>[] javaLangClass = { Object.class, String.class, Integer.class, Double.class };
+		for (Class<?> clazz : javaLangClass) {
+			global.setTop(clazz.getSimpleName(), clazz);
+		}
 	}
 
 	private void initMyLib() {
