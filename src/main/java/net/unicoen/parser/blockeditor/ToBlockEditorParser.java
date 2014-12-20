@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
@@ -119,8 +121,9 @@ public class ToBlockEditorParser {
 				UniBoolLiteral falseValue = new UniBoolLiteral();
 				falseValue.value = false;
 				return falseValue;
+			default:
+				throw new RuntimeException("not supported data type:" + blockType);
 			}
-			break;
 		case "command":
 			Node argsNode = getChildNode(node, "Sockets");
 			List<List<UniExpr>> args = parseSocket(argsNode, map);

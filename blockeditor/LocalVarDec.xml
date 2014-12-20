@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="" page-width="1366">
+<PageBlocks>
+<Block genus-name="local-var-boolean" id="152" kind="local-variable">
+<Label>b</Label>
+<Type>boolean</Type>
+<Name>b</Name>
+<Location>
+<X>62</X>
+<Y>248</Y>
+</Location>
+<BeforeBlockId>161</BeforeBlockId>
+<AfterBlockId>170</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="boolean" init-type="boolean" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="local-var-string" id="148" kind="local-variable">
+<Label>s</Label>
+<Type>String</Type>
+<Name>s</Name>
+<Location>
+<X>62</X>
+<Y>188</Y>
+</Location>
+<BeforeBlockId>156</BeforeBlockId>
+<AfterBlockId>161</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="string" init-type="string" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="local-var-int-number" id="138" kind="local-variable">
+<Label>i</Label>
+<Type>int</Type>
+<Name>i</Name>
+<Location>
+<X>62</X>
+<Y>128</Y>
+</Location>
+<BeforeBlockId>136</BeforeBlockId>
+<AfterBlockId>156</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="local-var-string" id="161" kind="local-variable">
+<Label>s1</Label>
+<Type>String</Type>
+<Name>s1</Name>
+<Location>
+<X>62</X>
+<Y>218</Y>
+</Location>
+<BeforeBlockId>148</BeforeBlockId>
+<AfterBlockId>152</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="162" connector-kind="socket" connector-type="string" init-type="string" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="local-var-boolean" id="170" kind="local-variable">
+<Label>b1</Label>
+<Type>boolean</Type>
+<Name>b1</Name>
+<Location>
+<X>62</X>
+<Y>278</Y>
+</Location>
+<BeforeBlockId>152</BeforeBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="153" connector-kind="socket" connector-type="boolean" init-type="boolean" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="false" id="153" kind="data">
+<Label>偽</Label>
+<Location>
+<X>358</X>
+<Y>281</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="170" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="string" id="162" kind="data">
+<Label>あいうえお</Label>
+<Location>
+<X>352</X>
+<Y>221</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="161" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="local-var-int-number" id="156" kind="local-variable">
+<Label>i1</Label>
+<Type>int</Type>
+<Name>i1</Name>
+<Location>
+<X>62</X>
+<Y>158</Y>
+</Location>
+<BeforeBlockId>138</BeforeBlockId>
+<AfterBlockId>148</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="139" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="number" id="139" kind="data">
+<Label>1</Label>
+<Location>
+<X>334</X>
+<Y>161</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="156" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="procedure" id="136" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>62</X>
+<Y>98</Y>
+</Location>
+<AfterBlockId>138</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" is-expandable="yes" label="" position-type="single"/>
+</Sockets>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>
