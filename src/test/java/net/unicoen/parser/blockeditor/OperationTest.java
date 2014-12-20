@@ -35,7 +35,7 @@ public class OperationTest {
 		UniFuncDec fdec = (UniFuncDec) list.get(0);
 		assertEquals("start", fdec.funcName);
 		
-		assertTrue(fdec.body.get(0) instanceof UniIf);
+		assertTrue(fdec.block.body.get(0) instanceof UniIf);
 		
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();

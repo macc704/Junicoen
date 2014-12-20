@@ -1,21 +1,19 @@
 package net.unicoen.node;
 
-import java.util.List;
-
 public class UniFor extends UniExpr {
 	public UniExpr init;
 	public UniExpr cond;
 	public UniExpr step;
-	public List<UniExpr> body;
+	public UniBlock block;
 
 	public UniFor() {
 	}
 
-	public UniFor(UniExpr init, UniExpr cond, UniExpr step, List<UniExpr> body) {
+	public UniFor(UniExpr init, UniExpr cond, UniExpr step, UniBlock block) {
 		this.init = init;
 		this.cond = cond;
 		this.step = step;
-		this.body = body;
+		this.block = block;
 	}
 
 	@Override

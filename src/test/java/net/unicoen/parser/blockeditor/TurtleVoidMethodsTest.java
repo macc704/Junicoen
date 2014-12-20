@@ -33,7 +33,7 @@ public class TurtleVoidMethodsTest {
 		
 		UniFuncDec startMethod = (UniFuncDec) dec.members.get(0);
 
-		String[] expecteds = new String[startMethod.body.size()];
+		String[] expecteds = new String[startMethod.block.body.size()];
 		expecteds[0] = "fd";
 		expecteds[1] = "bk";
 		expecteds[2] = "rt";
@@ -55,8 +55,8 @@ public class TurtleVoidMethodsTest {
 		expecteds[18] = "update";
 		expecteds[19] = "sleep";
 		
-		for (int i = 0; i < startMethod.body.size(); i++) {
-			assertEquals(expecteds[i], ((UniMethodCall) startMethod.body.get(i)).methodName);
+		for (int i = 0; i < startMethod.block.body.size(); i++) {
+			assertEquals(expecteds[i], ((UniMethodCall) startMethod.block.body.get(i)).methodName);
 		}
 
 	}

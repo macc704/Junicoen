@@ -35,10 +35,10 @@ public class WhileTest {
 		UniFuncDec fdec = (UniFuncDec) list.get(0);
 		assertEquals("start", fdec.funcName);
 		
-		assertTrue(fdec.body.get(0) instanceof UniWhile);
-		UniWhile whilestmt = (UniWhile)fdec.body.get(0);
+		assertTrue(fdec.block.body.get(0) instanceof UniWhile);
+		UniWhile whilestmt = (UniWhile)fdec.block.body.get(0);
 		
-		assertEquals(2,whilestmt.body.size());
+		assertEquals(2,whilestmt.block.body.size());
 		
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();

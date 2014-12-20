@@ -106,7 +106,7 @@ public class UniToBlockParser {
 		}
 
 		// funcDec.body ボディのパース
-		blocks = parseBody(document, procedureElement, funcDec.body);
+		blocks = parseBody(document, procedureElement, funcDec.block.body);
 
 		blocks.add(blocks.size(), procedureElement);
 		blocks.remove(0);
@@ -157,16 +157,17 @@ public class UniToBlockParser {
 		}
 
 		// funcDec.body ボディのパース
-		if (funcDec.body != null) {
+		if (funcDec.block != null && funcDec.block.body != null) {
 			addAfterBlockNode(document, blocks.get(blocks.size() - 1),
 					String.valueOf(ID_COUNTER));
 			String beforeId = procedureElement.getAttribute("id");
-			for (int i = 0; i < funcDec.body.size(); i++) {
+			List<UniExpr> body = funcDec.block.body;
+			for (int i = 0; i < body.size(); i++) {
 				// expressionの解析 行き掛け順
-				UniExpr expr = funcDec.body.get(i);
+				UniExpr expr = body.get(i);
 				List<Element> elements = parseExpr(expr, document, null);// 木で返す．
 				// 木の最上部が左辺ブロックになる　左辺ブロックに次のブロックのidをセットする
-				if (i + 1 < funcDec.body.size()) {
+				if (i + 1 < body.size()) {
 					addAfterBlockNode(document, elements.get(0),
 							String.valueOf(ID_COUNTER));
 				}
@@ -277,7 +278,7 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, "while", ID_COUNTER++, "command");
 		
 		List<Element> sockets = parseExpr(whileExpr.cond, document, blockElement);
-		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.body);
+		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.block.body);
 
 		List<Element> blockSockets = new ArrayList<>();
 		//socket will have an element
@@ -330,8 +331,8 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
 
 		List<Element> sockets = parseExpr(ifexpr.cond, document, blockElement);
-		List<Element> trueBlock = parseBody(document, blockElement, ifexpr.trueBlock);
-		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock);
+		List<Element> trueBlock = parseBody(document, blockElement, ifexpr.trueBlock.body);
+		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock.body);
 
 		List<Element> blockSockets = new ArrayList<>();
 		//socket will have an element

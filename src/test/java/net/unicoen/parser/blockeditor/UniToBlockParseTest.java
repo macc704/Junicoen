@@ -1,6 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,8 +49,8 @@ public class UniToBlockParseTest {
 		mcall.args = params;
 		
 		
-		funcDec.body = new ArrayList<UniExpr>();
-		funcDec.body.add(mcall);
+		funcDec.block.body = new ArrayList<UniExpr>();
+		funcDec.block.body.add(mcall);
 		
 		member.add(funcDec);
 		
