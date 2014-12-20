@@ -39,9 +39,9 @@ public class Break {
 			dec.members.add((UniFuncDec) node);
 		}
 		
-		if(fdec.body.get(0) instanceof UniWhile){
-			UniWhile uniWhile = (UniWhile)fdec.body.get(0);
-			assertTrue(uniWhile.body.get(0) instanceof UniContinue);
+		if(fdec.block.body.get(0) instanceof UniWhile){
+			UniWhile uniWhile = (UniWhile)fdec.block.body.get(0);
+			assertTrue(uniWhile.block.body.get(0) instanceof UniContinue);
 		}		
 	}
 

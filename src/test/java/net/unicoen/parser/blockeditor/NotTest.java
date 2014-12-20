@@ -1,6 +1,7 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,7 +35,7 @@ public class NotTest {
 		UniFuncDec fdec = (UniFuncDec) list.get(0);
 		assertEquals("start", fdec.funcName);
 		
-		assertTrue(fdec.body.get(0) instanceof UniIf);
+		assertTrue(fdec.block.body.get(0) instanceof UniIf);
 		
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();

@@ -17,6 +17,7 @@ import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node_helper.Builder;
 
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class UniToBlockParseTest {
 
 	@Test
 	public void test() throws UnsupportedEncodingException {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 		UniClassDec classDec = new UniClassDec();
 		classDec.className = "UniToBlockHelloTest";
 		
@@ -48,8 +49,7 @@ public class UniToBlockParseTest {
 		
 		mcall.args = params;
 		
-		
-		funcDec.block.body = new ArrayList<UniExpr>();
+		funcDec.block = Builder.block();
 		funcDec.block.body.add(mcall);
 		
 		member.add(funcDec);
