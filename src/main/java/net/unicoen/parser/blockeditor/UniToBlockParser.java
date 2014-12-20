@@ -27,6 +27,8 @@ import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniContinue;
+import net.unicoen.node.UniDecVar;
+import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
@@ -227,13 +229,71 @@ public class UniToBlockParser {
 			return parseContinueBreak("continue", document, parent);
 		} else if(expr instanceof UniUnaryOp){
 			return parseUnaryOperator((UniUnaryOp)expr, document, parent);
-		} else if(expr instanceof UniIdent){
+		} else if(expr instanceof UniDecVar){
+			return parseVarDec(((UniDecVar)expr).type,((UniDecVar)expr).name, document, parent);
+		} else if(expr instanceof UniDecVarWithValue){
+			return parseVarDec((UniDecVarWithValue)expr, document, parent);
+		}
+		else if(expr instanceof UniIdent){
 			throw new RuntimeException("The expr has not been supported yet");
 		} else {
 			throw new RuntimeException("The expr has not been supported yet");
 		}
 	}
+	
+	public List<Element> parseVarDec(UniDecVarWithValue varDec, Document document, Node parent){
+		List<Element> elements = parseVarDec(varDec.type, varDec.name, document, parent);
+		//初期値のパース
+		List<Element> initializer = parseExpr(varDec.value, document, elements.get(0));
+		
+		addSocketsNode(initializer, document, elements.get(0), createStringArray(convertTypeToBlockConnectorType(varDec.type)), createStringArray( "初期値"));
+		
+		return elements;
+	}
+	
+	public List<Element> parseVarDec(String type, String name, Document document, Node parent){
+		List<Element> elements = new ArrayList<Element>();
+		Element blockElement;
+		
+		blockElement = createBlockElement(document, "local-var-" + convertBlockTypeName(type), ID_COUNTER++, "local-var");
 
+		addLabelElement(document, name, blockElement);
+		addTypeElement(document, type, blockElement);
+		
+		elements.add(blockElement);
+		return elements;
+	}
+
+	public String convertBlockTypeName(String type){
+		switch (type) {
+		case "int":
+			return "int-number";
+		case "double":
+			return "double-number";
+		case "String":
+			return type.toLowerCase();
+		case "boolean":
+			return type;
+		default:
+			return type.toLowerCase();
+		}
+	}
+	
+	public String convertTypeToBlockConnectorType(String type){
+		switch (type) {
+		case "int":
+			return "number";
+		case "double":
+			return "double-number";
+		case "String":
+			return type.toLowerCase();
+		case "boolean":
+			return type;
+		default:
+			return "object";
+		}
+	}
+	
 	public List<Element> parseUnaryOperator(UniUnaryOp uniOp, Document document, Node parent){
 		switch (uniOp.operator) {
 		case "!":
@@ -244,7 +304,7 @@ public class UniToBlockParser {
 			List<Element> args = new ArrayList<Element>();
 			args = parseExpr(uniOp.expr, document, blockElement);
 			
-			addSocketsNode(args, document, blockElement, createSocketLabels("single"), createSocketLabels(""));
+			addSocketsNode(args, document, blockElement, createStringArray("single"), createStringArray(""));
 
 			elements.add(blockElement);
 			elements.addAll(args);
@@ -284,7 +344,7 @@ public class UniToBlockParser {
 		args.add(leftBlocks.get(0));
 		args.add(rightBlocks.get(0));
 		
-		addSocketsNode(args, document, blockElement, createSocketLabels("bottom", "bottom") ,createSocketLabels("", ""));
+		addSocketsNode(args, document, blockElement, createStringArray("bottom", "bottom") ,createStringArray("", ""));
 		
 		elements.add(blockElement);
 		elements.addAll(leftBlocks);
@@ -295,7 +355,7 @@ public class UniToBlockParser {
 		return elements;
 	}
 
-	public static String[] createSocketLabels(String... labels){
+	public static String[] createStringArray(String... labels){
 		String[] socketLabels = new String[labels.length];
 		for(int i = 0; i< labels.length;i++){
 			socketLabels[i] = labels[i];
@@ -322,7 +382,7 @@ public class UniToBlockParser {
 		}
 		
 		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, createSocketLabels("single", "single"), createSocketLabels("かどうか調べて", "真の間"));
+		addSocketsNode(blockSockets, document, blockElement, createStringArray("single", "single"), createStringArray("かどうか調べて", "真の間"));
 
 		elements.add(blockElement);
 		
@@ -382,7 +442,7 @@ public class UniToBlockParser {
 		}
 
 		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, createSocketLabels("single", "single", "single"), createSocketLabels("かどうか調べて", "真のとき", "偽のとき"));
+		addSocketsNode(blockSockets, document, blockElement, createStringArray("single", "single", "single"), createStringArray("かどうか調べて", "真のとき", "偽のとき"));
 
 		elements.add(blockElement);
 		
@@ -595,12 +655,16 @@ public class UniToBlockParser {
 		blockElement.appendChild(locationElement);
 	}
 
-	public static Element addLabelElement(Document document, String label,
-			Element blockElement) {
+	public static void addLabelElement(Document document, String label, Element blockElement) {
 		Element element = document.createElement("Label");
 		element.setTextContent(label);
 		blockElement.appendChild(element);
-		return element;
+	}
+	
+	public static void addTypeElement(Document document, String type, Element blockElement) {
+		Element element = document.createElement("Type");
+		element.setTextContent(type);
+		blockElement.appendChild(element);
 	}
 
 	public static Element createBlockElement(Document document,
