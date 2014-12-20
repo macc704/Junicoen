@@ -35,6 +35,7 @@ import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniWhile;
 
 import org.w3c.dom.Document;
@@ -213,9 +214,11 @@ public class UniToBlockParser {
 		} else if (expr instanceof UniBinOp) {
 			return parseBinOp((UniBinOp) expr, document, parent);
 		} else if(expr instanceof UniBreak){ 
-			return parseUnaryOperation("break", document, parent);
+			return parseContinueBreak("break", document, parent);
 		} else if(expr instanceof UniContinue){
-			return parseUnaryOperation("continue", document, parent);
+			return parseContinueBreak("continue", document, parent);
+		} else if(expr instanceof UniUnaryOp){
+			return parseUnaryOperator((UniUnaryOp)expr, document, parent);
 		} else if(expr instanceof UniIdent){
 			throw new RuntimeException("The expr has not been supported yet");
 		} else {
@@ -223,7 +226,28 @@ public class UniToBlockParser {
 		}
 	}
 
-	public List<Element> parseUnaryOperation(String name,Document document, Node parent){
+	public List<Element> parseUnaryOperator(UniUnaryOp uniOp, Document document, Node parent){
+		switch (uniOp.operator) {
+		case "!":
+			List<Element> elements = new ArrayList<Element>();
+			Element blockElement = createBlockElement(document, "not", ID_COUNTER++, "function");
+			addPlugElement(document, blockElement, parent, "boolean", "single");
+			
+			List<Element> args = new ArrayList<Element>();
+			args = parseExpr(uniOp.expr, document, blockElement);
+			
+			addSocketsNode(args, document, blockElement, createSocketLabels("single"), createSocketLabels(""));
+
+			elements.add(blockElement);
+			elements.addAll(args);
+			
+			return elements;
+		default:
+			throw new RuntimeException("not supported unary operator");
+		}
+	}
+	
+	public List<Element> parseContinueBreak(String name,Document document, Node parent){
 		List<Element> elements = new ArrayList<Element>();
 		elements.add(createBlockElement(document, name, ID_COUNTER++, "command"));
 		return elements;
@@ -243,7 +267,7 @@ public class UniToBlockParser {
 			throw new RuntimeException("unequipment operator");
 		}
 		
-		addPlugElement(document, blockElement,parent, "boolean");
+		addPlugElement(document, blockElement,parent, "boolean", "mirror");
 		
 		List<Element> leftBlocks = parseExpr(binopExpr.left, document, blockElement);
 		List<Element> rightBlocks = parseExpr(binopExpr.right, document, blockElement);
@@ -310,12 +334,12 @@ public class UniToBlockParser {
 			blockElement = createBlockElement(document, "true",	ID_COUNTER++, "data");
 			
 			addLabelElement(document, "真", blockElement);
-			addPlugElement(document, blockElement, parent, "boolean");
+			addPlugElement(document, blockElement, parent, "boolean", "mirror");
 		}else{
 			blockElement = createBlockElement(document, "false", ID_COUNTER++, "data");			
 			
 			addLabelElement(document, "偽", blockElement);
-			addPlugElement(document, blockElement, parent, "boolean");
+			addPlugElement(document, blockElement, parent, "boolean", "mirror");
 		}
 
 		elements.add(blockElement);
@@ -370,7 +394,7 @@ public class UniToBlockParser {
 				ID_COUNTER++, "data");
 
 		addLabelElement(document, Integer.toString(num.value), blockElement);
-		addPlugElement(document, blockElement, parent, "number");
+		addPlugElement(document, blockElement, parent, "number", "mirror");
 
 		elements.add(blockElement);
 
@@ -387,7 +411,7 @@ public class UniToBlockParser {
 
 		addLabelElement(document, str.value, blockElement);
 
-		addPlugElement(document, blockElement, parent, "string");
+		addPlugElement(document, blockElement, parent, "string", "mirror");
 
 		elements.add(blockElement);
 
@@ -398,7 +422,7 @@ public class UniToBlockParser {
 	}
 
 	public static void addPlugElement(Document document, Element target,
-			Node parentBlockNode, String plugType) {
+			Node parentBlockNode, String plugType, String positionType) {
 		Element plugNode = document.createElement("Plug");
 		Element blockConnectorNode = document.createElement("BlockConnector");
 
@@ -408,7 +432,7 @@ public class UniToBlockParser {
 		blockConnectorNode.setAttribute("connector-type", plugType);
 		blockConnectorNode.setAttribute("init-type", plugType);
 		blockConnectorNode.setAttribute("label", "");
-		blockConnectorNode.setAttribute("position-type", "mirror");
+		blockConnectorNode.setAttribute("position-type", positionType);
 
 		plugNode.appendChild(blockConnectorNode);
 
