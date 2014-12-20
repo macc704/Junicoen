@@ -37,6 +37,12 @@ class Dsl
     @nodes << node
   end
 
+  #
+  # comment version of `node` method
+  #
+  def _node(*args)
+  end
+
   def show
     @nodes.each do |node|
       parents = node.parents.map(&:name).join(", ")

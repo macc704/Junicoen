@@ -2,6 +2,8 @@ require 'pathname'
 
 java_src = "src/main/java"
 
+task :default => :gen
+
 task :gen do
   ENV['OUTDIR'] = java_src
   load "src/main/ruby/main.rb"

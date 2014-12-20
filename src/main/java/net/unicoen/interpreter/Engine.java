@@ -12,7 +12,9 @@ import java.util.function.Predicate;
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
+import net.unicoen.node.UniCondOp;
 import net.unicoen.node.UniExpr;
+import net.unicoen.node.UniFor;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
@@ -21,6 +23,7 @@ import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniWhile;
 
 public class Engine {
@@ -155,9 +158,16 @@ public class Engine {
 		if (expr instanceof UniBoolLiteral) {
 			return ((UniBoolLiteral) expr).value;
 		}
+		if (expr instanceof UniUnaryOp) {
+			return execUnaryOp((UniUnaryOp) expr, scope);
+		}
 		if (expr instanceof UniBinOp) {
-			UniBinOp bin = (UniBinOp) expr;
-			return execBinOp(bin.operator, bin.left, bin.right, scope);
+			return execBinOp((UniBinOp) expr, scope);
+		}
+		if (expr instanceof UniCondOp) {
+			UniCondOp condOp = (UniCondOp) expr;
+			return toBool(execExpr(condOp.cond, scope)) ? execExpr(condOp.trueExpr, scope) : execExpr(condOp.falseExpr,
+					scope);
 		}
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;
@@ -167,11 +177,21 @@ public class Engine {
 				return execExprMany(ui.falseBlock, Scope.createLocal(scope));
 			}
 		}
-		if (expr instanceof UniWhile) {
-			UniWhile w = (UniWhile) expr;
+		if (expr instanceof UniFor) {
+			UniFor uniFor = (UniFor) expr;
+			Scope forScope = Scope.createLocal(scope);
 			Object lastEval = null;
-			while (toBool(execExpr(w.cond, scope))) {
-				lastEval = execExprMany(w.body, Scope.createLocal(scope));
+			for (execExpr(uniFor.init, forScope); toBool(execExpr(uniFor.cond, forScope)); execExpr(uniFor.step,
+					forScope)) {
+				lastEval = execExprMany(uniFor.body, Scope.createLocal(forScope));
+			}
+			return lastEval;
+		}
+		if (expr instanceof UniWhile) {
+			UniWhile uniWhile = (UniWhile) expr;
+			Object lastEval = null;
+			while (toBool(execExpr(uniWhile.cond, scope))) {
+				lastEval = execExprMany(uniWhile.body, Scope.createLocal(scope));
 			}
 			return lastEval;
 		}
@@ -227,7 +247,20 @@ public class Engine {
 		throw new RuntimeException("Not support function type: " + func);
 	}
 
-	private Object execBinOp(String op, UniExpr left, UniExpr right, Scope scope) {
+	private Object execUnaryOp(UniUnaryOp uniOp, Scope scope) {
+		switch (uniOp.operator) {
+		case "-":
+			return -toInt(execExpr(uniOp.expr, scope));
+		case "!":
+			return !toBool(execExpr(uniOp.expr, scope));
+		}
+		throw new RuntimeException("Unkown binary operator: " + uniOp.operator);
+	}
+
+	private Object execBinOp(UniBinOp binOp, Scope scope) {
+		String op = binOp.operator;
+		UniExpr left = binOp.left;
+		UniExpr right = binOp.right;
 		switch (op) {
 		case "+":
 			return toInt(execExpr(left, scope)) + toInt(execExpr(right, scope));
