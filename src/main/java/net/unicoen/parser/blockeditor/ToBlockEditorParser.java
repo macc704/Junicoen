@@ -11,6 +11,8 @@ import java.util.List;
 
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
+import net.unicoen.node.UniBreak;
+import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
@@ -212,6 +214,12 @@ public class ToBlockEditorParser {
 				uniWhile.body = args.get(1);
 			}
 			return uniWhile;
+		}
+		case "continue":{
+			return new UniContinue();
+		}
+		case "break":{
+			return new UniBreak();
 		}
 		default: {
 			UniMethodCall mcall = getProtoType(methodName);
