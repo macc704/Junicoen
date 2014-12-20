@@ -14,6 +14,8 @@ import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniContinue;
+import net.unicoen.node.UniDecVar;
+import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
@@ -128,8 +130,21 @@ public class ToBlockEditorParser {
 			Node functionArgsNode = getChildNode(node, "Sockets");
 			List<List<UniExpr>> functionArgs = parseSocket(functionArgsNode, map);
 			return parseFunction(functionArgs, blockType);
+		case "local-variable":
+			Node initValueNode = getChildNode(node, "Sockets");
+			List<List<UniExpr>> initValues = parseSocket(initValueNode, map);
+			return parseLocalVariable(initValues, getChildText(node, "Type"), getChildText(node, "Name"));
 		}
 		throw new RuntimeException("Unsupported node: " + node);
+	}
+	
+	private static UniExpr parseLocalVariable(List<List<UniExpr>> initValues, String type, String name){
+		if(initValues.get(0)!=null){
+			//初期値あり
+			return new UniDecVarWithValue(null, type, name, initValues.get(0).get(0));
+		}else{
+			return new UniDecVar(null, type, name);	
+		}
 	}
 
 	private static UniExpr parseFunction(List<List<UniExpr>> functionArgs, String blockType) {
