@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockBreak" page-width="1366">
+<PageBlocks>
+<Block genus-name="while" id="1001" kind="command">
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真の間" position-type="single"/>
+</Sockets>
+<AfterBlockId>1004</AfterBlockId>
+<BeforeBlockId>1000</BeforeBlockId>
+</Block>
+<Block genus-name="true" id="1002" kind="data">
+<Label>真</Label>
+<Plug>
+<BlockConnector con-block-id="1001" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="continue" id="1003" kind="command">
+<BeforeBlockId>1001</BeforeBlockId>
+</Block>
+<Block genus-name="Turtle-print[@string]" id="1004" kind="command">
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1001</BeforeBlockId>
+</Block>
+<Block genus-name="string" id="1005" kind="data">
+<Label>Hello World</Label>
+<Plug>
+<BlockConnector con-block-id="1004" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="procedure" id="1000" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1001</AfterBlockId>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>

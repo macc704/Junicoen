@@ -23,7 +23,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBoolLiteral;
+import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
+import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
@@ -210,11 +212,21 @@ public class UniToBlockParser {
 			return parseWhile((UniWhile) expr, document, parent);
 		} else if (expr instanceof UniBinOp) {
 			return parseBinOp((UniBinOp) expr, document, parent);
+		} else if(expr instanceof UniBreak){ 
+			return parseUnaryOperation("break", document, parent);
+		} else if(expr instanceof UniContinue){
+			return parseUnaryOperation("continue", document, parent);
 		} else if(expr instanceof UniIdent){
 			throw new RuntimeException("The expr has not been supported yet");
 		} else {
 			throw new RuntimeException("The expr has not been supported yet");
 		}
+	}
+
+	public List<Element> parseUnaryOperation(String name,Document document, Node parent){
+		List<Element> elements = new ArrayList<Element>();
+		elements.add(createBlockElement(document, name, ID_COUNTER++, "command"));
+		return elements;
 	}
 
 	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
