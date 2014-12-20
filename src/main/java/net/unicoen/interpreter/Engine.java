@@ -104,6 +104,10 @@ public class Engine {
 		return engine.execExpr(expr, scope);
 	}
 
+	public static Object executeSimple(UniExpr expr) {
+		return new Engine().execExpr(expr, Scope.createGlobal());
+	}
+
 	public Object execute(UniClassDec dec) {
 		UniFuncDec fdec = getEntryPoint(dec);
 		if (fdec != null) {
@@ -210,9 +214,12 @@ public class Engine {
 		}
 		if (expr instanceof UniDecVarWithValue) {
 			UniDecVarWithValue decVar = (UniDecVarWithValue) expr;
-			Object value = execExpr(decVar, scope);
+			Object value = execExpr(decVar.value, scope);
 			scope.setTop(decVar.name, value);
 			return value;
+		}
+		if (expr instanceof UniBlock){
+			return execBlock((UniBlock)expr, scope);
 		}
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;
@@ -289,9 +296,10 @@ public class Engine {
 	}
 
 	private Object execBlock(UniBlock block, Scope scope) {
+		Scope blockScope = Scope.createLocal(scope);
 		Object lastValue = null;
 		for (UniExpr expr : block.body) {
-			lastValue = execExpr(expr, scope);
+			lastValue = execExpr(expr, blockScope);
 		}
 		return lastValue;
 	}
