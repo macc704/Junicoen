@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.unicoen.node.UniBinOp;
+import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniContinue;
@@ -65,7 +66,7 @@ public class ToBlockEditorParser {
 			}
 			
 
-			d.body = body;
+			d.block = new UniBlock(body);
 			ret.add(d);
 		}
 		return ret;
@@ -200,10 +201,10 @@ public class ToBlockEditorParser {
 			UniIf uniIf = new UniIf();
 			uniIf.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
-				uniIf.trueBlock = args.get(1);
+				uniIf.trueBlock = new UniBlock(args.get(1));
 			}
 			if (args.get(2) != null) {
-				uniIf.falseBlock = args.get(2);
+				uniIf.falseBlock = new UniBlock(args.get(2));
 			}
 			return uniIf;
 		}
@@ -211,7 +212,7 @@ public class ToBlockEditorParser {
 			UniWhile uniWhile = new UniWhile();
 			uniWhile.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
-				uniWhile.body = args.get(1);
+				uniWhile.block = new UniBlock(args.get(1));
 			}
 			return uniWhile;
 		}

@@ -30,13 +30,13 @@ public class MethodDefinitionAndCallTest {
 		for(UniNode node : list){
 			UniFuncDec func = (UniFuncDec)node;
 			if(func.funcName.equals("start")){
-				assertTrue(func.body.get(0) instanceof UniMethodCall);
-				assertEquals("helloWorld", ((UniMethodCall)func.body.get(0)).methodName);
+				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
+				assertEquals("helloWorld", ((UniMethodCall)func.block.body.get(0)).methodName);
 			}
 			
 			if(func.funcName.equals("helloWorld")){
-				assertTrue(func.body.get(0) instanceof UniMethodCall);
-				assertEquals("print", ((UniMethodCall)func.body.get(0)).methodName);
+				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
+				assertEquals("print", ((UniMethodCall)func.block.body.get(0)).methodName);
 			}
 			
 		}

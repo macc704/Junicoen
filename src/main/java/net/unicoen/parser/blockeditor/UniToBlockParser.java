@@ -22,6 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.unicoen.node.UniBinOp;
+import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
@@ -107,7 +108,7 @@ public class UniToBlockParser {
 		}
 
 		// funcDec.body ボディのパース
-		blocks = parseBody(document, procedureElement, funcDec.body);
+		blocks = parseBody(document, procedureElement, funcDec.block);
 
 		blocks.add(blocks.size(), procedureElement);
 		blocks.remove(0);
@@ -122,24 +123,30 @@ public class UniToBlockParser {
 		return blocks;
 	}
 
-	public List<Element> parseBody(Document document, Element parentElement, List<UniExpr> body) {
+	public List<Element> parseBody(Document document, Element parentElement, UniBlock block) {
+		if (block == null) {
+			return new ArrayList<>(); // can be Collections.emptyList();
+		}
+		List<UniExpr> body = block.body;
+		if (body == null) {
+			return new ArrayList<>(); // can be Collections.emptyList();
+		}
+
 		List<Element> blocks = new ArrayList<Element>();
-		if (body != null) {
-			String beforeId = parentElement.getAttribute("id");
-			for (int i = 0; i < body.size(); i++) {
-				UniExpr expr = body.get(i);
-				List<Element> elements = parseExpr(expr, document, null);
-
-				if (i + 1 < body.size()) {
-					addAfterBlockNode(document, elements.get(0),
-							String.valueOf(ID_COUNTER));
-				}
-
-				blocks.addAll(elements);
-				addBeforeBlockNode(document, elements.get(0), beforeId);
-				beforeId = blocks.get(blocks.size() - elements.size())
-						.getAttribute("id");
+		String beforeId = parentElement.getAttribute("id");
+		for (int i = 0; i < body.size(); i++) {
+			UniExpr expr = body.get(i);
+			List<Element> elements = parseExpr(expr, document, null);
+	
+			if (i + 1 < body.size()) {
+				addAfterBlockNode(document, elements.get(0),
+						String.valueOf(ID_COUNTER));
 			}
+	
+			blocks.addAll(elements);
+			addBeforeBlockNode(document, elements.get(0), beforeId);
+			beforeId = blocks.get(blocks.size() - elements.size())
+					.getAttribute("id");
 		}
 		return blocks;
 	}
@@ -158,16 +165,17 @@ public class UniToBlockParser {
 		}
 
 		// funcDec.body ボディのパース
-		if (funcDec.body != null) {
+		if (funcDec.block != null && funcDec.block.body != null) {
 			addAfterBlockNode(document, blocks.get(blocks.size() - 1),
 					String.valueOf(ID_COUNTER));
 			String beforeId = procedureElement.getAttribute("id");
-			for (int i = 0; i < funcDec.body.size(); i++) {
+			List<UniExpr> body = funcDec.block.body;
+			for (int i = 0; i < body.size(); i++) {
 				// expressionの解析 行き掛け順
-				UniExpr expr = funcDec.body.get(i);
+				UniExpr expr = body.get(i);
 				List<Element> elements = parseExpr(expr, document, null);// 木で返す．
 				// 木の最上部が左辺ブロックになる　左辺ブロックに次のブロックのidをセットする
-				if (i + 1 < funcDec.body.size()) {
+				if (i + 1 < body.size()) {
 					addAfterBlockNode(document, elements.get(0),
 							String.valueOf(ID_COUNTER));
 				}
@@ -301,7 +309,7 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, "while", ID_COUNTER++, "command");
 		
 		List<Element> sockets = parseExpr(whileExpr.cond, document, blockElement);
-		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.body);
+		List<Element> trueBlock = parseBody(document, blockElement, whileExpr.block);
 
 		List<Element> blockSockets = new ArrayList<>();
 		//socket will have an element

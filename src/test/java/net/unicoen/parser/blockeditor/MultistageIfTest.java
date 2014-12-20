@@ -36,8 +36,8 @@ public class MultistageIfTest {
 		UniFuncDec fdec = (UniFuncDec) list.get(0);
 		assertEquals("start", fdec.funcName);
 		
-		assertTrue(fdec.body.get(0) instanceof UniIf);
-		UniIf ifstmt = (UniIf)fdec.body.get(0);
+		assertTrue(fdec.block.body.get(0) instanceof UniIf);
+		UniIf ifstmt = (UniIf)fdec.block.body.get(0);
 		
 		assertTrue(ifstmt.cond instanceof UniBoolLiteral);
 		

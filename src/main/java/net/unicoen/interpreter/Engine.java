@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import net.unicoen.node.UniBinOp;
+import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
@@ -132,15 +133,11 @@ public class Engine {
 	private Object execFunc(UniFuncDec fdec, Scope global) {
 		Scope funcScope = Scope.createLocal(global);
 		// TODO: set argument to func scope
-		return execExprMany(fdec.body, funcScope);
-	}
-
-	private Object execExprMany(List<UniExpr> exprs, Scope scope) {
-		Object lastValue = null;
-		for (UniExpr expr : exprs) {
-			lastValue = execExpr(expr, scope);
+		try {
+			return execBlock(fdec.block, funcScope);
+		} catch (Return e) {
+			return e.value;
 		}
-		return lastValue;
 	}
 
 	public Object runCallMethod(Object instance, String methodName, Object[] args) {
@@ -220,9 +217,9 @@ public class Engine {
 		if (expr instanceof UniIf) {
 			UniIf ui = (UniIf) expr;
 			if (toBool(execExpr(ui.cond, scope))) {
-				return execExprMany(ui.trueBlock, Scope.createLocal(scope));
+				return execBlock(ui.trueBlock, scope);
 			} else {
-				return execExprMany(ui.falseBlock, Scope.createLocal(scope));
+				return execBlock(ui.falseBlock, scope);
 			}
 		}
 		if (expr instanceof UniFor) {
@@ -233,7 +230,7 @@ public class Engine {
 				for (execExpr(uniFor.init, forScope); toBool(execExpr(uniFor.cond, forScope)); execExpr(uniFor.step,
 						forScope)) {
 					try {
-						lastEval = execExprMany(uniFor.body, Scope.createLocal(forScope));
+						lastEval = execBlock(uniFor.block, forScope);
 					} catch (Continue e) { /* do nothing*/
 					}
 				}
@@ -248,7 +245,7 @@ public class Engine {
 				Object lastEval = null;
 				while (toBool(execExpr(uniWhile.cond, scope))) {
 					try {
-						lastEval = execExprMany(uniWhile.body, Scope.createLocal(scope));
+						lastEval = execBlock(uniWhile.block, scope);
 					} catch (Continue e) { /* do nothing*/
 					}
 				}
@@ -289,6 +286,14 @@ public class Engine {
 				throw new RuntimeException(msg, e);
 			}
 		}
+	}
+
+	private Object execBlock(UniBlock block, Scope scope) {
+		Object lastValue = null;
+		for (UniExpr expr : block.body) {
+			lastValue = execExpr(expr, scope);
+		}
+		return lastValue;
 	}
 
 	private Object execFuncCall(Object func, Object[] args) {

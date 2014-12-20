@@ -56,26 +56,29 @@ Dsl.define_node do |x|
       #
       # Block
       #
+      x.node "Block" do |d|
+        d.mem "body", "Expr", list: true
+      end
       x.node "If" do |d|
         d.mem "cond", "Expr"
-        d.mem "trueBlock",  "Expr", list: true
-        d.mem "falseBlock", "Expr", list: true
+        d.mem "trueBlock",  "Block"
+        d.mem "falseBlock", "Block"
       end
       x.node "For" do |d|
         d.mem "init", "Expr"
         d.mem "cond", "Expr"
         d.mem "step", "Expr"
-        d.mem "body", "Expr", list: true
+        d.mem "block", "Block"
       end
       x.node "While" do |d|
         d.mem "cond", "Expr"
-        d.mem "body", "Expr", list: true
+        d.mem "block", "Block"
       end
       x._node "Try" do |d|
-        d.mem "tryExpr", "Expr", list: true
-        d.mem "tryBlock", "Expr", list: true
-        d.mem "catchBlock", "Expr", list: true
-        d.mem "finallyBlock", "Expr", list: true
+        d.mem "tryExpr", "Block"
+        d.mem "tryBlock", "Block"
+        d.mem "catchBlock", "Block"
+        d.mem "finallyBlock", "Block"
       end
       #
       # Var Dec
@@ -92,14 +95,14 @@ Dsl.define_node do |x|
         d.mem "value", "Expr"
       end
     end
-  
+
     x.node "MemberDec", abstract: true, generics: :self do
       x.node "FuncDec" do |d|
         d.mem "funcName", String
         d.mem "modifiers", String, list: true
         d.mem "returnType", String
         d.mem "args", "Arg", list: true
-        d.mem "body", "Expr", list: true
+        d.mem "block", "Block"
       end
       x.node "Arg", nil do |d|
         d.mem "type", String

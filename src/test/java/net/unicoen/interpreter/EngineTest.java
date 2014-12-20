@@ -1,6 +1,7 @@
 package net.unicoen.interpreter;
 
 import static net.unicoen.node_helper.Builder.bin;
+import static net.unicoen.node_helper.Builder.block;
 import static net.unicoen.node_helper.Builder.ident;
 import static net.unicoen.node_helper.Builder.list;
 import static net.unicoen.node_helper.Builder.lit;
@@ -63,19 +64,19 @@ public class EngineTest {
 					mCallT.methodName = "printInt";
 					mCallT.args = list(lit(1));
 				}
-				uIf.trueBlock = list(mCallT);
+				uIf.trueBlock = block(mCallT);
 				UniMethodCall mCallF = new UniMethodCall();
 				{
 					mCallF.receiver = ident("MyLib");
 					mCallF.methodName = "printInt";
 					mCallF.args = list(bin(lit(1), "+", lit(2)));
 				}
-				uIf.falseBlock = list(mCallF);
+				uIf.falseBlock = block(mCallF);
 			}
 			UniWhile uWhile = new UniWhile();
 			uWhile.cond = lit(false);
-			uWhile.body = list(lit(1));
-			fDec.body = list(uIf, uWhile);
+			uWhile.block = block(lit(1));
+			fDec.block = block(uIf, uWhile);
 		}
 		cDec.members = list(fDec);
 		return cDec;
@@ -114,6 +115,14 @@ public class EngineTest {
 
 	@Test
 	public void testStaticMethod() {
+		// Integer.toString(100)
+		UniExpr expr = new UniMethodCall(new UniIdent("Integer"), "toString", list(lit(100)));
+		Object result = Engine.executeSimple(expr, "Integer", Integer.class);
+		assertEquals("100", result);
+	}
+
+	@Test
+	public void testScope() {
 		// Integer.toString(100)
 		UniExpr expr = new UniMethodCall(new UniIdent("Integer"), "toString", list(lit(100)));
 		Object result = Engine.executeSimple(expr, "Integer", Integer.class);
