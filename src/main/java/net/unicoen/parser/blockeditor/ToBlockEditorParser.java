@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
@@ -19,11 +17,11 @@ import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDecVar;
 import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
@@ -60,8 +58,8 @@ public class ToBlockEditorParser {
 
 		List<UniNode> ret = new ArrayList<>();
 		for (Node procNode : procs) {
-			UniFuncDec d = new UniFuncDec();
-			d.funcName = getChildText(procNode, "Label");
+			UniMethodDec d = new UniMethodDec();
+			d.methodName = getChildText(procNode, "Label");
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");

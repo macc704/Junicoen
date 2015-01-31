@@ -30,12 +30,12 @@ import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDecVar;
 import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
@@ -88,19 +88,19 @@ public class UniToBlockParser {
 	public void parseClass(UniClassDec classDec, Document document,
 			Element pageElement) {
 		for (UniMemberDec member : classDec.members) {
-			if (member instanceof UniFuncDec) {
-				parseFunctionDec((UniFuncDec) member, document, pageElement);
+			if (member instanceof UniMethodDec) {
+				parseFunctionDec((UniMethodDec) member, document, pageElement);
 			}
 		}
 	}
 
-	public List<Element> getFunctionNodes(UniFuncDec funcDec,
+	public List<Element> getFunctionNodes(UniMethodDec funcDec,
 			Document document, Element pageElement) {
 		List<Element> blocks = new ArrayList<Element>();
 		Element procedureElement = createBlockElement(document, "procedure",
 				ID_COUNTER++, "procedure");
 
-		addLabelElement(document, funcDec.funcName, procedureElement);
+		addLabelElement(document, funcDec.methodName, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);
@@ -153,11 +153,11 @@ public class UniToBlockParser {
 		return blocks;
 	}
 
-	public void parseFunctionDec(UniFuncDec funcDec, Document document, Element pageElement) {
+	public void parseFunctionDec(UniMethodDec funcDec, Document document, Element pageElement) {
 		List<Element> blocks = new ArrayList<Element>();
 		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++, "procedure");
 
-		addLabelElement(document, funcDec.funcName, procedureElement);
+		addLabelElement(document, funcDec.methodName, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);

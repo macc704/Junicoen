@@ -8,7 +8,7 @@ import net.unicoen.interpreter.ExecutionListener;
 import net.unicoen.interpreter.FunctionWithEngine;
 import net.unicoen.interpreter.Scope;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 import net.unicoen.parser.blockeditor.ToBlockEditorParser;
 
@@ -22,7 +22,7 @@ public class TurtleMain {
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 		for (UniNode node : list) {
-			dec.members.add((UniFuncDec) node);
+			dec.members.add((UniMethodDec) node);
 		}
 		Engine engine = new Engine();
 		engine.addListener(libOverrider);

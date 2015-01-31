@@ -1,6 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 
 import org.junit.Test;
@@ -26,12 +26,12 @@ public class TurtleVoidMethodsTest {
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 		for (UniNode node : list) {
-			dec.members.add((UniFuncDec) node);
+			dec.members.add((UniMethodDec) node);
 		}
 
 
 		
-		UniFuncDec startMethod = (UniFuncDec) dec.members.get(0);
+		UniMethodDec startMethod = (UniMethodDec) dec.members.get(0);
 
 		String[] expecteds = new String[startMethod.block.body.size()];
 		expecteds[0] = "fd";

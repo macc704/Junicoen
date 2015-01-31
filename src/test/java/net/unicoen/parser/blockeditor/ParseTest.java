@@ -1,7 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,7 +11,7 @@ import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniFuncDec;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 
 import org.junit.Test;
@@ -28,13 +27,13 @@ public class ParseTest {
 		assertTrue(list != null);
 		assertEquals(2, list.size());
 
-		assertTrue(list.get(0) instanceof UniFuncDec);
+		assertTrue(list.get(0) instanceof UniMethodDec);
 
 
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 		for (UniNode node : list) {
-			dec.members.add((UniFuncDec) node);
+			dec.members.add((UniMethodDec) node);
 		}
 		
 

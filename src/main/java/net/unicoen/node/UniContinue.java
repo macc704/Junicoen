@@ -9,4 +9,14 @@ public class UniContinue extends UniExpr {
 	public String toString() {
 		return "Continue";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && obj instanceof UniContinue;
+	}
+
+	@Override
+	public boolean isStatement() {
+		return false;
+	}
 }

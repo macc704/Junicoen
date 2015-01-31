@@ -1,7 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,8 +11,8 @@ import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIf;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 
 import org.junit.Test;
@@ -29,18 +28,18 @@ public class NotTest {
 		assertTrue(list != null);
 		assertEquals(1, list.size());
 
-		assertTrue(list.get(0) instanceof UniFuncDec);
+		assertTrue(list.get(0) instanceof UniMethodDec);
 		
 		
-		UniFuncDec fdec = (UniFuncDec) list.get(0);
-		assertEquals("start", fdec.funcName);
+		UniMethodDec fdec = (UniMethodDec) list.get(0);
+		assertEquals("start", fdec.methodName);
 		
 		assertTrue(fdec.block.body.get(0) instanceof UniIf);
 		
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 		for (UniNode node : list) {
-			dec.members.add((UniFuncDec) node);
+			dec.members.add((UniMethodDec) node);
 		}
 		// --------------------------
 		Engine engine = new Engine();

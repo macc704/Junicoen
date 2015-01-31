@@ -1,6 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,10 +12,10 @@ import java.util.List;
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniExpr;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node_helper.Builder;
 
@@ -31,8 +31,8 @@ public class UniToBlockParseTest {
 		
 		List<UniMemberDec> member = new ArrayList<UniMemberDec>();
 		
-		UniFuncDec funcDec = new UniFuncDec();
-		funcDec.funcName = "start";
+		UniMethodDec funcDec = new UniMethodDec();
+		funcDec.methodName = "start";
 		funcDec.returnType = "void";
 		
 		UniMethodCall mcall = new UniMethodCall();

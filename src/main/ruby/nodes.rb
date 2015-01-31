@@ -5,9 +5,9 @@ Dsl.define_node do |x|
   x.package = "net.unicoen.node"
   x.prefix = "Uni"
 
-  x.node "Node", interface: true, generics: :self do
+  x.node "Node", interface: true do
 
-    x.node "Expr", abstract: true, generics: :self do
+    x.node "Expr", abstract: true, member: { statement: :boolean } do
       #
       # Factor
       #
@@ -28,6 +28,10 @@ Dsl.define_node do |x|
       #
       # Expressions
       #
+      x.node "FieldAccess" do |d|
+        d.mem "receiver", "Expr"
+        d.mem "fieldName", String
+      end
       x.node "MethodCall", doc: '関数/メソッド呼び出し' do |d|
         d.mem "receiver", "Expr"
         d.mem "methodName", String
@@ -50,7 +54,7 @@ Dsl.define_node do |x|
       #
       # Control flow
       #
-      x.node "Return" do |d|
+      x.node "Return", block: true do |d|
         d.mem "value", "Expr"
       end
       x.node "Break"
@@ -58,29 +62,29 @@ Dsl.define_node do |x|
       #
       # Block
       #
-      x.node "Block" do |d|
+      x.node "Block", statement: true do |d|
         d.mem "body", "Expr", list: true
       end
-      x.node "If" do |d|
+      x.node "If", statement: true do |d|
         d.mem "cond", "Expr"
         d.mem "trueBlock",  "Block"
         d.mem "falseBlock", "Block"
       end
-      x.node "For" do |d|
+      x.node "For", statement: true do |d|
         d.mem "init", "Expr"
         d.mem "cond", "Expr"
         d.mem "step", "Expr"
         d.mem "block", "Block"
       end
-      x.node "While" do |d|
+      x.node "While", statement: true do |d|
         d.mem "cond", "Expr"
         d.mem "block", "Block"
       end
-      x.node "DoWhile" do |d|
+      x.node "DoWhile", statement: true do |d|
         d.mem "block", "Block"
         d.mem "cond", "Expr"
       end
-      x._node "Try" do |d|
+      x._node "Try", statement: true do |d|
         d.mem "tryExpr", "Block"
         d.mem "tryBlock", "Block"
         d.mem "catchBlock", "Block"
@@ -102,9 +106,9 @@ Dsl.define_node do |x|
       end
     end
 
-    x.node "MemberDec", abstract: true, generics: :self do
-      x.node "FuncDec" do |d|
-        d.mem "funcName", String
+    x.node "MemberDec", abstract: true do
+      x.node "MethodDec" do |d|
+        d.mem "methodName", String
         d.mem "modifiers", String, list: true
         d.mem "returnType", String
         d.mem "args", "Arg", list: true

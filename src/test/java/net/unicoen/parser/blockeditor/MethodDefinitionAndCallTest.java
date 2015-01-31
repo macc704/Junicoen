@@ -1,7 +1,6 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -9,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniFuncDec;
 import net.unicoen.node.UniMethodCall;
+import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 
 import org.junit.Test;
@@ -28,13 +27,13 @@ public class MethodDefinitionAndCallTest {
 		assertEquals(2, list.size());
 		
 		for(UniNode node : list){
-			UniFuncDec func = (UniFuncDec)node;
-			if(func.funcName.equals("start")){
+			UniMethodDec func = (UniMethodDec)node;
+			if(func.methodName.equals("start")){
 				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
 				assertEquals("helloWorld", ((UniMethodCall)func.block.body.get(0)).methodName);
 			}
 			
-			if(func.funcName.equals("helloWorld")){
+			if(func.methodName.equals("helloWorld")){
 				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
 				assertEquals("print", ((UniMethodCall)func.block.body.get(0)).methodName);
 			}
@@ -44,7 +43,7 @@ public class MethodDefinitionAndCallTest {
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 		for (UniNode node : list) {
-			dec.members.add((UniFuncDec) node);
+			dec.members.add((UniMethodDec) node);
 		}
 
 	}
