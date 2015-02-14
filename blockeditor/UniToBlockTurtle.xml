@@ -5,7 +5,7 @@
 <PageBlocks>
 <Block genus-name="Turtle-fd[@int]" id="1001" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="single"/>
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="number" init-type="number" label="歩数" position-type="single"/>
 </Sockets>
 <AfterBlockId>1003</AfterBlockId>
 <BeforeBlockId>1000</BeforeBlockId>
@@ -18,7 +18,7 @@
 </Block>
 <Block genus-name="Turtle-bk[@int]" id="1003" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="single"/>
+<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="number" init-type="number" label="歩数" position-type="single"/>
 </Sockets>
 <AfterBlockId>1005</AfterBlockId>
 <BeforeBlockId>1001</BeforeBlockId>
@@ -31,7 +31,7 @@
 </Block>
 <Block genus-name="Turtle-rt[@int]" id="1005" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="single"/>
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="number" init-type="number" label="角度" position-type="single"/>
 </Sockets>
 <AfterBlockId>1007</AfterBlockId>
 <BeforeBlockId>1003</BeforeBlockId>
@@ -44,7 +44,7 @@
 </Block>
 <Block genus-name="Turtle-lt[@int]" id="1007" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="single"/>
+<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="number" init-type="number" label="角度" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1005</BeforeBlockId>
 </Block>

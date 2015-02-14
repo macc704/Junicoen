@@ -247,9 +247,35 @@ public class UniToBlockParser {
 		//初期値のパース
 		List<Element> initializer = parseExpr(varDec.value, document, elements.get(0));
 		
-		addSocketsNode(initializer, document, elements.get(0), createStringArray(convertTypeToBlockConnectorType(varDec.type)), createStringArray( "初期値"));
+		List<Node> socketNodes = resolver.getSocketNodes(elements.get(0).getAttribute("genus-name"));
+		Map<String, String[]> sockets = calcSocketsInfo(socketNodes);
+		
+		addSocketsNode(initializer, document, elements.get(0), sockets.get("connector-type"), sockets.get("position-type"), sockets.get("label"));
 		
 		return elements;
+	}
+	
+	public Map<String, String[]> calcSocketsInfo(List<Node> socketNodes){
+		if(socketNodes.size()<=0){
+			return null;
+		}else{
+			Map<String, String[]> socketsInfo = new HashMap<>();
+			String[] socketLabels = new String[socketNodes.size()];
+			String[] socketTypes = new String[socketNodes.size()];
+			String[] socketPositionTypes = new String[socketNodes.size()];
+			
+			for(int i = 0; i < socketNodes.size(); i ++){
+				socketLabels[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i), "label");
+				socketTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i), "connector-type");
+				socketPositionTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i), "position-type");
+			}
+			
+			socketsInfo.put("label", socketLabels);
+			socketsInfo.put("connector-type", socketTypes);
+			socketsInfo.put("position-type", socketPositionTypes);
+			
+			return socketsInfo;			
+		}
 	}
 	
 	public List<Element> parseVarDec(String type, String name, Document document, Node parent){
@@ -304,12 +330,14 @@ public class UniToBlockParser {
 			
 			List<Element> args = new ArrayList<Element>();
 			args = parseExpr(uniOp.expr, document, blockElement);
-			
-			addSocketsNode(args, document, blockElement, createStringArray("single"), createStringArray(""));
 
 			elements.add(blockElement);
 			elements.addAll(args);
 			
+			List<Node> socketNodes = resolver.getSocketNodes("not");
+			Map<String, String[]> sockets = calcSocketsInfo(socketNodes);
+			addSocketsNode(args, document, elements.get(0), sockets.get("connector-type"), sockets.get("position-type"), sockets.get("label"));
+
 			return elements;
 		default:
 			throw new RuntimeException("not supported unary operator");
@@ -345,11 +373,15 @@ public class UniToBlockParser {
 		args.add(leftBlocks.get(0));
 		args.add(rightBlocks.get(0));
 		
-		addSocketsNode(args, document, blockElement, createStringArray("bottom", "bottom") ,createStringArray("", ""));
-		
 		elements.add(blockElement);
+		
 		elements.addAll(leftBlocks);
 		elements.addAll(rightBlocks);
+		
+		List<Node> socketNodes = resolver.getSocketNodes(blockElement.getAttribute("genus-name"));
+		Map<String, String[]> sockets = calcSocketsInfo(socketNodes);
+		addSocketsNode(args, document, elements.get(0), sockets.get("connector-type"), sockets.get("position-type"), sockets.get("label"));
+
 		
 		addedModels.put(Integer.toString(((UniNode) binopExpr).hashCode()), blockElement);
 		
@@ -382,11 +414,14 @@ public class UniToBlockParser {
 			blockSockets.add(null);
 		}
 		
-		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, createStringArray("single", "single"), createStringArray("かどうか調べて", "真の間"));
-
-		elements.add(blockElement);
+		//genusnameからソケットのラベルとポジションタイプを作成
+		List<Node> whileSocketNodes = resolver.getSocketNodes("while");
+		Map<String, String[]> socketsInfo = calcSocketsInfo(whileSocketNodes);
 		
+		// ソケットの出力
+		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"), socketsInfo.get("position-type"), socketsInfo.get("label"));
+		
+		elements.add(blockElement);
 		elements.addAll(sockets);
 		elements.addAll(trueBlock);
 		
@@ -425,25 +460,31 @@ public class UniToBlockParser {
 		List<Element> sockets = parseExpr(ifexpr.cond, document, blockElement);
 		List<Element> trueBlock = parseBody(document, blockElement, ifexpr.trueBlock);
 		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock);
-
+		
+		//各ソケットの先頭ブロックを保持する 変換に利用する情報
 		List<Element> blockSockets = new ArrayList<>();
+		
 		//socket will have an element
 		blockSockets.add(sockets.get(0));
-		
+	
 		if (trueBlock.size() > 0) {
 			blockSockets.add(trueBlock.get(0));
 		}else{
 			blockSockets.add(null);
 		}
-		
+
+		//falseブロックのパース結果をソケットに追加する
 		if (falseBlock.size() > 0) {
 			blockSockets.add(falseBlock.get(0));
 		}else{
 			blockSockets.add(null);
 		}
+		
+		List<Node> ifSocketNodes = resolver.getSocketNodes("ifelse");
+		Map<String, String[]> socketsInfo = calcSocketsInfo(ifSocketNodes);
 
 		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, createStringArray("single", "single", "single"), createStringArray("かどうか調べて", "真のとき", "偽のとき"));
+		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"), socketsInfo.get("position-type"), socketsInfo.get("label"));
 
 		elements.add(blockElement);
 		
@@ -517,18 +558,17 @@ public class UniToBlockParser {
 		
 		if (method.args != null) {
 			// 引数パース
-			String[] paramsLabel = new String[method.args.size()];
-			String[] argsPositionType = new String[method.args.size()];
-			int i = 0;
 			for (UniExpr expr : method.args) {
 				for (Element arg : parseExpr(expr, document, element)) {
 					exprs.add(arg);
 				}
-				paramsLabel[i] = "";
-				argsPositionType[i] ="single";
 			}
+			
+			List<Node> socketNodes = resolver.getSocketNodes(genusName);
+			Map<String, String[]> socketsInfo = calcSocketsInfo(socketNodes);
+			
 			// socketの追加
-			addSocketsNode(exprs, document, element, argsPositionType, paramsLabel);
+			addSocketsNode(exprs, document, element, socketsInfo.get("connector-type"), socketsInfo.get("position-type"), socketsInfo.get("label"));
 		}
 
 		exprs.add(0, element);
@@ -587,20 +627,20 @@ public class UniToBlockParser {
 		blockNode.appendChild(element);
 	}
 
-	public static void addSocketsNode(List<Element> args, Document document, Element blockNode, String[] connectorTypes,String[] socketLabels) {
+	public static void addSocketsNode(List<Element> args, Document document, Element blockNode, String[] connectorTypes, String[] positionTypes, String[] socketLabels) {
 		Element sockets = document.createElement("Sockets");
 		sockets.setAttribute("num-sockets", String.valueOf(args.size()));
 		
 		if(socketLabels != null){
 			for (int i = 0; i < args.size();i++) {
-				addSocketNode(document, args.get(i), sockets, connectorTypes[i], socketLabels[i]);
+				addSocketNode(document, args.get(i), sockets, connectorTypes[i], positionTypes[i], socketLabels[i]);
 			}	
 		}
 
 		blockNode.appendChild(sockets);
 	}
 
-	public static void addSocketNode(Document document, Element argElement,	Node socketsNode , String positionType, String socketLabel) {
+	public static void addSocketNode(Document document, Element argElement,	Node socketsNode , String connectorType, String positionType, String socketLabel) {
 		Element connector = document.createElement("BlockConnector");
 		
 		connector.setAttribute("connector-kind", "socket");

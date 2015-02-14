@@ -1,6 +1,7 @@
 package net.unicoen.parser.blockeditor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,5 +100,42 @@ public class BlockNameResolver {
 		return "";
 	}
 	
+	public Node getPlugElement(String genusName){
+		Node genusNode = allAvailableBlocks.get(genusName);
+		Node plugNode = null;
+		
+		if(genusNode == null){
+			return null;
+		} else{
+			Node socketConnectors = ToBlockEditorParser.getChildNode(genusNode, "BlockConnectors");
+			for(int i = 0; i < socketConnectors.getChildNodes().getLength();i++){
+				Node connector = socketConnectors.getChildNodes().item(i);
+				if(connector.getNodeName().equals("BlockConnector") && ToBlockEditorParser.getAttribute(connector, "connector-kind").equals("plug")){
+					plugNode = connector;
+				}
+			}
+		}
+		
+		return plugNode;
+	}
+	
+	public ArrayList<Node> getSocketNodes(String genusName){
+		Node genusNode = allAvailableBlocks.get(genusName);
+		ArrayList<Node> socketsNode = new ArrayList<>();
+		
+		if(genusNode == null){
+			return null;
+		} else{
+			Node socketConnectors = ToBlockEditorParser.getChildNode(genusNode, "BlockConnectors");
+			for(int i = 0; i < socketConnectors.getChildNodes().getLength();i++){
+				Node connector = socketConnectors.getChildNodes().item(i);
+				if(connector.getNodeName().equals("BlockConnector") && ToBlockEditorParser.getAttribute(connector, "connector-kind").equals("socket")){
+					socketsNode.add(connector);
+				}
+			}
+		}
+		
+		return socketsNode;
+	}
 	
 }
