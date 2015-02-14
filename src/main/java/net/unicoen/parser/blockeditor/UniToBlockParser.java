@@ -55,13 +55,14 @@ public class UniToBlockParser {
 
 	private long ID_COUNTER = 1000;
 
-	private static Map<String, String> turtleMethods;
+	private BlockNameResolver resolver;
 
 	private static Map<String, Element> addedModels = new HashMap<String, Element>();
-
+	
+	
+	
 	public UniToBlockParser(){
-		BlockNameResolver.parseTurtleXml();
-		turtleMethods = BlockNameResolver.getTurtleMethodsName();
+		resolver = new BlockNameResolver();
 	}
 	
 	public static Map<String, Element> getAddedModels() {
@@ -70,7 +71,7 @@ public class UniToBlockParser {
 
 	public void parse(UniClassDec classDec) throws IOException {
 		// クラス名のxmlファイルを作成する
-		addedModels.clear(); // cash初期化
+		addedModels.clear(); // cashクリア
 
 		File file = new File("blockEditor/" + classDec.className + ".xml");
 
@@ -540,7 +541,7 @@ public class UniToBlockParser {
 	/*
 	 *	UniMethodCallの関数名からBlockの名前を計算する 
 	 */
-	private static String calcMethodCallGenusName(UniMethodCall method) {
+	private String calcMethodCallGenusName(UniMethodCall method) {
 		String genusName = "";
 		// 名前空間補完}
 
@@ -552,7 +553,7 @@ public class UniToBlockParser {
 
 		genusName += "]";
 		
-		genusName = getNamespace(genusName) + genusName;
+		genusName = resolver.getNamespace(genusName) + genusName;
 		
 		return genusName;
 	}
@@ -565,13 +566,6 @@ public class UniToBlockParser {
 		}
 	}
 
-	private static String getNamespace(String name) {
-		String namespace = turtleMethods.get(name);
-		if(namespace != null){
-			return namespace + "-";
-		}
-		return "";
-	}
 
 	private static String calcParamType(UniExpr param) {
 		String type = "";

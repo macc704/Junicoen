@@ -10,15 +10,13 @@ public class BLockNameResolverTest {
 
 	@Test
 	public void test() {
-		BlockNameResolver.parseTurtleXml();
-		Map<String, String> turtleMethods = BlockNameResolver.getTurtleMethodsName();
+		BlockNameResolver resolver = new BlockNameResolver();
+		Map<String, String> turtleMethods = resolver.getTurtleMethodsName();
 		
 		assertEquals("Turtle", turtleMethods.get("fd[@int]"));
 		assertEquals("InputTurtle", turtleMethods.get("toEnglishMode[]"));
 		assertEquals("CardTurtle", turtleMethods.get("getText[]"));
-		
-		
-		
+
 	}
 
 }
