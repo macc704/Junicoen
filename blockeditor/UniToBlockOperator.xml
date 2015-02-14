@@ -5,72 +5,72 @@
 <PageBlocks>
 <Block genus-name="ifelse" id="1001" kind="command">
 <Sockets num-sockets="3">
-<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
-<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
 <BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1000</BeforeBlockId>
 </Block>
-<Block genus-name="and" id="1005" kind="function">
+<Block genus-name="and" id="1002" kind="function">
 <Plug>
 <BlockConnector con-block-id="1001" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 <Sockets num-sockets="2">
-<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
-<BlockConnector con-block-id="1007" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
 </Sockets>
 </Block>
-<Block genus-name="true" id="1006" kind="data">
+<Block genus-name="true" id="1003" kind="data">
 <Label>真</Label>
 <Plug>
-<BlockConnector con-block-id="1005" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1002" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
-<Block genus-name="true" id="1007" kind="data">
+<Block genus-name="true" id="1004" kind="data">
 <Label>真</Label>
 <Plug>
-<BlockConnector con-block-id="1005" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1002" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
-<Block genus-name="ifelse" id="1008" kind="command">
+<Block genus-name="ifelse" id="1005" kind="command">
 <Sockets num-sockets="3">
-<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
-<BlockConnector con-block-id="1012" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真のとき" position-type="single"/>
 <BlockConnector connector-kind="socket" connector-type="cmd" init-type="cmd" label="偽のとき" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1001</BeforeBlockId>
 </Block>
-<Block genus-name="or" id="1009" kind="function">
+<Block genus-name="or" id="1006" kind="function">
 <Plug>
-<BlockConnector con-block-id="1008" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1005" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 <Sockets num-sockets="2">
-<BlockConnector con-block-id="1010" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
-<BlockConnector con-block-id="1011" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1007" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="bottom"/>
 </Sockets>
 </Block>
-<Block genus-name="true" id="1010" kind="data">
+<Block genus-name="true" id="1007" kind="data">
 <Label>真</Label>
 <Plug>
-<BlockConnector con-block-id="1009" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1006" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
-<Block genus-name="true" id="1011" kind="data">
+<Block genus-name="true" id="1008" kind="data">
 <Label>真</Label>
 <Plug>
-<BlockConnector con-block-id="1009" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1006" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
-<Block genus-name="Turtle-print[@string]" id="1012" kind="command">
+<Block genus-name="Turtle-print[@string]" id="1009" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1013" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+<BlockConnector con-block-id="1010" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
 </Sockets>
-<BeforeBlockId>1008</BeforeBlockId>
+<BeforeBlockId>1005</BeforeBlockId>
 </Block>
-<Block genus-name="string" id="1013" kind="data">
+<Block genus-name="string" id="1010" kind="data">
 <Label>Hello World</Label>
 <Plug>
-<BlockConnector con-block-id="1012" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1009" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
 </Plug>
 </Block>
 <Block genus-name="procedure" id="1000" kind="procedure">

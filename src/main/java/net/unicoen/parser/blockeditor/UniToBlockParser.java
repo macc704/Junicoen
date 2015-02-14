@@ -368,18 +368,17 @@ public class UniToBlockParser {
 	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
 		Element blockElement;
-
+		
 		if (binopExpr.operator.equals("&&")) {
 			blockElement = createBlockElement(document, "and", ID_COUNTER++, "function");
 		} else if (binopExpr.operator.equals("||")) {
 			blockElement = createBlockElement(document, "or", ID_COUNTER++, "function");
-		} else if (binopExpr.operator.equals("!")) {
-			blockElement = createBlockElement(document, "not", ID_COUNTER++, "function");
 		} else {
 			throw new RuntimeException("unequipment operator");
 		}
-
-		addPlugElement(document, blockElement, parent, "boolean", "mirror");
+		Node plugNode = resolver.getPlugElement(blockElement.getAttribute("genus-name"));
+		
+		addPlugElement(document, blockElement, parent, ToBlockEditorParser.getAttribute(plugNode, "connector-type"), ToBlockEditorParser.getAttribute(plugNode, "position-type"));
 
 		List<Element> leftBlocks = parseExpr(binopExpr.left, document, blockElement);
 		List<Element> rightBlocks = parseExpr(binopExpr.right, document, blockElement);
@@ -389,7 +388,7 @@ public class UniToBlockParser {
 		args.add(rightBlocks.get(0));
 
 		elements.add(blockElement);
-
+		
 		elements.addAll(leftBlocks);
 		elements.addAll(rightBlocks);
 
@@ -503,11 +502,9 @@ public class UniToBlockParser {
 		Map<String, String[]> socketsInfo = calcSocketsInfo(ifSocketNodes);
 
 		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"),
-				socketsInfo.get("position-type"), socketsInfo.get("label"));
+		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"), socketsInfo.get("position-type"), socketsInfo.get("label"));
 
 		elements.add(blockElement);
-
 		elements.addAll(sockets);
 		elements.addAll(trueBlock);
 		elements.addAll(falseBlock);
@@ -646,26 +643,14 @@ public class UniToBlockParser {
 		connector.setAttribute("connector-kind", "socket");
 		connector.setAttribute("position-type", positionType);
 		connector.setAttribute("label", socketLabel);
-		Node plugNode;
 
 		if (argElement != null) {
-			connector.setAttribute("con-block-id",
-					ToBlockEditorParser.getAttribute(argElement, "id"));
-			if (ToBlockEditorParser.getChildNode(ToBlockEditorParser.getChildNode(argElement,
-					"Plug")) != null) {
-				plugNode = ToBlockEditorParser.getChildNode(
-						ToBlockEditorParser.getChildNode(argElement, "Plug"), "BlockConnector");
-				connector.setAttribute("connector-type", getSocketConnectorType(ToBlockEditorParser
-						.getAttribute(plugNode, "connector-type")));
-				connector.setAttribute("init-type", getSocketConnectorType(ToBlockEditorParser
-						.getAttribute(plugNode, "connector-type")));
-			} else {
-				connector.setAttribute("connector-type", "cmd");
-				connector.setAttribute("init-type", "cmd");
-			}
+			connector.setAttribute("con-block-id", ToBlockEditorParser.getAttribute(argElement, "id"));
+			connector.setAttribute("connector-type", connectorType);
+			connector.setAttribute("init-type", connectorType);
 		} else {
-			connector.setAttribute("connector-type", "cmd");
-			connector.setAttribute("init-type", "cmd");
+			connector.setAttribute("connector-type", connectorType);
+			connector.setAttribute("init-type", connectorType);
 		}
 
 		socketsNode.appendChild(connector);
