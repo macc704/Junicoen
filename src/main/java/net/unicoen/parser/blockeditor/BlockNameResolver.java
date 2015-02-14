@@ -29,6 +29,10 @@ public class BlockNameResolver {
 		return turtleMethods;
 	}
 	
+	public Node getBlockNode(String genusName){
+		return allAvailableBlocks.get(genusName);
+	}
+	
 	/*
 	 *	全ブロックをハッシュマップに登録する キー：genus-name 値:ノード 
 	 */
