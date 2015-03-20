@@ -14,8 +14,6 @@ import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniContinue;
-import net.unicoen.node.UniDecVar;
-import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
@@ -25,6 +23,8 @@ import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
+import net.unicoen.node.UniVariableDec;
+import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -43,7 +43,7 @@ public class ToBlockEditorParser {
 		for (Node node : eachChild(pageBlock)) {
 			String name = node.getNodeName();
 			if (name.startsWith("#")){
-				continue;	
+				continue;
 			}else if(name.equals("BlockStub")){
 				node = getChildNode(node, "Block");
 			}
@@ -66,7 +66,7 @@ public class ToBlockEditorParser {
 			if (nextNodeId != null) {
 				body = parseBody(map.get(nextNodeId), map);
 			}
-			
+
 
 			d.block = new UniBlock(body);
 			ret.add(d);
@@ -138,13 +138,13 @@ public class ToBlockEditorParser {
 		}
 		throw new RuntimeException("Unsupported node: " + node);
 	}
-	
+
 	private static UniExpr parseLocalVariable(List<List<UniExpr>> initValues, String type, String name){
 		if(initValues.get(0)!=null){
 			//初期値あり
-			return new UniDecVarWithValue(null, type, name, initValues.get(0).get(0));
+			return new UniVariableDecWithValue(null, type, name, initValues.get(0).get(0));
 		}else{
-			return new UniDecVar(null, type, name);	
+			return new UniVariableDec(null, type, name);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class ToBlockEditorParser {
 			return binOp;
 		}
 	}
-	
+
 	private static boolean isUnaryOp(String blockType){
 		if("not".equals(blockType)){
 			return true;

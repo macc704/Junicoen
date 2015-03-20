@@ -27,8 +27,6 @@ import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniContinue;
-import net.unicoen.node.UniDecVar;
-import net.unicoen.node.UniDecVarWithValue;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
@@ -39,6 +37,8 @@ import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
+import net.unicoen.node.UniVariableDec;
+import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 
 import org.w3c.dom.Document;
@@ -218,10 +218,10 @@ public class UniToBlockParser {
 			return parseContinueBreak("continue", document, parent);
 		} else if (expr instanceof UniUnaryOp) {
 			return parseUnaryOperator((UniUnaryOp) expr, document, parent);
-		} else if (expr instanceof UniDecVar) {
-			return parseVarDec(((UniDecVar) expr).type, ((UniDecVar) expr).name, document, parent);
-		} else if (expr instanceof UniDecVarWithValue) {
-			return parseVarDec((UniDecVarWithValue) expr, document, parent);
+		} else if (expr instanceof UniVariableDec) {
+			return parseVarDec(((UniVariableDec) expr).type, ((UniVariableDec) expr).name, document, parent);
+		} else if (expr instanceof UniVariableDecWithValue) {
+			return parseVarDec((UniVariableDecWithValue) expr, document, parent);
 		} else if (expr instanceof UniIdent) {
 			throw new RuntimeException("The expr has not been supported yet");
 		} else {
@@ -229,7 +229,7 @@ public class UniToBlockParser {
 		}
 	}
 
-	public List<Element> parseVarDec(UniDecVarWithValue varDec, Document document, Node parent) {
+	public List<Element> parseVarDec(UniVariableDecWithValue varDec, Document document, Node parent) {
 		List<Element> elements = parseVarDec(varDec.type, varDec.name, document, parent);
 		// 初期値のパース
 		List<Element> initializer = parseExpr(varDec.value, document, elements.get(0));
@@ -274,7 +274,7 @@ public class UniToBlockParser {
 			return null;
 		} else {
 			Map<String, String> socketsInfo = new HashMap<>();
-			
+
 			String plugLabel;
 			String socketTypes;
 			String socketPositionTypes;
@@ -368,7 +368,7 @@ public class UniToBlockParser {
 	public List<Element> parseBinOp(UniBinOp binopExpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
 		Element blockElement;
-		
+
 		if (binopExpr.operator.equals("&&")) {
 			blockElement = createBlockElement(document, "and", ID_COUNTER++, "function");
 		} else if (binopExpr.operator.equals("||")) {
@@ -377,7 +377,7 @@ public class UniToBlockParser {
 			throw new RuntimeException("unequipment operator");
 		}
 		Node plugNode = resolver.getPlugElement(blockElement.getAttribute("genus-name"));
-		
+
 		addPlugElement(document, blockElement, parent, ToBlockEditorParser.getAttribute(plugNode, "connector-type"), ToBlockEditorParser.getAttribute(plugNode, "position-type"));
 
 		List<Element> leftBlocks = parseExpr(binopExpr.left, document, blockElement);
@@ -388,7 +388,7 @@ public class UniToBlockParser {
 		args.add(rightBlocks.get(0));
 
 		elements.add(blockElement);
-		
+
 		elements.addAll(leftBlocks);
 		elements.addAll(rightBlocks);
 
@@ -460,17 +460,17 @@ public class UniToBlockParser {
 		Element blockElement = createBlockElement(document, genusName, ID_COUNTER++,ToBlockEditorParser.getAttribute(resolver.getBlockNode(genusName),"kind"));
 
 		addLabelElement(document, label, blockElement);
-		
+
 		Node plugNode = resolver.getPlugElement(genusName);
 		Map<String, String> plugInfo = calcPlugInfo(plugNode);
-		
+
 		addPlugElement(document, blockElement, parent, plugInfo.get("connector-type"), plugInfo.get("position-type"));
-		
+
 		addedModels.put(Integer.toString(hash), blockElement);
-		
+
 		return blockElement;
 	}
-	
+
 	public List<Element> parseIf(UniIf ifexpr, Document document, Node parent) {
 		List<Element> elements = new ArrayList<Element>();
 		Element blockElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
