@@ -3,6 +3,14 @@
 <Pages collapsible-pages="no">
 <Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockOperator" page-width="1366">
 <PageBlocks>
+<Block genus-name="procedure" id="1000" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1001</AfterBlockId>
+</Block>
 <Block genus-name="ifelse" id="1001" kind="command">
 <Sockets num-sockets="3">
 <BlockConnector con-block-id="1002" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
@@ -72,14 +80,6 @@
 <Plug>
 <BlockConnector con-block-id="1009" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
 </Plug>
-</Block>
-<Block genus-name="procedure" id="1000" kind="procedure">
-<Label>start</Label>
-<Location>
-<X>50</X>
-<Y>50</Y>
-</Location>
-<AfterBlockId>1001</AfterBlockId>
 </Block>
 </PageBlocks>
 </Page>

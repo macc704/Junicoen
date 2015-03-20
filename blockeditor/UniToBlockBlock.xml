@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
 <Pages collapsible-pages="no">
-<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockVarDec" page-width="1366">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockBlock" page-width="1366">
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
 <Label>start</Label>
@@ -11,22 +11,16 @@
 </Location>
 <AfterBlockId>1001</AfterBlockId>
 </Block>
-<Block genus-name="local-var-int-number" id="1001" kind="local-var">
+<Block genus-name="local-var-int-number" id="1002" kind="local-var">
 <Label>i</Label>
 <Type>int</Type>
-<AfterBlockId>1002</AfterBlockId>
-<BeforeBlockId>1000</BeforeBlockId>
-</Block>
-<Block genus-name="local-var-string" id="1002" kind="local-var">
-<Label>s</Label>
-<Type>String</Type>
-<AfterBlockId>1003</AfterBlockId>
 <BeforeBlockId>1001</BeforeBlockId>
 </Block>
-<Block genus-name="local-var-boolean" id="1003" kind="local-var">
-<Label>b</Label>
-<Type>boolean</Type>
-<BeforeBlockId>1002</BeforeBlockId>
+<Block genus-name="abstraction" id="1001" kind="command">
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="cmd" init-type="cmd" label="" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1000</BeforeBlockId>
 </Block>
 </PageBlocks>
 </Page>
