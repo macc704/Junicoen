@@ -46,7 +46,7 @@ Dsl.define_node do |x|
         d.mem "left", "Expr"
         d.mem "right", "Expr"
       end
-      x.node "CondOp", doc: '条件式/条件演算子' do |d|
+      x.node "TernaryOp", doc: '条件式/条件演算子' do |d|
         d.mem "cond", "Expr"
         d.mem "trueExpr", "Expr"
         d.mem "falseExpr", "Expr"
@@ -93,12 +93,12 @@ Dsl.define_node do |x|
       #
       # Var Dec
       #
-      x.node "DecVar", doc: '変数宣言' do |d|
+      x.node "VariableDec", doc: '変数宣言' do |d|
         d.mem "modifiers", String, list: true
         d.mem "type", String
         d.mem "name", String
       end
-      x.node "DecVarWithValue", doc: '変数宣言＋代入' do |d|
+      x.node "VariableDecWithValue", doc: '変数宣言＋代入' do |d|
         d.mem "modifiers", String, list: true
         d.mem "type", String
         d.mem "name", String

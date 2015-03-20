@@ -12,7 +12,7 @@ public abstract class Traverser {
 	public abstract void traverseMethodCall(UniMethodCall node);
 	public abstract void traverseUnaryOp(UniUnaryOp node);
 	public abstract void traverseBinOp(UniBinOp node);
-	public abstract void traverseCondOp(UniCondOp node);
+	public abstract void traverseTernaryOp(UniTernaryOp node);
 	public abstract void traverseReturn(UniReturn node);
 	public abstract void traverseBreak(UniBreak node);
 	public abstract void traverseContinue(UniContinue node);
@@ -21,8 +21,8 @@ public abstract class Traverser {
 	public abstract void traverseFor(UniFor node);
 	public abstract void traverseWhile(UniWhile node);
 	public abstract void traverseDoWhile(UniDoWhile node);
-	public abstract void traverseDecVar(UniDecVar node);
-	public abstract void traverseDecVarWithValue(UniDecVarWithValue node);
+	public abstract void traverseVariableDec(UniVariableDec node);
+	public abstract void traverseVariableDecWithValue(UniVariableDecWithValue node);
 	public abstract void traverseMethodDec(UniMethodDec node);
 	public abstract void traverseArg(UniArg node);
 	public abstract void traverseClassDec(UniClassDec node);
@@ -68,8 +68,8 @@ public abstract class Traverser {
 			traverseBinOp((UniBinOp)node);
 			return;
 		}
-		if (node instanceof UniCondOp) {
-			traverseCondOp((UniCondOp)node);
+		if (node instanceof UniTernaryOp) {
+			traverseTernaryOp((UniTernaryOp)node);
 			return;
 		}
 		if (node instanceof UniReturn) {
@@ -104,12 +104,12 @@ public abstract class Traverser {
 			traverseDoWhile((UniDoWhile)node);
 			return;
 		}
-		if (node instanceof UniDecVar) {
-			traverseDecVar((UniDecVar)node);
+		if (node instanceof UniVariableDec) {
+			traverseVariableDec((UniVariableDec)node);
 			return;
 		}
-		if (node instanceof UniDecVarWithValue) {
-			traverseDecVarWithValue((UniDecVarWithValue)node);
+		if (node instanceof UniVariableDecWithValue) {
+			traverseVariableDecWithValue((UniVariableDecWithValue)node);
 			return;
 		}
 		throw new RuntimeException("Unknown node: " + node);
