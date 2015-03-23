@@ -15,26 +15,26 @@ import org.xml.sax.SAXException;
 public class BlockNameResolver {
 
 	private static String path = "blockeditor/blocks/";
-	
+
 	private Map<String, String> turtleMethods = new HashMap<String, String>();
 	private Map<String, Node> allAvailableBlocks = new HashMap<String, Node>();
-	
-	
+
+
 	public BlockNameResolver(){
 		parseGnuses();
 		parseTurtleXml();
 	}
-	
-	public Map<String, String> getTurtleMethodsName(){		
+
+	public Map<String, String> getTurtleMethodsName(){
 		return turtleMethods;
 	}
-	
+
 	public Node getBlockNode(String genusName){
 		return allAvailableBlocks.get(genusName);
 	}
-	
+
 	/*
-	 *	全ブロックをハッシュマップに登録する キー：genus-name 値:ノード 
+	 *	全ブロックをハッシュマップに登録する キー：genus-name 値:ノード
 	 */
 	public void parseGnuses(){
 		DOMParser parser = new DOMParser();
@@ -46,7 +46,7 @@ public class BlockNameResolver {
 			Element root = doc.getDocumentElement();
 
 			NodeList genusNodes = root.getElementsByTagName("BlockGenus");
-			
+
 			for (int i = 0; i < genusNodes.getLength(); i++) { // find them
 				Node node = genusNodes.item(i);
 				allAvailableBlocks.put(ToBlockEditorParser.getAttribute(node, "name"), node);
@@ -68,10 +68,10 @@ public class BlockNameResolver {
 			Element root = doc.getDocumentElement();
 
 			NodeList genusNodes = root.getElementsByTagName("BlockGenus");
-			
+
 			for (int i = 0; i < genusNodes.getLength(); i++) { // find them
 				Node node = genusNodes.item(i);
-				
+
 				if(ToBlockEditorParser.getChildNode(node, "Name") != null){
 					turtleMethods.put(convertMethodName(ToBlockEditorParser.getAttribute(node, "name")), getNameSpaceString(node));
 				}
@@ -82,12 +82,12 @@ public class BlockNameResolver {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static String getNameSpaceString(Node node){
 		String name = ToBlockEditorParser.getAttribute(node, "name");
 		return name.substring(0, name.indexOf("-"));
 	}
-	
+
 	private static String convertMethodName(String methodName){
 		int namespaceIndex = methodName.indexOf("-");
 		if(namespaceIndex>-1){
@@ -95,7 +95,7 @@ public class BlockNameResolver {
 		}
 		return methodName;
 	}
-	
+
 	public String getNamespace(String name) {
 		String namespace = turtleMethods.get(name);
 		if(namespace != null){
@@ -103,11 +103,11 @@ public class BlockNameResolver {
 		}
 		return "";
 	}
-	
+
 	public Node getPlugElement(String genusName){
 		Node genusNode = allAvailableBlocks.get(genusName);
 		Node plugNode = null;
-		
+
 		if(genusNode == null){
 			return null;
 		} else{
@@ -119,14 +119,14 @@ public class BlockNameResolver {
 				}
 			}
 		}
-		
+
 		return plugNode;
 	}
-	
+
 	public ArrayList<Node> getSocketNodes(String genusName){
 		Node genusNode = allAvailableBlocks.get(genusName);
 		ArrayList<Node> socketsNode = new ArrayList<>();
-		
+
 		if(genusNode == null){
 			return null;
 		} else{
@@ -138,8 +138,8 @@ public class BlockNameResolver {
 				}
 			}
 		}
-		
+
 		return socketsNode;
 	}
-	
+
 }

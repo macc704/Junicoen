@@ -21,6 +21,7 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniNode;
+import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
@@ -66,7 +67,6 @@ public class ToBlockEditorParser {
 			if (nextNodeId != null) {
 				body = parseBody(map.get(nextNodeId), map);
 			}
-
 
 			d.block = new UniBlock(body);
 			ret.add(d);
@@ -237,6 +237,12 @@ public class ToBlockEditorParser {
 		}
 		case "break":{
 			return new UniBreak();
+		}
+		case "return":{
+			UniReturn uniReturn = new UniReturn();
+			if(args.size() == 1){
+				uniReturn.value = args.get(0).get(0);
+			}
 		}
 		default: {
 			UniMethodCall mcall = getProtoType(methodName);
