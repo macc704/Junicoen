@@ -34,7 +34,7 @@ public class VariableNameResolver {
 		localVariables.clear();
 	}
 
-	public Node getVariableID(String name){
+	public Node getVariableNode(String name){
 		Node node = localVariables.get(name);
 		if(node != null){
 			return node;

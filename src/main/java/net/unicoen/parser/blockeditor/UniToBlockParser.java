@@ -336,15 +336,17 @@ public class UniToBlockParser {
 		// 初期値のパース
 		List<Element> initializer = parseExpr(varDec.value, document, elements.get(0));
 
-		List<Node> socketNodes = resolver
-				.getSocketNodes(elements.get(0).getAttribute("genus-name"));
+
+		List<Node> socketNodes = resolver.getSocketNodes(elements.get(0).getAttribute("genus-name"));
+
 		Map<String, String[]> sockets = calcSocketsInfo(socketNodes);
 
 		addSocketsNode(initializer, document, elements.get(0), sockets.get("connector-type"),
 				sockets.get("position-type"), sockets.get("label"));
 
-		return elements;
+		elements.addAll(initializer);
 
+		return elements;
 	}
 
 	public Map<String, String[]> calcSocketsInfo(List<Node> socketNodes) {
@@ -420,15 +422,17 @@ public class UniToBlockParser {
 	}
 
 	public List<Element> parseVarDec(String type, String name, Document document, Node parent) {
-		if (vnResolver.getVariableID(name) == null) {
+		if (vnResolver.getVariableNode(name) == null) {
 			List<Element> elements = new ArrayList<Element>();
 			Element blockElement;
 
 			blockElement = createBlockElement(document, "local-var-" + convertBlockTypeName(type),
-					ID_COUNTER++, "local-var");
+					ID_COUNTER++, "local-variable");
 
 			addElement("Label", document, name, blockElement);
+			addElement("Name", document, name, blockElement);
 			addElement("Type", document, type, blockElement);
+
 
 			elements.add(blockElement);
 			vnResolver.addLocalVariable(name, (Node) blockElement);
@@ -705,7 +709,7 @@ public class UniToBlockParser {
 			throw new RuntimeException("not supported yet");
 		} else if (expr instanceof UniIdent) {
 			type = ToBlockEditorParser.getChildNode(
-					vnResolver.getVariableID(((UniIdent) expr).name), "Type").getTextContent();
+					vnResolver.getVariableNode(((UniIdent) expr).name), "Type").getTextContent();
 		} else if (expr instanceof UniBinOp) {
 			type = getExprType(((UniBinOp) expr).left, ((UniBinOp) expr).right);
 		} else if (expr instanceof UniUnaryOp) {
