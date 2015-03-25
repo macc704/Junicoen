@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockUnaryOperator" page-width="1366">
+<PageBlocks>
+<Block genus-name="procedure" id="1000" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1001</AfterBlockId>
+</Block>
+<Block genus-name="local-var-int-number" id="1001" kind="local-variable">
+<Label>i</Label>
+<Name>i</Name>
+<Type>int</Type>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<AfterBlockId>1003</AfterBlockId>
+<BeforeBlockId>1000</BeforeBlockId>
+</Block>
+<Block genus-name="number" id="1002" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1001" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="setterlocal-var-int-number" id="1003" kind="command">
+<Label>i</Label>
+<Name>i</Name>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<AfterBlockId>1007</AfterBlockId>
+<BeforeBlockId>1001</BeforeBlockId>
+</Block>
+</BlockStub>
+<Block genus-name="sum" id="1004" kind="function">
+<Plug>
+<BlockConnector con-block-id="1003" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1005" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Plug>
+<BlockConnector con-block-id="1004" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1006" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1004" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="setterlocal-var-int-number" id="1007" kind="command">
+<Label>i</Label>
+<Name>i</Name>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<AfterBlockId>1011</AfterBlockId>
+<BeforeBlockId>1003</BeforeBlockId>
+</Block>
+</BlockStub>
+<Block genus-name="sum" id="1008" kind="function">
+<Plug>
+<BlockConnector con-block-id="1007" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1010" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1009" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Plug>
+<BlockConnector con-block-id="1008" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1010" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1008" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="setterlocal-var-int-number" id="1011" kind="command">
+<Label>i</Label>
+<Name>i</Name>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1012" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<AfterBlockId>1015</AfterBlockId>
+<BeforeBlockId>1007</BeforeBlockId>
+</Block>
+</BlockStub>
+<Block genus-name="difference" id="1012" kind="function">
+<Plug>
+<BlockConnector con-block-id="1011" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1013" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1014" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1013" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Plug>
+<BlockConnector con-block-id="1012" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1014" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1012" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="setterlocal-var-int-number" id="1015" kind="command">
+<Label>i</Label>
+<Name>i</Name>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1016" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<AfterBlockId>1019</AfterBlockId>
+<BeforeBlockId>1011</BeforeBlockId>
+</Block>
+</BlockStub>
+<Block genus-name="sum" id="1016" kind="function">
+<Plug>
+<BlockConnector con-block-id="1015" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1017" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1018" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1017" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Plug>
+<BlockConnector con-block-id="1016" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1018" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1016" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="setterlocal-var-int-number" id="1019" kind="command">
+<Label>i</Label>
+<Name>i</Name>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1020" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1015</BeforeBlockId>
+</Block>
+</BlockStub>
+<Block genus-name="difference" id="1020" kind="function">
+<Plug>
+<BlockConnector con-block-id="1019" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1021" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1022" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1021" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Plug>
+<BlockConnector con-block-id="1020" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1022" kind="data">
+<Label>1</Label>
+<Plug>
+<BlockConnector con-block-id="1020" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>

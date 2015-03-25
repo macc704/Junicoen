@@ -14,6 +14,7 @@ import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniContinue;
+import net.unicoen.node.UniDoWhile;
 import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIdent;
@@ -318,6 +319,11 @@ public class ToBlockEditorParser {
 				uniWhile.block = new UniBlock(args.get(1));
 			}
 			return uniWhile;
+		} else if("dowhile".equals(blockGenusName)){
+			UniDoWhile uniDoWhile = new UniDoWhile();
+			uniDoWhile.block = new UniBlock(args.get(0));
+			uniDoWhile.cond = args.get(1).get(0);
+			return uniDoWhile;
 		} else if ("continue".equals(blockGenusName)) {
 			return new UniContinue();
 		} else if ("break".equals(blockGenusName)) {

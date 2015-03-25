@@ -8,6 +8,7 @@ import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniStringLiteral;
+import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
 
 public class UniToBlockTestUtil {
@@ -24,6 +25,14 @@ public class UniToBlockTestUtil {
 		vdec.name = name;
 		vdec.type = type;
 		return vdec;
+	}
+
+	public static void createUnaryOpModel(List<UniExpr> blocks, String operator, UniExpr expr){
+		blocks.add(createUnaryOpModel(operator, expr));
+	}
+
+	public static UniUnaryOp createUnaryOpModel(String operator, UniExpr expr){
+		return new UniUnaryOp(operator, expr);
 	}
 
 	public static UniBinOp createBinOpModel(String operator, UniExpr left, UniExpr right){

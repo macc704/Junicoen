@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no" drawer-with-page="yes">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockDoWhile" page-width="1366">
+<PageBlocks>
+<Block genus-name="procedure" id="1000" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1001</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" is-expandable="yes" label="" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="local-var-int-number" id="1001" kind="local-variable">
+<Label>i</Label>
+<Type>int</Type>
+<Name>i</Name>
+<Location>
+<X>50</X>
+<Y>80</Y>
+</Location>
+<BeforeBlockId>1000</BeforeBlockId>
+<AfterBlockId>1003</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="number" id="1002" kind="data">
+<Label>0</Label>
+<Type>int</Type>
+<Location>
+<X>316</X>
+<Y>83</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="1001" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="dowhile" id="1003" kind="command">
+<Label>1回以上繰返</Label>
+<Location>
+<X>50</X>
+<Y>110</Y>
+</Location>
+<BeforeBlockId>1001</BeforeBlockId>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1007" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真の間" position-type="single"/>
+<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="Turtle-print[@string]" id="1007" kind="command">
+<Label>コンソールに出力する</Label>
+<Name>print</Name>
+<Location>
+<X>213</X>
+<Y>118</Y>
+</Location>
+<BeforeBlockId>1003</BeforeBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="string" id="1008" kind="data">
+<Label>Hello World</Label>
+<Type>String</Type>
+<Location>
+<X>355</X>
+<Y>121</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="1007" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="lessthan" id="1004" kind="function">
+<Label>&lt;</Label>
+<Location>
+<X>215</X>
+<Y>154</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="1003" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="number" init-type="number" label="" position-type="bottom"/>
+</Sockets>
+</Block>
+<BlockStub>
+<StubParentName>i</StubParentName>
+<StubParentGenus>local-var-int-number</StubParentGenus>
+<Block genus-name="getterlocal-var-int-number" id="1005" kind="data">
+<Label>i</Label>
+<Name>i</Name>
+<Location>
+<X>225</X>
+<Y>157</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="1004" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</BlockStub>
+<Block genus-name="number" id="1006" kind="data">
+<Label>1</Label>
+<Type>int</Type>
+<Location>
+<X>325</X>
+<Y>157</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="1004" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>

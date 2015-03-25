@@ -1,8 +1,18 @@
 package net.unicoen.parser.blockeditor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniClassDec;
+import net.unicoen.node.UniExpr;
+import net.unicoen.node.UniIdent;
+import net.unicoen.node.UniIntLiteral;
+import net.unicoen.node.UniMemberDec;
+import net.unicoen.node.UniMethodDec;
+import net.unicoen.node.UniUnaryOp;
+import net.unicoen.node.UniVariableDecWithValue;
 
 import org.junit.Test;
 
@@ -10,14 +20,36 @@ public class UniToBlockUnaryTest {
 
 	@Test
 	public void test() throws IOException {
-		UniClassDec dec = UniToBlockWhileTest.parseClass("Break");
-		
+		UniClassDec dec = new UniClassDec();
+		dec.className = "UniToBlockUnaryOperator";
+
+		List<UniMemberDec> members = new ArrayList<>();
+
+
+		List<UniExpr> body = new ArrayList<>();
+
+		UniVariableDecWithValue var =  new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(1));
+		body.add(var);
+
+		UniUnaryOp op = new UniUnaryOp("_++", new UniIdent(var.name));
+		body.add(op);
+
+		UniToBlockTestUtil.createUnaryOpModel(body, "_++", new UniIdent(var.name));
+		UniToBlockTestUtil.createUnaryOpModel(body, "_--", new UniIdent(var.name));
+		UniToBlockTestUtil.createUnaryOpModel(body, "++_", new UniIdent(var.name));
+		UniToBlockTestUtil.createUnaryOpModel(body, "--_", new UniIdent(var.name));
+
+		List<UniExpr> args = new ArrayList<>();
+		args.add(new UniIdent(var.name));
+
+
+		UniMethodDec method = new UniMethodDec("start", null, "void", null, new UniBlock(body));
+		members.add(method);
+
+		dec.members = members;
+
 		UniToBlockParser parser = new UniToBlockParser();
 		parser.parse(dec);
-
-		
-		UniClassDec contDec = UniToBlockWhileTest.parseClass("Continue");
-		parser.parse(contDec);
 
 	}
 
