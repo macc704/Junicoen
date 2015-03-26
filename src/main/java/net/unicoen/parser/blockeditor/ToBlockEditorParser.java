@@ -130,6 +130,18 @@ public class ToBlockEditorParser {
 			} else if (blockGenusName.startsWith("getter")) {
 				UniIdent ident = new UniIdent(getChildText(node, "Name"));
 				return ident;
+			} else if(blockGenusName.startsWith("preinc")){
+				UniUnaryOp op = new UniUnaryOp("++_", new UniIdent(getChildText(node, "Name")));
+				return op;
+			}else if(blockGenusName.startsWith("predec")){
+				UniUnaryOp op = new UniUnaryOp("--_", new UniIdent(getChildText(node, "Name")));
+				return op;
+			} else if(blockGenusName.startsWith("postinc")){
+				UniUnaryOp op = new UniUnaryOp("_++", new UniIdent(getChildText(node, "Name")));
+				return op;
+			} else if(blockGenusName.startsWith("postdec")){
+				UniUnaryOp op = new UniUnaryOp("_--", new UniIdent(getChildText(node, "Name")));
+				return op;
 			} else {
 				throw new RuntimeException("not supported data type:" + blockGenusName);
 			}

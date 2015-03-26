@@ -184,6 +184,30 @@
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
 		</Stub>
+		<Stub stub-genus="preincdouble">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="predecdouble">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="postincdouble">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="postdecdouble">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
 	</Stubs>
 	<LangSpecProperties>
 		<LangSpecProperty key="scope" value="local"></LangSpecProperty>
@@ -244,7 +268,7 @@
 			テキスト型のローカル変数を宣言します。変数名を設定してください。
 		</text>
 	</description>
-	<Type>String</Type>	
+	<Type>String</Type>
 	<BlockConnectors>
 		<BlockConnector label="初期値" connector-kind="socket"
 			connector-type="string">
@@ -310,7 +334,7 @@
 	</LangSpecProperties>
 </BlockGenus>
 
-  
+
 <BlockGenus name="private-var-int-number" kind="global-variable"
 	initlabel="i" header-label="int型のインスタンス変数を作り、" footer-label="と名付ける"
 	editable-label="yes" label-unique="yes" color="230 0 255">
@@ -479,7 +503,7 @@
 		<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
 		<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
 	</LangSpecProperties>
-</BlockGenus>	
+</BlockGenus>
 
 
 <BlockGenus name="private-final-var-int-number" kind="global-variable"
@@ -662,7 +686,7 @@
 				<LangSpecProperty key="vm-cmd-name" value="eval-setlocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
-		</Stub>		
+		</Stub>
 	</Stubs>
 	<LangSpecProperties>
 		<LangSpecProperty key="scope" value="global"></LangSpecProperty>

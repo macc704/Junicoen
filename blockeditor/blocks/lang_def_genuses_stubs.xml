@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Stub Genuses Do not remove unless you would like to remove the stub 
+<!-- Stub Genuses Do not remove unless you would like to remove the stub
 	feature all together -->
 <!-- 動的ブロックについて、生成したいファクトリーをここで指定する。BlockGenusタグで「factorys="○○"」と指定する。複数のファクトリーに生成したい場合は、「,」で区切る。 -->
 
@@ -154,6 +154,47 @@
         <BlockConnector label="なにを？" connector-kind="socket" connector-type="poly"/>
 	</BlockConnectors>
 </BlockGenus>
+
+<BlockGenus name="preinc" kind="data" initlabel="" color="0 0 0" label-suffix="の値を1増やして，その値">
+	<BlockConnectors>
+		<BlockConnector connector-kind="plug" connector-type="number"
+			position-type="mirror"></BlockConnector>
+	</BlockConnectors>
+	<LangSpecProperties>
+		<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+	</LangSpecProperties>
+</BlockGenus>
+
+<BlockGenus name="predec" kind="data" initlabel="" color="0 0 0" label-suffix="の値を1減らして，その値">
+	<BlockConnectors>
+		<BlockConnector connector-kind="plug" connector-type="number"
+			position-type="mirror"></BlockConnector>
+	</BlockConnectors>
+	<LangSpecProperties>
+		<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+	</LangSpecProperties>
+</BlockGenus>
+
+<BlockGenus name="postinc" kind="data" initlabel="" color="0 0 0" label-suffix="の値を参照してから1増やす">
+	<BlockConnectors>
+		<BlockConnector connector-kind="plug" connector-type="number"
+			position-type="mirror"></BlockConnector>
+	</BlockConnectors>
+	<LangSpecProperties>
+		<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+	</LangSpecProperties>
+</BlockGenus>
+
+<BlockGenus name="postdec" kind="data" initlabel="" color="0 0 0" label-suffix="の値を参照してから1減らす">
+	<BlockConnectors>
+		<BlockConnector connector-kind="plug" connector-type="number"
+			position-type="mirror"></BlockConnector>
+	</BlockConnectors>
+	<LangSpecProperties>
+		<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+	</LangSpecProperties>
+</BlockGenus>
+
 
 
 <!--  以下，必要かどうか不明 -->
