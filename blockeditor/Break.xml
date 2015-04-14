@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
+<Pages collapsible-pages="no">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="" page-width="1366">
+<PageBlocks>
+<Block genus-name="continue" id="147" kind="command">
+<Label>繰返継続</Label>
+<Location>
+<X>225</X>
+<Y>162</Y>
+</Location>
+<BeforeBlockId>138</BeforeBlockId>
+</Block>
+<Block genus-name="Turtle-print[@string]" id="144" kind="command">
+<Label>コンソールに出力する</Label>
+<Name>print</Name>
+<Location>
+<X>104</X>
+<Y>196</Y>
+</Location>
+<BeforeBlockId>138</BeforeBlockId>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="145" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="string" id="145" kind="data">
+<Label>Hello World</Label>
+<Location>
+<X>246</X>
+<Y>199</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="144" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="true" id="142" kind="data">
+<Label>真</Label>
+<Location>
+<X>228</X>
+<Y>133</Y>
+</Location>
+<Plug>
+<BlockConnector con-block-id="138" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="while" id="138" kind="command">
+<Label>繰返</Label>
+<Location>
+<X>104</X>
+<Y>130</Y>
+</Location>
+<BeforeBlockId>136</BeforeBlockId>
+<AfterBlockId>144</AfterBlockId>
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="142" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
+<BlockConnector con-block-id="147" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真の間" position-type="single"/>
+</Sockets>
+</Block>
+<Block genus-name="procedure" id="136" kind="procedure">
+<Label>start</Label>
+<Location>
+<X>104</X>
+<Y>100</Y>
+</Location>
+<AfterBlockId>138</AfterBlockId>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" is-expandable="yes" label="" position-type="single"/>
+</Sockets>
+</Block>
+</PageBlocks>
+</Page>
+</Pages>
+</cb:CODEBLOCKS>
