@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 
 public class BlockNameResolver {
 
-	private static String path = "blockeditor/blocks/";
+	private static String path = "ext/blocks/";
 
 	private Map<String, String> turtleMethods = new HashMap<String, String>();
 	private Map<String, Node> allAvailableBlocks = new HashMap<String, Node>();

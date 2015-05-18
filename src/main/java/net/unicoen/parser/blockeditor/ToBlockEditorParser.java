@@ -13,6 +13,7 @@ import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniBreak;
+import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniContinue;
 import net.unicoen.node.UniDoWhile;
 import net.unicoen.node.UniDoubleLiteral;
@@ -20,9 +21,9 @@ import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
+import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
@@ -41,7 +42,13 @@ public class ToBlockEditorParser {
 
 	private static VariableNameResolver variableResolver = new VariableNameResolver();
 
-	public static List<UniNode> parse(File xmlFile) {
+	public static UniClassDec parse(File xmlFile) {
+
+		UniClassDec classDec = new UniClassDec();
+		classDec.className = getPageNameFromXML(xmlFile);
+		classDec.modifiers = new ArrayList<String>();
+		classDec.modifiers.add("");
+
 		Node pageBlock = getRooteNote(xmlFile);
 		HashMap<String, Node> map = new HashMap<>();
 		ArrayList<Node> procs = new ArrayList<>();
@@ -61,10 +68,13 @@ public class ToBlockEditorParser {
 			}
 		}
 
-		List<UniNode> ret = new ArrayList<>();
+		List<UniMemberDec> ret = new ArrayList<>();
 		for (Node procNode : procs) {
 			UniMethodDec d = new UniMethodDec();
 			d.methodName = getChildText(procNode, "Label");
+			d.modifiers = new ArrayList<>();
+			d.modifiers.add("");
+			d.returnType = "void";
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");
@@ -76,8 +86,23 @@ public class ToBlockEditorParser {
 			ret.add(d);
 			variableResolver.resetLocalVariables();
 		}
-		return ret;
+
+		classDec.members = ret;
+
+		return classDec;
 	}
+
+	public static String getPageNameFromXML(File xmlFile){
+		Document d = toXmlDoc(xmlFile);
+
+		NodeList list = d.getElementsByTagName("Page");
+		if(list == null){
+			throw new RuntimeException("page load error!");
+		}
+
+		return getAttribute(list.item(0), "page-name");
+	}
+
 
 	private static List<UniExpr> parseBody(Node bodyNode, HashMap<String, Node> map) {
 		List<UniExpr> body = new ArrayList<>();

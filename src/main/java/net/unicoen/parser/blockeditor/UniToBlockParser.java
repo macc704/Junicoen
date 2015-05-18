@@ -1,8 +1,10 @@
 package net.unicoen.parser.blockeditor;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,21 +68,47 @@ public class UniToBlockParser {
 	private VariableNameResolver vnResolver = new VariableNameResolver();
 
 	private static Map<String, Element> addedModels = new HashMap<String, Element>();
+	private String projectPath;
 
 	public UniToBlockParser() {
 		resolver = new BlockNameResolver();
+	}
+
+	public void setProjectPath(String path){
+		this.projectPath = path;
 	}
 
 	public static Map<String, Element> getAddedModels() {
 		return addedModels;
 	}
 
-	public void parse(UniClassDec classDec) throws IOException {
+	/*
+	 * Unicoenモデルを解析し、xmlファイルを作成し返す
+	 */
+	public File parse(UniClassDec classDec) throws IOException {
 		// クラス名のxmlファイルを作成する
 		addedModels.clear(); // cashクリア
 
-		File file = new File("blockEditor/" + classDec.className + ".xml");
+		File file = new File(projectPath + classDec.className + ".xml");
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+		try {
+			writer.write(getSaveString(classDec));
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+		return file;
+	}
 
+	public File parse(UniClassDec classDec, String path) throws IOException {
+		// クラス名のxmlファイルを作成する
+		addedModels.clear(); // cashクリア
+
+		File file = new File(path + classDec.className + ".xml");
 		FileWriter fileWriter = null;
 		try {
 			fileWriter = new FileWriter(file);
@@ -90,6 +118,7 @@ public class UniToBlockParser {
 				fileWriter.close();
 			}
 		}
+		return file;
 	}
 
 	public void parseClass(UniClassDec classDec, Document document, Element pageElement) {
