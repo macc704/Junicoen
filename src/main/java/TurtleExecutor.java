@@ -13,9 +13,11 @@ public class TurtleExecutor {
 		public void start() {
 			while (!finished) {
 				nextCommand.accept(this);
+				// Inform the finish of the current command to the main thread
 				synchronized (lock) {
 					lock.notify();
 				}
+				// Wait for a next command
 				synchronized (lock) {
 					try {
 						lock.wait();
@@ -45,9 +47,11 @@ public class TurtleExecutor {
 
 	private void privateDoCommand(Consumer<Turtle> command) {
 		nextCommand = command;
+		// Inform the receive of a next command to the turtle thread
 		synchronized (lock) {
 			lock.notify();
 		}
+		// Wait for the turtle's move
 		try {
 			synchronized (lock) {
 				lock.wait();
@@ -59,6 +63,7 @@ public class TurtleExecutor {
 
 	public static void finish() {
 		executor.finished = true;
+		// Inform the termination to the turtle thread
 		synchronized (executor.lock) {
 			executor.lock.notify();
 		}
