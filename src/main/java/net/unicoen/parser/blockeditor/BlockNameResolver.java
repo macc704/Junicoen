@@ -14,13 +14,21 @@ import org.xml.sax.SAXException;
 
 public class BlockNameResolver {
 
-	private static String path = "ext/blocks/";
+	private String path = "ext/blocks/";
 
 	private Map<String, String> turtleMethods = new HashMap<String, String>();
 	private Map<String, Node> allAvailableBlocks = new HashMap<String, Node>();
 
 
 	public BlockNameResolver(){
+		parseGnuses();
+		parseTurtleXml();
+	}
+
+	public BlockNameResolver(boolean isUseAtUNICOEN){
+		if(isUseAtUNICOEN){
+			path = "blockeditor/blocks/";
+		}
 		parseGnuses();
 		parseTurtleXml();
 	}

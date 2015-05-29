@@ -23,19 +23,9 @@ public class ParseTest {
 		String file = "hello.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		assertTrue(list != null);
-		assertEquals(2, list.size());
 
-		assertTrue(list.get(0) instanceof UniMethodDec);
-
-
-		UniClassDec dec = new UniClassDec();
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
 		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
-		
 
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

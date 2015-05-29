@@ -24,28 +24,24 @@ public class UniToBlockTurtlesTest {
 		String file = "Turtles.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
 
 		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+
 		// --------------------------
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		engine.out = new PrintStream(baos);
-		
+
 		dec.className = "UniToBlockTurtle";
-		
+
 		engine.execute(dec);
 		String output = baos.toString("UTF8");
 
 		String expect = "F50B50R90L90";
 		assertEquals(expect, output);
-		
+
 		UniToBlockParser parser = new UniToBlockParser();
-		parser.parse(dec);	
+		parser.parse(dec);
 		}
 
 }

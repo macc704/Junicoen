@@ -24,30 +24,24 @@ public class UniToBlockIfElseTest {
 		String file = "IfElse.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
-		
-		
+
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		engine.out = new PrintStream(baos);
-		
+
 		dec.className = "UniToBlockIfElse";
-		
+
 		engine.execute(dec);
 		String output = baos.toString("UTF8");
-		
+
 		String expect = "Hello World" + System.lineSeparator() + "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
-		
+
 		UniToBlockParser parser = new UniToBlockParser();
 		parser.parse(dec);
-		
+
 	}
 
 }

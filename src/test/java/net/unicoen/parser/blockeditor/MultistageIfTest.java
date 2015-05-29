@@ -25,26 +25,10 @@ public class MultistageIfTest {
 		String file = "MultistageIf.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		assertTrue(list != null);
-		assertEquals(1, list.size());
 
-		assertTrue(list.get(0) instanceof UniMethodDec);
-		
-		
-		UniMethodDec fdec = (UniMethodDec) list.get(0);
-		assertEquals("start", fdec.methodName);
-		
-		assertTrue(fdec.block.body.get(0) instanceof UniIf);
-		UniIf ifstmt = (UniIf)fdec.block.body.get(0);
-		
-		assertTrue(ifstmt.cond instanceof UniBoolLiteral);
-		
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+
 		// --------------------------
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

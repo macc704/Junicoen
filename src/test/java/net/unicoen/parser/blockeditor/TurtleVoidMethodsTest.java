@@ -21,16 +21,9 @@ public class TurtleVoidMethodsTest {
 		String file = "TurtleVoidMethods.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
 
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
 
-
-		
 		UniMethodDec startMethod = (UniMethodDec) dec.members.get(0);
 
 		String[] expecteds = new String[startMethod.block.body.size()];
@@ -54,7 +47,7 @@ public class TurtleVoidMethodsTest {
 		expecteds[17] = "hide";
 		expecteds[18] = "update";
 		expecteds[19] = "sleep";
-		
+
 		for (int i = 0; i < startMethod.block.body.size(); i++) {
 			assertEquals(expecteds[i], ((UniMethodCall) startMethod.block.body.get(i)).methodName);
 		}

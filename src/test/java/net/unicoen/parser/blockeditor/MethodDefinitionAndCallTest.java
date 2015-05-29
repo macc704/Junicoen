@@ -21,30 +21,9 @@ public class MethodDefinitionAndCallTest {
 		String file = "MethodDefinitionAndCall.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		
-		assertTrue(list != null);
-		assertEquals(2, list.size());
-		
-		for(UniNode node : list){
-			UniMethodDec func = (UniMethodDec)node;
-			if(func.methodName.equals("start")){
-				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
-				assertEquals("helloWorld", ((UniMethodCall)func.block.body.get(0)).methodName);
-			}
-			
-			if(func.methodName.equals("helloWorld")){
-				assertTrue(func.block.body.get(0) instanceof UniMethodCall);
-				assertEquals("print", ((UniMethodCall)func.block.body.get(0)).methodName);
-			}
-			
-		}
-		
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+
 
 	}
 

@@ -18,13 +18,9 @@ public class DoWhile {
 		String file = "DoWhile.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
 
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);;
 
 		UniToBlockParser parser= new UniToBlockParser();
 		dec.className = "DoWhileBack";

@@ -25,21 +25,10 @@ public class LocalVarDec {
 		String file = "LocalVardec.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		assertTrue(list != null);
-		assertEquals(1, list.size());
 
-		assertTrue(list.get(0) instanceof UniMethodDec);
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
 
-
-		UniMethodDec fdec = (UniMethodDec) list.get(0);
-		assertEquals("start", fdec.methodName);
-
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
+		UniMethodDec fdec = (UniMethodDec) dec.members.get(0);
 		//int
 		assertTrue(fdec.block.body.get(0) instanceof UniVariableDec);
 		if(fdec.block.body.get(0) instanceof UniVariableDec){

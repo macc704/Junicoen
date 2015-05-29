@@ -20,42 +20,37 @@ public class UniToBlockWhileTest {
 
 	@Test
 	public void test() throws IOException {
-		
+
 		UniClassDec dec = parseClass("While");
 
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		engine.out = new PrintStream(baos);
-	
-		
+
+
 		engine.execute(dec);
-		
-		String output = baos.toString("UTF8");		
+
+		String output = baos.toString("UTF8");
 		String expect = "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
-		
-		
+
+
 		UniToBlockParser parser = new UniToBlockParser();
 		parser.parse(dec);
 	}
-	
-	
+
+
 	public static UniClassDec parseClass(String fileName){
 		String file = fileName +  ".xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMethodDec) node);
-		}
-		
+
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+
 		dec.className = "UniToBlock" + fileName;
-		
+
 		return dec;
 	}
-	
+
 
 }

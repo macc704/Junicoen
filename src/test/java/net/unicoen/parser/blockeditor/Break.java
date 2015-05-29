@@ -23,26 +23,9 @@ public class Break {
 		String file = "Break.xml";
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
-		List<UniNode> list = ToBlockEditorParser.parse(targetXml);
-		assertTrue(list != null);
-		assertEquals(1, list.size());
 
-		assertTrue(list.get(0) instanceof UniMethodDec);
-		
-		
-		UniMethodDec fdec = (UniMethodDec) list.get(0);
-		assertEquals("start", fdec.methodName);
-		
-		UniClassDec dec = new UniClassDec();
-		dec.members = new ArrayList<>();
-		for (UniNode node : list) {
-			dec.members.add((UniMemberDec) node);
-		}
-		
-		if(fdec.block.body.get(0) instanceof UniWhile){
-			UniWhile uniWhile = (UniWhile)fdec.block.body.get(0);
-			assertTrue(uniWhile.block.body.get(0) instanceof UniContinue);
-		}		
+		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+
 	}
 
 }

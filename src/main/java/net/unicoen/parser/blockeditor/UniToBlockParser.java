@@ -74,7 +74,11 @@ public class UniToBlockParser {
 		resolver = new BlockNameResolver();
 	}
 
-	public void setProjectPath(String path){
+	public UniToBlockParser(boolean isUseAtUNICOEN) {
+		resolver = new BlockNameResolver(isUseAtUNICOEN);
+	}
+
+	public void setProjectPath(String path) {
 		this.projectPath = path;
 	}
 
@@ -90,7 +94,7 @@ public class UniToBlockParser {
 		addedModels.clear(); // cashクリア
 
 		File file = new File(projectPath + classDec.className + ".xml");
-		if(!file.exists()){
+		if (!file.exists()) {
 			file.createNewFile();
 		}
 		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
@@ -121,11 +125,13 @@ public class UniToBlockParser {
 		return file;
 	}
 
+	/*
+	 * クラスの解析
+	 */
 	public void parseClass(UniClassDec classDec, Document document, Element pageElement) {
 		for (UniMemberDec member : classDec.members) {
-			if (member instanceof UniMethodDec) {
-				parseFunctionDec((UniMethodDec) member, document, pageElement);
-			}
+			//フィールドメソッドの解析
+			parseFunctionDec((UniMethodDec) member, document, pageElement);
 		}
 	}
 
@@ -193,6 +199,9 @@ public class UniToBlockParser {
 		blocks.addAll(elements);
 	}
 
+	/*
+	 * 関数の解析
+	 */
 	public void parseFunctionDec(UniMethodDec funcDec, Document document, Element pageElement) {
 		List<Element> blocks = new ArrayList<Element>();
 		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++,
@@ -619,11 +628,13 @@ public class UniToBlockParser {
 				Element blockElement = createVariableBlockNode(document, genusName, ident.name,
 						"command");
 
-				List<Node> socketNodes = resolver.getSocketNodes(genusName.substring("setter".length(),genusName.length()));
+				List<Node> socketNodes = resolver.getSocketNodes(genusName.substring(
+						"setter".length(), genusName.length()));
 
 				Map<String, String[]> sockets = calcSocketsInfo(socketNodes);
 
-				List<Element> right = parseExpr((UniExpr) (new UniBinOp(operator, new UniIdent(ident.name), new UniIntLiteral(1))), document, blockElement);
+				List<Element> right = parseExpr((UniExpr) (new UniBinOp(operator, new UniIdent(
+						ident.name), new UniIntLiteral(1))), document, blockElement);
 
 				List<Element> rightElement = new ArrayList<>();
 				rightElement.add(right.get(0));
@@ -637,23 +648,26 @@ public class UniToBlockParser {
 				elements.addAll(right);
 				return elements;
 			} else {
-				if(uniOp.operator.equals("_++")){
+				if (uniOp.operator.equals("_++")) {
 					genusName = "postinc";
-				} else if(uniOp.operator.equals("_--")){
+				} else if (uniOp.operator.equals("_--")) {
 					genusName = "postdec";
-				} else if(uniOp.operator.equals("++_")){
+				} else if (uniOp.operator.equals("++_")) {
 					genusName = "preinc";
-				}else{
+				} else {
 					genusName = "predec";
 				}
 
-				if(!getExprType(uniOp.expr).equals("int")){
+				if (!getExprType(uniOp.expr).equals("int")) {
 					genusName += "double";
 				}
 
-				Element blockStubElement = createBlockStubNode(document, ident.name, ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
+				Element blockStubElement = createBlockStubNode(document, ident.name,
+						ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
 				// Blockノード作成
-				Element blockElement = createVariableBlockNode(document, genusName + ToBlockEditorParser.getAttribute(varDecNode, "genus-name"), ident.name, "command");
+				Element blockElement = createVariableBlockNode(document, genusName
+						+ ToBlockEditorParser.getAttribute(varDecNode, "genus-name"), ident.name,
+						"command");
 
 				// BlockStubノードにBlockノードを追加する
 				blockStubElement.appendChild(blockElement);
@@ -963,7 +977,7 @@ public class UniToBlockParser {
 	public Element createLiteralElement(Document document, Node parent, String genusName,
 			String label, int hash) {
 		Element blockElement = createBlockElement(document, genusName, ID_COUNTER++,
-				ToBlockEditorParser.getAttribute(resolver.getBlockNode(genusName), "kind"));
+		ToBlockEditorParser.getAttribute(resolver.getBlockNode(genusName), "kind"));
 
 		addElement("Label", document, label, blockElement);
 
@@ -979,13 +993,22 @@ public class UniToBlockParser {
 	}
 
 	public List<Element> parseIf(UniIf ifexpr, Document document, Node parent) {
+		//BlockModelのifモデルを作成する．（Xml Element）
+		Element ifElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
+
+		//Universal Modelの条件式，真ブロック式，偽ブロック式をそれぞれ解析し，BlockModel（xml Element）を作成する
+		List<Element> sockets = parseExpr(ifexpr.cond, document, ifElement);
+		List<Element> trueBlock = parseBody(document, ifElement, ifexpr.trueBlock);
+		List<Element> falseBlock = parseBody(document, ifElement, ifexpr.falseBlock);
+
+        addedModels.put(Integer.toString(((UniNode) ifexpr).hashCode()), ifElement);
+
+		//if式のBlockModel（ifモデル，条件式モデル，真ブロックモデル，偽ブロックモデル）を返す
+		return createBlockIfModel(ifElement, document, parent, sockets, trueBlock, falseBlock);
+	}
+
+	public List<Element> createBlockIfModel(Element blockElement, Document document, Node parent, List<Element> sockets, List<Element> trueBlock, List<Element> falseBlock){
 		List<Element> elements = new ArrayList<Element>();
-		Element blockElement = createBlockElement(document, "ifelse", ID_COUNTER++, "command");
-
-		List<Element> sockets = parseExpr(ifexpr.cond, document, blockElement);
-		List<Element> trueBlock = parseBody(document, blockElement, ifexpr.trueBlock);
-		List<Element> falseBlock = parseBody(document, blockElement, ifexpr.falseBlock);
-
 		// 各ソケットの先頭ブロックを保持する 変換に利用する情報
 		List<Element> blockSockets = new ArrayList<>();
 
@@ -1009,15 +1032,13 @@ public class UniToBlockParser {
 		Map<String, String[]> socketsInfo = calcSocketsInfo(ifSocketNodes);
 
 		// ソケットの出力
-		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"),
-				socketsInfo.get("position-type"), socketsInfo.get("label"));
+		addSocketsNode(blockSockets, document, blockElement, socketsInfo.get("connector-type"),socketsInfo.get("position-type"), socketsInfo.get("label"));
 
 		elements.add(blockElement);
 		elements.addAll(sockets);
 		elements.addAll(trueBlock);
 		elements.addAll(falseBlock);
 
-		addedModels.put(Integer.toString(((UniNode) ifexpr).hashCode()), blockElement);
 
 		return elements;
 	}
