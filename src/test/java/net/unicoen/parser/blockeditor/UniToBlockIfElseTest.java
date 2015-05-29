@@ -1,18 +1,14 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -21,11 +17,12 @@ public class UniToBlockIfElseTest {
 	@Test
 	public void test() throws IOException {
 
-		String file = "IfElse.xml";
-		String filePath = "blockeditor/" + file;
+		String fileName = "IfElse.xml";
+		String filePath = "blockeditor/" + fileName;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -39,7 +36,12 @@ public class UniToBlockIfElseTest {
 		String expect = "Hello World" + System.lineSeparator() + "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
 
-		UniToBlockParser parser = new UniToBlockParser();
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);
 
 	}

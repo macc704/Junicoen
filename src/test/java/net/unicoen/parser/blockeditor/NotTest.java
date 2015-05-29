@@ -25,8 +25,8 @@ public class NotTest {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
-		dec.members = new ArrayList<>();
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		// --------------------------
 		Engine engine = new Engine();

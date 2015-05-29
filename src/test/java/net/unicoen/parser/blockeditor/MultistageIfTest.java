@@ -27,7 +27,8 @@ public class MultistageIfTest {
 		File targetXml = new File(filePath);
 
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		// --------------------------
 		Engine engine = new Engine();

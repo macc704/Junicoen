@@ -1,10 +1,9 @@
 package net.unicoen.parser.blockeditor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +53,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class UniToBlockParser {
+public class BlockGenerator {
 
 	/** Name space definition */
 	private static String XML_CODEBLOCKS_NS = "http://education.mit.edu/openblocks/ns";
@@ -70,11 +69,14 @@ public class UniToBlockParser {
 	private static Map<String, Element> addedModels = new HashMap<String, Element>();
 	private String projectPath;
 
-	public UniToBlockParser() {
-		resolver = new BlockNameResolver();
+	private PrintStream out;
+
+	public BlockGenerator(PrintStream out) {
+		this.out = out;
+		resolver = new BlockNameResolver(true);
 	}
 
-	public UniToBlockParser(boolean isUseAtUNICOEN) {
+	public BlockGenerator(boolean isUseAtUNICOEN) {
 		resolver = new BlockNameResolver(isUseAtUNICOEN);
 	}
 
@@ -97,14 +99,10 @@ public class UniToBlockParser {
 		if (!file.exists()) {
 			file.createNewFile();
 		}
-		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-		try {
-			writer.write(getSaveString(classDec));
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+		out.print(getSaveString(classDec));
+
+		out.close();
+
 		return file;
 	}
 
@@ -192,7 +190,7 @@ public class UniToBlockParser {
 	}
 
 	public void addBlockElements(List<Element> blocks, List<Element> elements) {
-		// 抽象化ブロックだけ順番が逆...
+		// 抽象化ブロックだけ逆順に出力する
 		if (elements.get(0).getAttribute("genus-name").equals("abstraction")) {
 			Collections.reverse(elements);
 		}
@@ -204,8 +202,7 @@ public class UniToBlockParser {
 	 */
 	public void parseFunctionDec(UniMethodDec funcDec, Document document, Element pageElement) {
 		List<Element> blocks = new ArrayList<Element>();
-		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++,
-				"procedure");
+		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++, "procedure");
 
 		addElement("Label", document, funcDec.methodName, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
@@ -247,8 +244,8 @@ public class UniToBlockParser {
 
 	public String getBlockAttibuteByElement(Element element, String attributeName) {
 		if (element.getNodeName().equals("BlockStub")) {
-			Node blockNode = ToBlockEditorParser.getChildNode(element, "Block");
-			return ToBlockEditorParser.getAttribute(blockNode, attributeName);
+			Node blockNode = BlockMapper.getChildNode(element, "Block");
+			return BlockMapper.getAttribute(blockNode, attributeName);
 		} else {
 			return element.getAttribute(attributeName);
 		}
@@ -259,7 +256,7 @@ public class UniToBlockParser {
 		element.setTextContent(id);
 
 		if (blockNode.getNodeName().equals("BlockStub")) {
-			ToBlockEditorParser.getChildNode(blockNode, "Block").appendChild(element);
+			BlockMapper.getChildNode(blockNode, "Block").appendChild(element);
 		} else {
 			blockNode.appendChild(element);
 		}
@@ -270,7 +267,7 @@ public class UniToBlockParser {
 		element.setTextContent(id);
 
 		if (blockNode.getNodeName().equals("BlockStub")) {
-			ToBlockEditorParser.getChildNode(blockNode, "Block").appendChild(element);
+			BlockMapper.getChildNode(blockNode, "Block").appendChild(element);
 		} else {
 			blockNode.appendChild(element);
 		}
@@ -300,8 +297,7 @@ public class UniToBlockParser {
 		} else if (expr instanceof UniUnaryOp) {
 			return parseUnaryOperator((UniUnaryOp) expr, document, parent);
 		} else if (expr instanceof UniVariableDec) {
-			return parseVarDec(((UniVariableDec) expr).type, ((UniVariableDec) expr).name,
-					document, parent);
+			return parseVarDec(((UniVariableDec) expr).type, ((UniVariableDec) expr).name, document, parent);
 		} else if (expr instanceof UniVariableDecWithValue) {
 			return parseVarDec((UniVariableDecWithValue) expr, document, parent);
 		} else if (expr instanceof UniIdent) {
@@ -328,17 +324,17 @@ public class UniToBlockParser {
 		List<Element> elements = new ArrayList<>();
 		if (varDecNode != null) {
 			String genusName = "getter";
-			genusName += ToBlockEditorParser.getAttribute(varDecNode, "genus-name");
+			genusName += BlockMapper.getAttribute(varDecNode, "genus-name");
 			// BlockStubノード作成
 			Element stubElement = createBlockStubNode(document, expr.name,
-					ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
+					BlockMapper.getAttribute(varDecNode, "genus-name"));
 			// Blockノード作成
 			Element blockElement = createVariableBlockNode(document, genusName, expr.name, "data");
 
 			List<Node> socketNodes = resolver.getSocketNodes(genusName.substring("setter".length(),
 					genusName.length()));
 			addPlugElement(document, blockElement, parent,
-					ToBlockEditorParser.getAttribute(socketNodes.get(0), "connector-type"),
+					BlockMapper.getAttribute(socketNodes.get(0), "connector-type"),
 					"mirror");
 
 			stubElement.appendChild(blockElement);
@@ -471,10 +467,10 @@ public class UniToBlockParser {
 			String[] socketPositionTypes = new String[socketNodes.size()];
 
 			for (int i = 0; i < socketNodes.size(); i++) {
-				socketLabels[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i), "label");
-				socketTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i),
+				socketLabels[i] = BlockMapper.getAttribute(socketNodes.get(i), "label");
+				socketTypes[i] = BlockMapper.getAttribute(socketNodes.get(i),
 						"connector-type");
-				socketPositionTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i),
+				socketPositionTypes[i] = BlockMapper.getAttribute(socketNodes.get(i),
 						"position-type");
 			}
 
@@ -496,10 +492,10 @@ public class UniToBlockParser {
 			String[] socketPositionTypes = new String[socketNodes.size()];
 
 			for (int i = 0; i < socketNodes.size(); i++) {
-				socketLabels[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i), "label");
-				socketTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i),
+				socketLabels[i] = BlockMapper.getAttribute(socketNodes.get(i), "label");
+				socketTypes[i] = BlockMapper.getAttribute(socketNodes.get(i),
 						"connector-type");
-				socketPositionTypes[i] = ToBlockEditorParser.getAttribute(socketNodes.get(i),
+				socketPositionTypes[i] = BlockMapper.getAttribute(socketNodes.get(i),
 						"position-type");
 			}
 
@@ -521,9 +517,9 @@ public class UniToBlockParser {
 			String socketTypes;
 			String socketPositionTypes;
 
-			plugLabel = ToBlockEditorParser.getAttribute(plugNode, "label");
-			socketTypes = ToBlockEditorParser.getAttribute(plugNode, "connector-type");
-			socketPositionTypes = ToBlockEditorParser.getAttribute(plugNode, "position-type");
+			plugLabel = BlockMapper.getAttribute(plugNode, "label");
+			socketTypes = BlockMapper.getAttribute(plugNode, "connector-type");
+			socketPositionTypes = BlockMapper.getAttribute(plugNode, "position-type");
 
 			socketsInfo.put("label", plugLabel);
 			socketsInfo.put("connector-type", socketTypes);
@@ -619,11 +615,11 @@ public class UniToBlockParser {
 				}
 			}
 			if (parent == null) {
-				genusName += ToBlockEditorParser.getAttribute(varDecNode, "genus-name");
+				genusName += BlockMapper.getAttribute(varDecNode, "genus-name");
 				// 代入演算右(i+1, i-1)
 				// BlockStubノード作成
 				Element blockStubElement = createBlockStubNode(document, ident.name,
-						ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
+						BlockMapper.getAttribute(varDecNode, "genus-name"));
 				// Blockノード作成
 				Element blockElement = createVariableBlockNode(document, genusName, ident.name,
 						"command");
@@ -663,10 +659,10 @@ public class UniToBlockParser {
 				}
 
 				Element blockStubElement = createBlockStubNode(document, ident.name,
-						ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
+						BlockMapper.getAttribute(varDecNode, "genus-name"));
 				// Blockノード作成
 				Element blockElement = createVariableBlockNode(document, genusName
-						+ ToBlockEditorParser.getAttribute(varDecNode, "genus-name"), ident.name,
+						+ BlockMapper.getAttribute(varDecNode, "genus-name"), ident.name,
 						"command");
 
 				// BlockStubノードにBlockノードを追加する
@@ -717,10 +713,10 @@ public class UniToBlockParser {
 						throw new RuntimeException(ident.name + " is not defined");
 					}
 				}
-				genusName += ToBlockEditorParser.getAttribute(varDecNode, "genus-name");
+				genusName += BlockMapper.getAttribute(varDecNode, "genus-name");
 				// BlockStubノード作成
 				Element blockStubElement = createBlockStubNode(document, ident.name,
-						ToBlockEditorParser.getAttribute(varDecNode, "genus-name"));
+						BlockMapper.getAttribute(varDecNode, "genus-name"));
 
 				// Blockノード作成
 				blockElement = createVariableBlockNode(document, genusName, ident.name, "command");
@@ -840,8 +836,8 @@ public class UniToBlockParser {
 		Node plugNode = resolver.getPlugElement(blockElement.getAttribute("genus-name"));
 
 		addPlugElement(document, blockElement, parent,
-				ToBlockEditorParser.getAttribute(plugNode, "connector-type"),
-				ToBlockEditorParser.getAttribute(plugNode, "position-type"));
+				BlockMapper.getAttribute(plugNode, "connector-type"),
+				BlockMapper.getAttribute(plugNode, "position-type"));
 
 		List<Element> leftBlocks = parseExpr(binopExpr.left, document, blockElement);
 		List<Element> rightBlocks = parseExpr(binopExpr.right, document, blockElement);
@@ -906,7 +902,7 @@ public class UniToBlockParser {
 		} else if (expr instanceof UniMethodCall) {
 			throw new RuntimeException("not supported yet");
 		} else if (expr instanceof UniIdent) {
-			type = ToBlockEditorParser.getChildNode(
+			type = BlockMapper.getChildNode(
 					vnResolver.getVariableNode(((UniIdent) expr).name), "Type").getTextContent();
 		} else if (expr instanceof UniBinOp) {
 			type = getExprType(((UniBinOp) expr).left, ((UniBinOp) expr).right);
@@ -963,11 +959,11 @@ public class UniToBlockParser {
 		List<Element> elements = new ArrayList<Element>();
 		if (boolexpr.value) {
 			elements.add(createLiteralElement(document, parent, "true",
-					ToBlockEditorParser.getAttribute(resolver.getBlockNode("true"), "initlabel"),
+					BlockMapper.getAttribute(resolver.getBlockNode("true"), "initlabel"),
 					boolexpr.hashCode()));
 		} else {
 			elements.add(createLiteralElement(document, parent, "false",
-					ToBlockEditorParser.getAttribute(resolver.getBlockNode("false"), "initlabel"),
+					BlockMapper.getAttribute(resolver.getBlockNode("false"), "initlabel"),
 					boolexpr.hashCode()));
 		}
 
@@ -977,7 +973,7 @@ public class UniToBlockParser {
 	public Element createLiteralElement(Document document, Node parent, String genusName,
 			String label, int hash) {
 		Element blockElement = createBlockElement(document, genusName, ID_COUNTER++,
-		ToBlockEditorParser.getAttribute(resolver.getBlockNode(genusName), "kind"));
+		BlockMapper.getAttribute(resolver.getBlockNode(genusName), "kind"));
 
 		addElement("Label", document, label, blockElement);
 
@@ -1070,7 +1066,7 @@ public class UniToBlockParser {
 		Element blockConnectorNode = document.createElement("BlockConnector");
 
 		blockConnectorNode.setAttribute("con-block-id",
-				ToBlockEditorParser.getAttribute(parentBlockNode, "id"));
+				BlockMapper.getAttribute(parentBlockNode, "id"));
 		blockConnectorNode.setAttribute("connector-kind", "plug");
 		blockConnectorNode.setAttribute("connector-type", plugType);
 		blockConnectorNode.setAttribute("init-type", plugType);
@@ -1147,7 +1143,7 @@ public class UniToBlockParser {
 		} else if (param instanceof UniIntLiteral) {
 			type = "number";
 		} else if (param instanceof UniIdent) {
-			type = ToBlockEditorParser.getChildNode(
+			type = BlockMapper.getChildNode(
 					vnResolver.getVariableNode(((UniIdent) param).name), "Type").getTextContent();
 		} else {
 			throw new RuntimeException(param.toString() + "has not been supported yet.");
@@ -1192,10 +1188,10 @@ public class UniToBlockParser {
 
 	public static String getIdFromElement(Element element) {
 		if ("BlockStub".equals(element.getNodeName())) {
-			return ToBlockEditorParser.getAttribute(
-					ToBlockEditorParser.getChildNode(element, "Block"), "id");
+			return BlockMapper.getAttribute(
+					BlockMapper.getChildNode(element, "Block"), "id");
 		} else {
-			return ToBlockEditorParser.getAttribute(element, "id");
+			return BlockMapper.getAttribute(element, "id");
 		}
 	}
 

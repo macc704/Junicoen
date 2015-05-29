@@ -1,11 +1,11 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,14 @@ public class UniToBlockFor {
 		UniClassDec dec = new UniClassDec();
 		dec.className = "UniToBlockFor";
 		dec.members = new ArrayList<>();
+
+		String fileName = dec.className;
+		String filePath = "blockeditor/" + fileName + ".xml";
+
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
 
 		List<UniExpr> blocks = new ArrayList<>();
 		UniVariableDecWithValue var = new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(0));
@@ -63,7 +71,7 @@ public class UniToBlockFor {
 
 		assertEquals(expect, output);
 
-		UniToBlockParser parser = new UniToBlockParser();
+		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);
 
 

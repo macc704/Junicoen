@@ -4,14 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniVariableDec;
 import net.unicoen.node.UniVariableDecWithValue;
@@ -26,7 +23,8 @@ public class LocalVarDec {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		UniMethodDec fdec = (UniMethodDec) dec.members.get(0);
 		//int

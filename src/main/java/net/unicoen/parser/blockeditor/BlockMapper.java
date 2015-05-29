@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
@@ -38,35 +39,23 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class ToBlockEditorParser {
+public class BlockMapper {
 
-	private static VariableNameResolver variableResolver = new VariableNameResolver();
+	private VariableNameResolver variableResolver = new VariableNameResolver();
+	HashMap<String, Node> map = new HashMap<>();//Blockのidをキー該当ノードをvalueとして全てのBlockNodeを保持する変数
 
-	public static UniClassDec parse(File xmlFile) {
+	public UniClassDec parse(File xmlFile) {
 
-		UniClassDec classDec = new UniClassDec();
-		classDec.className = getPageNameFromXML(xmlFile);
-		classDec.modifiers = new ArrayList<String>();
-		classDec.modifiers.add("");
+		UniClassDec classDec = createProcotypeClassModel(xmlFile);
 
-		Node pageBlock = getRooteNote(xmlFile);
-		HashMap<String, Node> map = new HashMap<>();
-		ArrayList<Node> procs = new ArrayList<>();
-		for (Node node : eachChild(pageBlock)) {
-			String name = node.getNodeName();
-			if (name.startsWith("#")) {
-				continue;
-			} else if (name.equals("BlockStub")) {
-				node = getChildNode(node, "Block");
-			}
+		//Blockノードの親ノードを取得する
+		Node pageBlock = getPageBlocksNode(xmlFile);
 
-			String nodeId = getAttribute(node, "id");
-			String blockType = getAttribute(node, "genus-name");
-			map.put(nodeId, node);
-			if ("procedure".equals(blockType)) {
-				procs.add(node);
-			}
-		}
+		ArrayList<Node> procs = new ArrayList<>();//Blockのidをキー該当ノードをvalueとしてメソッド定義ブロックのBlockNodeを保持する変数
+		Map<String, String> methodsReturnTypes = new HashMap<>();//返り値の型を保持する
+
+		//mapに全てのBlockNodeを,procsに全てのメソッド定義のBlockNodeを保存する
+		putAllBlockNodes(pageBlock, procs, methodsReturnTypes);
 
 		List<UniMemberDec> ret = new ArrayList<>();
 		for (Node procNode : procs) {
@@ -74,7 +63,7 @@ public class ToBlockEditorParser {
 			d.methodName = getChildText(procNode, "Label");
 			d.modifiers = new ArrayList<>();
 			d.modifiers.add("");
-			d.returnType = "void";
+			d.returnType = methodsReturnTypes.get(getAttribute(procNode, "id"));
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");
@@ -92,7 +81,65 @@ public class ToBlockEditorParser {
 		return classDec;
 	}
 
-	public static String getPageNameFromXML(File xmlFile) {
+	public UniClassDec createProcotypeClassModel(File xmlFile){
+		UniClassDec classDec= new UniClassDec();
+		classDec.className = getPageNameFromXML(xmlFile);
+		classDec.modifiers = new ArrayList<String>();
+		classDec.modifiers.add("");
+
+		return classDec;
+	}
+
+	public UniMethodDec createPrototypeMethodDecModel(Node procNode){
+		UniMethodDec d = new UniMethodDec();
+		d.methodName = getChildText(procNode, "Label");
+		d.modifiers = new ArrayList<>();
+		d.modifiers.add("");
+		d.returnType = "void";
+
+		return d;
+	}
+
+	public void putAllBlockNodes(Node pageBlock, ArrayList<Node> procs, Map<String, String> returnTypes){
+		//xmlのPageの子ノードから，メソッド定義のBlockノードのみを抽出する
+		for (Node node : eachChild(pageBlock)) {
+			String name = node.getNodeName();
+			if (name.startsWith("#")) {
+				continue;
+			} else if (name.equals("BlockStub")) {
+				node = getChildNode(node, "Block");
+			}
+
+			String nodeId = getAttribute(node, "id");
+			String blockType = getAttribute(node, "genus-name");
+			map.put(nodeId, node);
+			if ("procedure".equals(blockType)) {
+				procs.add(node);
+				if(returnTypes.get(nodeId) == null){
+					returnTypes.put(nodeId, "void");
+				}
+			}
+
+			if("return".equals(blockType)){
+				Node socketNode = getChildNode(getChildNode(node, "Sockets"), "BlockConnector");
+				returnTypes.put(getChildText(node, "ParentMethod"), getSocketType(socketNode));
+			}
+
+		}
+	}
+
+	public String getSocketType(Node node){
+		String type = "void";
+		String id = getAttribute(node, "con-block-id");
+
+		if(id != null){
+			type = getChildText(map.get(id), "Type");
+		}
+
+		return type;
+	}
+
+	public String getPageNameFromXML(File xmlFile) {
 		Document d = toXmlDoc(xmlFile);
 
 		NodeList list = d.getElementsByTagName("Page");
@@ -103,7 +150,7 @@ public class ToBlockEditorParser {
 		return getAttribute(list.item(0), "page-name");
 	}
 
-	private static List<UniExpr> parseBody(Node bodyNode, HashMap<String, Node> map) {
+	private List<UniExpr> parseBody(Node bodyNode, HashMap<String, Node> map) {
 		List<UniExpr> body = new ArrayList<>();
 
 		body.add(parseToExpr(bodyNode, map));
@@ -122,9 +169,9 @@ public class ToBlockEditorParser {
 		return body;
 	}
 
-	private static UniExpr parseToExpr(Node node, HashMap<String, Node> map) {
+	private UniExpr parseToExpr(Node node, HashMap<String, Node> map) {
 		if ("BlockStub".equals(node.getNodeName())) {
-			node = ToBlockEditorParser.getChildNode(node, "Block");
+			node = BlockMapper.getChildNode(node, "Block");
 		}
 
 		String blockKind = getAttribute(node, "kind");
@@ -143,7 +190,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static UniExpr parseLiteral(Node node) {
+	private UniExpr parseLiteral(Node node) {
 		String blockGenusName = getAttribute(node, "genus-name");
 		if ("number".equals(blockGenusName)) {
 			// String num = getChildText(node, "Label");
@@ -184,7 +231,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static UniExpr parseLocalVariable(Node node, HashMap<String, Node> map) {
+	private UniExpr parseLocalVariable(Node node, HashMap<String, Node> map) {
 		Node initValueNode = getChildNode(node, "Sockets");
 		List<List<UniExpr>> initValues = parseSocket(initValueNode, map);
 
@@ -201,7 +248,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static UniExpr parseFunction(Node node, HashMap<String, Node> map) {
+	private UniExpr parseFunction(Node node, HashMap<String, Node> map) {
 		Node functionArgsNode = getChildNode(node, "Sockets");
 		List<List<UniExpr>> functionArgs = parseSocket(functionArgsNode, map);
 		String blockType = getAttribute(node, "genus-name");
@@ -262,61 +309,61 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static boolean isCast(String blockType) {
+	private boolean isCast(String blockType) {
 		return true;
 	}
 
-	private static boolean isLessThanOperator(String blockType) {
+	private boolean isLessThanOperator(String blockType) {
 		return "lessthan".equals(blockType) || "lessthan-double".equals(blockType);
 	}
 
-	private static boolean isLessThanOrEqualOperator(String blockType) {
+	private boolean isLessThanOrEqualOperator(String blockType) {
 		return "lessthanorequalto".equals(blockType)
 				|| "lessthanorequalto-double".equals(blockType);
 	}
 
-	private static boolean isGreaterThanOperator(String blockType) {
+	private boolean isGreaterThanOperator(String blockType) {
 		return "greaterthan".equals(blockType) || "greaterthan-double".equals(blockType);
 	}
 
-	private static boolean isGreaterThanOrEqualOperator(String blockType) {
+	private boolean isGreaterThanOrEqualOperator(String blockType) {
 		return "greaterthanorequalto".equals(blockType)
 				|| "greaterthanorequalto-double".equals(blockType);
 	}
 
-	private static boolean isEqualsOperator(String blockType) {
+	private boolean isEqualsOperator(String blockType) {
 		return "equals-number".equals(blockType) || "equals-string".equals(blockType)
 				|| "equals-number-double".equals(blockType) || "equals-boolean".equals(blockType);
 	}
 
-	private static boolean isNotEqualsOperator(String blockType) {
+	private boolean isNotEqualsOperator(String blockType) {
 		return "not-equals-number".equals(blockType) || "not-equals-string".equals(blockType)
 				|| "not-equals-number-double".equals(blockType)
 				|| "not-equals-boolean".equals(blockType);
 	}
 
-	private static boolean isAddOperator(String blockType) {
+	private boolean isAddOperator(String blockType) {
 		return "sum".equals(blockType) || "sum-double".equals(blockType)
 				|| "string-append".equals(blockType);
 	}
 
-	private static boolean isDifferenceOperator(String blockType) {
+	private boolean isDifferenceOperator(String blockType) {
 		return "difference".equals(blockType) || "difference-double".endsWith(blockType);
 	}
 
-	private static boolean isMulOperator(String blockType) {
+	private boolean isMulOperator(String blockType) {
 		return "product".equals(blockType) || "product-double".endsWith(blockType);
 	}
 
-	private static boolean isDivOperator(String blockType) {
+	private boolean isDivOperator(String blockType) {
 		return "quotient".equals(blockType) || "quotient-double".endsWith(blockType);
 	}
 
-	private static boolean isRemOperator(String blockType) {
+	private boolean isRemOperator(String blockType) {
 		return "remainder".equals(blockType) || "remainder-double".endsWith(blockType);
 	}
 
-	private static boolean isUnaryOp(String blockType) {
+	private boolean isUnaryOp(String blockType) {
 		if ("not".equals(blockType)) {
 			return true;
 		} else {
@@ -324,7 +371,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map) {
+	private List<List<UniExpr>> parseSocket(Node argsNode, HashMap<String, Node> map) {
 		List<List<UniExpr>> args = new ArrayList<>();
 		if (argsNode != null) {
 			for (Node argNode : eachChild(argsNode)) {
@@ -352,7 +399,7 @@ public class ToBlockEditorParser {
 		return args;
 	}
 
-	private static UniIf parseIfBlock(Node node, HashMap<String, Node> map){
+	private UniIf parseIfBlock(Node node, HashMap<String, Node> map){
 		Node argsNode = getChildNode(node, "Sockets");
 		List<List<UniExpr>> args = parseSocket(argsNode, map);
 
@@ -363,7 +410,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static UniExpr parseCommand(Node node, HashMap<String, Node> map) {
+	private UniExpr parseCommand(Node node, HashMap<String, Node> map) {
 		Node argsNode = getChildNode(node, "Sockets");
 		List<List<UniExpr>> args = parseSocket(argsNode, map);
 		String blockGenusName = getAttribute(node, "genus-name");//ブロックの種類名を取得
@@ -425,7 +472,7 @@ public class ToBlockEditorParser {
 		}
 	}
 
-	private static Node getRooteNote(File xmlFile) {
+	private static Node getPageBlocksNode(File xmlFile) {
 		Document d = toXmlDoc(xmlFile);
 
 		NodeList list = d.getElementsByTagName("PageBlocks");

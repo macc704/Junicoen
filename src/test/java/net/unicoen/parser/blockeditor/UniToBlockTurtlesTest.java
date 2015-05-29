@@ -21,8 +21,8 @@ public class UniToBlockTurtlesTest {
 
 	@Test
 	public void test() throws IOException {
-		String file = "Turtles.xml";
-		String filePath = "blockeditor/" + file;
+		String fileName = "Turtles.xml";
+		String filePath = "blockeditor/" + fileName;
 		File targetXml = new File(filePath);
 
 		UniClassDec dec = new UniClassDec();
@@ -40,7 +40,13 @@ public class UniToBlockTurtlesTest {
 		String expect = "F50B50R90L90";
 		assertEquals(expect, output);
 
-		UniToBlockParser parser = new UniToBlockParser();
+
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);
 		}
 

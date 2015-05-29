@@ -1,18 +1,14 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -24,8 +20,8 @@ public class ParseTest {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
-		dec.members = new ArrayList<>();
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

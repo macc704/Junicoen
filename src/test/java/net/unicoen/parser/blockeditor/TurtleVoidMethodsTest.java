@@ -1,16 +1,13 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -22,7 +19,8 @@ public class TurtleVoidMethodsTest {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		UniMethodDec startMethod = (UniMethodDec) dec.members.get(0);
 

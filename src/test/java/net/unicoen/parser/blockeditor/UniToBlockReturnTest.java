@@ -1,6 +1,8 @@
 package net.unicoen.parser.blockeditor;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,15 @@ public class UniToBlockReturnTest {
 
 		dec.className = "UniToBlockReturn";
 
-		UniToBlockParser parser = new UniToBlockParser();
+		String fileName = dec.className;
+		String filePath = "blockeditor/" + fileName + ".xml";
+
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator parser = new BlockGenerator(out);
 
 		parser.parse(dec);
 	}

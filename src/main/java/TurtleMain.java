@@ -8,7 +8,7 @@ import net.unicoen.interpreter.FunctionWithEngine;
 import net.unicoen.interpreter.Scope;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniNode;
-import net.unicoen.parser.blockeditor.ToBlockEditorParser;
+import net.unicoen.parser.blockeditor.BlockMapper;
 
 public class TurtleMain {
 	public static void main(String[] args) throws UnsupportedEncodingException {
@@ -16,7 +16,8 @@ public class TurtleMain {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		Engine engine = new Engine();
 		engine.addListener(libOverrider);

@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 
 public class BlockNameResolver {
 
-	private String path = "ext/blocks/";
+	private String path = "blockeditor/blocks/";
 
 	private Map<String, String> turtleMethods = new HashMap<String, String>();
 	private Map<String, Node> allAvailableBlocks = new HashMap<String, Node>();
@@ -57,7 +57,7 @@ public class BlockNameResolver {
 
 			for (int i = 0; i < genusNodes.getLength(); i++) { // find them
 				Node node = genusNodes.item(i);
-				allAvailableBlocks.put(ToBlockEditorParser.getAttribute(node, "name"), node);
+				allAvailableBlocks.put(BlockMapper.getAttribute(node, "name"), node);
 			}
 		} catch (SAXException e) {
 			e.printStackTrace();
@@ -80,8 +80,8 @@ public class BlockNameResolver {
 			for (int i = 0; i < genusNodes.getLength(); i++) { // find them
 				Node node = genusNodes.item(i);
 
-				if(ToBlockEditorParser.getChildNode(node, "Name") != null){
-					turtleMethods.put(convertMethodName(ToBlockEditorParser.getAttribute(node, "name")), getNameSpaceString(node));
+				if(BlockMapper.getChildNode(node, "Name") != null){
+					turtleMethods.put(convertMethodName(BlockMapper.getAttribute(node, "name")), getNameSpaceString(node));
 				}
 			}
 		} catch (SAXException e) {
@@ -92,7 +92,7 @@ public class BlockNameResolver {
 	}
 
 	public static String getNameSpaceString(Node node){
-		String name = ToBlockEditorParser.getAttribute(node, "name");
+		String name = BlockMapper.getAttribute(node, "name");
 		return name.substring(0, name.indexOf("-"));
 	}
 
@@ -119,10 +119,10 @@ public class BlockNameResolver {
 		if(genusNode == null){
 			return null;
 		} else{
-			Node socketConnectors = ToBlockEditorParser.getChildNode(genusNode, "BlockConnectors");
+			Node socketConnectors = BlockMapper.getChildNode(genusNode, "BlockConnectors");
 			for(int i = 0; i < socketConnectors.getChildNodes().getLength();i++){
 				Node connector = socketConnectors.getChildNodes().item(i);
-				if(connector.getNodeName().equals("BlockConnector") && ToBlockEditorParser.getAttribute(connector, "connector-kind").equals("plug")){
+				if(connector.getNodeName().equals("BlockConnector") && BlockMapper.getAttribute(connector, "connector-kind").equals("plug")){
 					plugNode = connector;
 				}
 			}
@@ -138,10 +138,10 @@ public class BlockNameResolver {
 		if(genusNode == null){
 			return null;
 		} else{
-			Node socketConnectors = ToBlockEditorParser.getChildNode(genusNode, "BlockConnectors");
+			Node socketConnectors = BlockMapper.getChildNode(genusNode, "BlockConnectors");
 			for(int i = 0; i < socketConnectors.getChildNodes().getLength();i++){
 				Node connector = socketConnectors.getChildNodes().item(i);
-				if(connector.getNodeName().equals("BlockConnector") && ToBlockEditorParser.getAttribute(connector, "connector-kind").equals("socket")){
+				if(connector.getNodeName().equals("BlockConnector") && BlockMapper.getAttribute(connector, "connector-kind").equals("socket")){
 					socketsNode.add(connector);
 				}
 			}

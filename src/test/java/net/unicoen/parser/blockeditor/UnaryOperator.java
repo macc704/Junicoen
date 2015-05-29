@@ -2,6 +2,7 @@ package net.unicoen.parser.blockeditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import net.unicoen.node.UniClassDec;
 
@@ -15,9 +16,16 @@ public class UnaryOperator {
 		String filePath = "blockeditor/" + fileName + ".xml";
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
-		UniToBlockParser parser = new UniToBlockParser();
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+
+		BlockGenerator parser = new BlockGenerator(out);
 		dec.className = fileName + "Back";
 		parser.parse(dec);
 	}

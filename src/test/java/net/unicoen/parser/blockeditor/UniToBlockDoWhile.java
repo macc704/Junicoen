@@ -1,6 +1,8 @@
 package net.unicoen.parser.blockeditor;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,14 @@ public class UniToBlockDoWhile {
 
 	@Test
 	public void test() throws IOException {
+		String fileName = "UniToBlockWhile";
+		String filePath = "blockeditor/" + fileName + ".xml";
+
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
 		UniClassDec dec = new UniClassDec();
 		dec.members = new ArrayList<>();
 
@@ -48,7 +58,7 @@ public class UniToBlockDoWhile {
 
 		dec.className = "UniToBlockDoWhile";
 
-		UniToBlockParser parser = new UniToBlockParser();
+		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);
 
 	}

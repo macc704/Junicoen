@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd"
+	xmlns:cb="http://education.mit.edu/openblocks/ns">
+	<Pages collapsible-pages="yes" drawer-with-page="yes">
+		<Page page-color="40 40 40" page-drawer="BlockEditor"
+			page-infullview="yes" page-name="BlockEditor" page-width="1366">
+			<PageBlocks>
+				<BlockStub>
+					<StubParentName>s</StubParentName>
+					<StubParentGenus>local-var-string</StubParentGenus>
+					<Block genus-name="getterlocal-var-string" id="160" kind="data">
+						<Label>s</Label>
+						<Type>String</Type>
+						<Name>s</Name>
+						<Location>
+							<X>143</X>
+							<Y>285</Y>
+						</Location>
+						<Plug>
+							<BlockConnector con-block-id="142" connector-kind="plug"
+								connector-type="string" init-type="string" label=""
+								position-type="mirror" />
+						</Plug>
+					</Block>
+				</BlockStub>
+				<Block genus-name="local-var-string" id="158" kind="local-variable">
+					<Label>s</Label>
+					<Type>String</Type>
+					<Name>s</Name>
+					<Location>
+						<X>85</X>
+						<Y>252</Y>
+					</Location>
+					<BeforeBlockId>138</BeforeBlockId>
+					<AfterBlockId>142</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="159" connector-kind="socket"
+							connector-type="string" init-type="string" label="初期値"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="string" id="159" kind="data">
+					<Label>あいうえお</Label>
+					<Type>String</Type>
+					<Location>
+						<X>369</X>
+						<Y>255</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="158" connector-kind="plug"
+							connector-type="string" init-type="string" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<BlockStub>
+					<StubParentName>b</StubParentName>
+					<StubParentGenus>local-var-boolean</StubParentGenus>
+					<Block genus-name="getterlocal-var-boolean" id="157" kind="data">
+						<Label>b</Label>
+						<Type>boolean</Type>
+						<Name>b</Name>
+						<Location>
+							<X>162</X>
+							<Y>433</Y>
+						</Location>
+						<Plug>
+							<BlockConnector con-block-id="144" connector-kind="plug"
+								connector-type="boolean" init-type="boolean" label=""
+								position-type="mirror" />
+						</Plug>
+					</Block>
+				</BlockStub>
+				<Block genus-name="local-var-boolean" id="155" kind="local-variable">
+					<Label>b</Label>
+					<Type>boolean</Type>
+					<Name>b</Name>
+					<Location>
+						<X>104</X>
+						<Y>400</Y>
+					</Location>
+					<BeforeBlockId>140</BeforeBlockId>
+					<AfterBlockId>144</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="156" connector-kind="socket"
+							connector-type="boolean" init-type="boolean" label="初期値"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="false" id="156" kind="data">
+					<Label>偽</Label>
+					<Type>boolean</Type>
+					<Location>
+						<X>394</X>
+						<Y>403</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="155" connector-kind="plug"
+							connector-type="boolean" init-type="boolean" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="procedure" id="140" kind="procedure">
+					<Label>returnBoolean</Label>
+					<Location>
+						<X>104</X>
+						<Y>370</Y>
+					</Location>
+					<AfterBlockId>155</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="return" id="144" kind="command">
+					<Label>return</Label>
+					<ParentMethod>140</ParentMethod>
+					<Location>
+						<X>104</X>
+						<Y>430</Y>
+					</Location>
+					<BeforeBlockId>155</BeforeBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="157" connector-kind="socket"
+							connector-type="boolean" init-type="poly" label="" position-type="single" />
+					</Sockets>
+				</Block>
+				<BlockStub>
+					<StubParentName>d</StubParentName>
+					<StubParentGenus>local-var-double-number</StubParentGenus>
+					<Block genus-name="getterlocal-var-double-number" id="154"
+						kind="data">
+						<Label>d</Label>
+						<Type>double</Type>
+						<Name>d</Name>
+						<Location>
+							<X>321</X>
+							<Y>158</Y>
+						</Location>
+						<Plug>
+							<BlockConnector con-block-id="141" connector-kind="plug"
+								connector-type="double-number" init-type="double-number" label=""
+								position-type="mirror" />
+						</Plug>
+					</Block>
+				</BlockStub>
+				<Block genus-name="local-var-double-number" id="152"
+					kind="local-variable">
+					<Label>d</Label>
+					<Type>double</Type>
+					<Name>d</Name>
+					<Location>
+						<X>263</X>
+						<Y>125</Y>
+					</Location>
+					<BeforeBlockId>137</BeforeBlockId>
+					<AfterBlockId>141</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="153" connector-kind="socket"
+							connector-type="double-number" init-type="double-number" label="初期値"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="double-number" id="153" kind="data">
+					<Label>1.0</Label>
+					<Type>double</Type>
+					<Location>
+						<X>547</X>
+						<Y>128</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="152" connector-kind="plug"
+							connector-type="double-number" init-type="double-number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<BlockStub>
+					<StubParentName>i</StubParentName>
+					<StubParentGenus>local-var-int-number</StubParentGenus>
+					<Block genus-name="getterlocal-var-int-number" id="151" kind="data">
+						<Label>i</Label>
+						<Type>int</Type>
+						<Name>i</Name>
+						<Location>
+							<X>340</X>
+							<Y>281</Y>
+						</Location>
+						<Plug>
+							<BlockConnector con-block-id="143" connector-kind="plug"
+								connector-type="number" init-type="number" label=""
+								position-type="mirror" />
+						</Plug>
+					</Block>
+				</BlockStub>
+				<Block genus-name="local-var-int-number" id="149" kind="local-variable">
+					<Label>i</Label>
+					<Type>int</Type>
+					<Name>i</Name>
+					<Location>
+						<X>282</X>
+						<Y>248</Y>
+					</Location>
+					<BeforeBlockId>139</BeforeBlockId>
+					<AfterBlockId>143</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="150" connector-kind="socket"
+							connector-type="number" init-type="number" label="初期値"
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="number" id="150" kind="data">
+					<Label>1</Label>
+					<Type>int</Type>
+					<Location>
+						<X>548</X>
+						<Y>251</Y>
+					</Location>
+					<Plug>
+						<BlockConnector con-block-id="149" connector-kind="plug"
+							connector-type="number" init-type="number" label=""
+							position-type="mirror" />
+					</Plug>
+				</Block>
+				<Block genus-name="return" id="143" kind="command">
+					<Label>return</Label>
+					<ParentMethod>139</ParentMethod>
+					<Location>
+						<X>282</X>
+						<Y>278</Y>
+					</Location>
+					<BeforeBlockId>149</BeforeBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="151" connector-kind="socket"
+							connector-type="number" init-type="poly" label="" position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="return" id="142" kind="command">
+					<Label>return</Label>
+					<ParentMethod>138</ParentMethod>
+					<Location>
+						<X>85</X>
+						<Y>282</Y>
+					</Location>
+					<BeforeBlockId>158</BeforeBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="160" connector-kind="socket"
+							connector-type="string" init-type="poly" label="" position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="return" id="141" kind="command">
+					<Label>return</Label>
+					<ParentMethod>137</ParentMethod>
+					<Location>
+						<X>263</X>
+						<Y>155</Y>
+					</Location>
+					<BeforeBlockId>152</BeforeBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector con-block-id="154" connector-kind="socket"
+							connector-type="double-number" init-type="poly" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="procedure" id="139" kind="procedure">
+					<Label>returnInt</Label>
+					<Location>
+						<X>282</X>
+						<Y>218</Y>
+					</Location>
+					<AfterBlockId>149</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="procedure" id="138" kind="procedure">
+					<Label>returnString</Label>
+					<Location>
+						<X>85</X>
+						<Y>222</Y>
+					</Location>
+					<AfterBlockId>158</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="procedure" id="137" kind="procedure">
+					<Label>returnDouble</Label>
+					<Location>
+						<X>263</X>
+						<Y>95</Y>
+					</Location>
+					<AfterBlockId>152</AfterBlockId>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+				<Block genus-name="procedure" id="136" kind="procedure">
+					<Label>start</Label>
+					<Location>
+						<X>102</X>
+						<Y>99</Y>
+					</Location>
+					<Sockets num-sockets="1">
+						<BlockConnector connector-kind="socket"
+							connector-type="poly" init-type="poly" is-expandable="yes" label=""
+							position-type="single" />
+					</Sockets>
+				</Block>
+			</PageBlocks>
+		</Page>
+	</Pages>
+</cb:CODEBLOCKS>

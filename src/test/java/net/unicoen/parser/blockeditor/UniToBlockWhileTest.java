@@ -1,18 +1,14 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -34,8 +30,15 @@ public class UniToBlockWhileTest {
 		String expect = "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
 
+		String fileName = dec.className;
+		String filePath = "blockeditor/" + fileName + ".xml";
 
-		UniToBlockParser parser = new UniToBlockParser();
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);
 	}
 
@@ -45,7 +48,8 @@ public class UniToBlockWhileTest {
 		String filePath = "blockeditor/" + file;
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
 		dec.className = "UniToBlock" + fileName;
 

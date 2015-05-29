@@ -53,7 +53,7 @@ public class SSSSampleTest {
 		//startメソッドにelementsを追加
 		startMethod.block.body = elements;
 
-		UniToBlockParser parser = new UniToBlockParser(true);
+		BlockGenerator parser = new BlockGenerator(true);
 		parser.setProjectPath("blockeditor/");
 		File file = parser.parse(classDec);
 

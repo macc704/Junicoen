@@ -1,15 +1,10 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.PrintStream;
 
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -21,9 +16,15 @@ public class OperationTest {
 		String filePath = "blockeditor/" + fileName + ".xml";
 		File targetXml = new File(filePath);
 
-		UniClassDec dec = ToBlockEditorParser.parse(targetXml);
+		BlockMapper mapper = new BlockMapper();
+		UniClassDec dec = mapper.parse(targetXml);
 
-		UniToBlockParser parser = new UniToBlockParser();
+		File file = new File(filePath);
+		file.createNewFile();
+
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator parser = new BlockGenerator(out);
 		dec.className = "OperatorBack";
 		parser.parse(dec);
 
