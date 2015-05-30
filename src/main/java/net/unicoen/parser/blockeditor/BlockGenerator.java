@@ -108,6 +108,7 @@ public class BlockGenerator {
 
 	public File parse(UniClassDec classDec, String path) throws IOException {
 		// クラス名のxmlファイルを作成する
+
 		addedModels.clear(); // cashクリア
 
 		File file = new File(path + classDec.className + ".xml");
@@ -140,6 +141,7 @@ public class BlockGenerator {
 				"procedure");
 
 		addElement("Label", document, funcDec.methodName, procedureElement);
+		addElement("ReturnType", document, funcDec.returnType, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);
@@ -205,6 +207,7 @@ public class BlockGenerator {
 		Element procedureElement = createBlockElement(document, "procedure", ID_COUNTER++, "procedure");
 
 		addElement("Label", document, funcDec.methodName, procedureElement);
+		addElement("ReturnType", document, funcDec.returnType, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
 		blocks.add(procedureElement);
@@ -213,7 +216,7 @@ public class BlockGenerator {
 		}
 
 		// funcDec.body ボディのパース
-		if (funcDec.block != null && funcDec.block.body != null) {
+		if (hasBody(funcDec)) {
 			addAfterBlockNode(document, blocks.get(blocks.size() - 1), String.valueOf(ID_COUNTER));
 			String beforeId = procedureElement.getAttribute("id");
 			List<UniExpr> body = funcDec.block.body;
@@ -221,6 +224,7 @@ public class BlockGenerator {
 				// expressionの解析 行き掛け順
 				UniExpr expr = body.get(i);
 				List<Element> elements = parseExpr(expr, document, null);// 木で返す．
+
 				// 木の最上部が左辺ブロックになる　左辺ブロックに次のブロックのidをセットする
 				if (i + 1 < body.size()) {
 					addAfterBlockNode(document, elements.get(0), String.valueOf(ID_COUNTER));
@@ -240,6 +244,15 @@ public class BlockGenerator {
 		}
 
 		vnResolver.resetLocalVariables();
+	}
+
+	public boolean hasBody(UniMethodDec funcDec){
+		if(funcDec.block != null && funcDec.block.body != null && funcDec.block.body.size()>0){
+			return true;
+		}else{
+			return false;
+		}
+
 	}
 
 	public String getBlockAttibuteByElement(Element element, String attributeName) {

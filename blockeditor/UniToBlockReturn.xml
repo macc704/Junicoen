@@ -4,23 +4,95 @@
 <Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockReturn" page-width="1366">
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
-<Label>start</Label>
+<Label>voidMethod</Label>
+<ReturnType>void</ReturnType>
 <Location>
 <X>50</X>
 <Y>50</Y>
 </Location>
-<AfterBlockId>1001</AfterBlockId>
 </Block>
-<Block genus-name="return" id="1001" kind="command">
+<Block genus-name="procedure" id="1001" kind="procedure">
+<Label>stringMethod</Label>
+<ReturnType>String</ReturnType>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1002</AfterBlockId>
+</Block>
+<Block genus-name="return" id="1002" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
 </Sockets>
-<BeforeBlockId>1000</BeforeBlockId>
+<BeforeBlockId>1001</BeforeBlockId>
 </Block>
-<Block genus-name="number" id="1002" kind="data">
+<Block genus-name="string" id="1003" kind="data">
+<Label>hoge</Label>
+<Plug>
+<BlockConnector con-block-id="1002" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="procedure" id="1004" kind="procedure">
+<Label>booleanMethod</Label>
+<ReturnType>boolean</ReturnType>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1005</AfterBlockId>
+</Block>
+<Block genus-name="return" id="1005" kind="command">
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1004</BeforeBlockId>
+</Block>
+<Block genus-name="true" id="1006" kind="data">
+<Label>真</Label>
+<Plug>
+<BlockConnector con-block-id="1005" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="procedure" id="1007" kind="procedure">
+<Label>doubleMethod</Label>
+<ReturnType>double</ReturnType>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1008</AfterBlockId>
+</Block>
+<Block genus-name="return" id="1008" kind="command">
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1007</BeforeBlockId>
+</Block>
+<Block genus-name="double-number" id="1009" kind="data">
+<Label>1.0</Label>
+<Plug>
+<BlockConnector con-block-id="1008" connector-kind="plug" connector-type="double-number" init-type="double-number" label="" position-type="mirror"/>
+</Plug>
+</Block>
+<Block genus-name="procedure" id="1010" kind="procedure">
+<Label>intMethod</Label>
+<ReturnType>int</ReturnType>
+<Location>
+<X>50</X>
+<Y>50</Y>
+</Location>
+<AfterBlockId>1011</AfterBlockId>
+</Block>
+<Block genus-name="return" id="1011" kind="command">
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1012" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
+<BeforeBlockId>1010</BeforeBlockId>
+</Block>
+<Block genus-name="number" id="1012" kind="data">
 <Label>1</Label>
 <Plug>
-<BlockConnector con-block-id="1001" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1011" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
 </Plug>
 </Block>
 </PageBlocks>

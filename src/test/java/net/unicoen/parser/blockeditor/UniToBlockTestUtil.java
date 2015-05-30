@@ -9,6 +9,8 @@ import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniIntLiteral;
+import net.unicoen.node.UniMethodDec;
+import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
@@ -75,6 +77,11 @@ public class UniToBlockTestUtil {
 		}else{
 			throw new RuntimeException("illegal type:" + type);
 		}
+	}
+
+	public static UniMethodDec createMethod(String methodName, String returnType){
+		UniMethodDec dec = new UniMethodDec(methodName, new ArrayList<>(), returnType, null, new UniBlock(new ArrayList<>()));
+		return dec;
 	}
 
 }
