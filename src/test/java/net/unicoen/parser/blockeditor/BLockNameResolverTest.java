@@ -10,9 +10,9 @@ public class BLockNameResolverTest {
 
 	@Test
 	public void test() {
-		BlockNameResolver resolver = new BlockNameResolver();
+		BlockNameResolver resolver = new BlockNameResolver(true);
 		Map<String, String> turtleMethods = resolver.getTurtleMethodsName();
-		
+
 		assertEquals("Turtle", turtleMethods.get("fd[@int]"));
 		assertEquals("InputTurtle", turtleMethods.get("toEnglishMode[]"));
 		assertEquals("CardTurtle", turtleMethods.get("getText[]"));

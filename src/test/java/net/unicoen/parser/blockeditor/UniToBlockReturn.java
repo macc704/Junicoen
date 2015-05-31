@@ -42,7 +42,6 @@ public class UniToBlockReturn {
 		try {
 			generator.parse(dec, "blockeditor/");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

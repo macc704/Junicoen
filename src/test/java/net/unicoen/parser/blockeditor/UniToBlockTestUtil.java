@@ -80,7 +80,7 @@ public class UniToBlockTestUtil {
 	}
 
 	public static UniMethodDec createMethod(String methodName, String returnType){
-		UniMethodDec dec = new UniMethodDec(methodName, new ArrayList<>(), returnType, null, new UniBlock(new ArrayList<>()));
+		UniMethodDec dec = new UniMethodDec(methodName, new ArrayList<>(), returnType, new ArrayList<>(), new UniBlock(new ArrayList<>()));
 		return dec;
 	}
 

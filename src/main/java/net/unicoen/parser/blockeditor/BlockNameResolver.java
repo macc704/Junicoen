@@ -18,7 +18,9 @@ public class BlockNameResolver {
 
 	private Map<String, String> turtleMethods = new HashMap<String, String>();
 	private Map<String, Node> allAvailableBlocks = new HashMap<String, Node>();
-
+	private Map<String, String> availableLocalVariableDecralationTypes = new HashMap<>();
+	private Map<String, String> availableFieldVariableDecralationTypes = new HashMap<>();
+	private Map<String, String> availableFunctionArgsTypes = new HashMap<>();
 
 	public BlockNameResolver(){
 		parseGnuses();
@@ -31,6 +33,18 @@ public class BlockNameResolver {
 		}
 		parseGnuses();
 		parseTurtleXml();
+	}
+
+	public String getLocalVarDecBlockName(String type){
+		return availableLocalVariableDecralationTypes.get(type);
+	}
+
+	public String getFieldVarDecBlockName(String type){
+		return availableFieldVariableDecralationTypes.get(type);
+	}
+
+	public String getFunctionArgBlockName(String type){
+		return availableFunctionArgsTypes.get(type);
 	}
 
 	public Map<String, String> getTurtleMethodsName(){
@@ -55,9 +69,28 @@ public class BlockNameResolver {
 
 			NodeList genusNodes = root.getElementsByTagName("BlockGenus");
 
-			for (int i = 0; i < genusNodes.getLength(); i++) { // find them
+			// 利用可能ブロックの登録
+			for (int i = 0; i < genusNodes.getLength(); i++) {
 				Node node = genusNodes.item(i);
+
+				//全ブロック情報のマップに登録
 				allAvailableBlocks.put(BlockMapper.getAttribute(node, "name"), node);
+
+				//利用可能な変数型リストに登録
+				if("param".equals(BlockMapper.getAttribute(node, "kind"))){
+
+					this.availableFunctionArgsTypes.put(BlockMapper.getChildNode(node, "Type").getTextContent(), BlockMapper.getAttribute(node, "name"));
+				}
+
+				//利用可能な関数の引数の型リストに登録
+				if("local-variable".equals(BlockMapper.getAttribute(node, "kind"))){
+					this.availableLocalVariableDecralationTypes.put(BlockMapper.getChildNode(node, "Type").getTextContent(), BlockMapper.getAttribute(node, "name"));
+				}
+
+				//利用可能な関数の引数の型リストに登録
+				if("global-variable".equals(BlockMapper.getAttribute(node, "kind"))){
+					this.availableFieldVariableDecralationTypes.put(BlockMapper.getChildNode(node, "Type").getTextContent(), BlockMapper.getAttribute(node, "genus-name"));
+				}
 			}
 		} catch (SAXException e) {
 			e.printStackTrace();

@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.unicoen.node.UniArg;
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
@@ -210,10 +211,13 @@ public class BlockGenerator {
 		addElement("ReturnType", document, funcDec.returnType, procedureElement);
 		addLocationElement(document, "50", "50", procedureElement);
 
+		//引数を解析して引数モデルを生成
+		List<Element> args = parseFunctionArgs(document, funcDec.args, procedureElement);
+		blocks.addAll(args);
+
+		addParameterSocketInfo(document, procedureElement, args);
+
 		blocks.add(procedureElement);
-		if (funcDec.args != null) {
-			throw new RuntimeException("function args parsing has not been supported yet");
-		}
 
 		// funcDec.body ボディのパース
 		if (hasBody(funcDec)) {
@@ -246,6 +250,55 @@ public class BlockGenerator {
 		vnResolver.resetLocalVariables();
 	}
 
+	public void addParameterSocketInfo(Document document, Element element, List<Element> args){
+			String[] positionTypes = new String[args.size() + 1];
+			String[] connectorTypes = new String[args.size() + 1];
+			String[] socketLabels = new String[args.size() + 1];
+
+			for(int i = 0; i<args.size();i++){
+				positionTypes[i] = "single";
+				connectorTypes[i] = convertTypeToBlockConnectorType(BlockMapper.getChildNode(args.get(i), "Type").getTextContent());
+				socketLabels[i] = BlockMapper.getChildNode(args.get(i), "Label").getTextContent();
+			}
+
+			positionTypes[positionTypes.length-1] = "single";
+			connectorTypes[connectorTypes.length-1] = "poly";
+			socketLabels[socketLabels.length-1] = "";
+
+			args.add(null);
+
+			addSocketsNode(args, document, element, connectorTypes, positionTypes, socketLabels);
+	}
+
+	public List<Element> parseFunctionArgs(Document document, List<UniArg> args, Element parent){
+		List<Element> argModels = new ArrayList<>();
+		for(UniArg arg : args){
+			argModels.add(parseFunctionArg(document, arg, parent));
+		}
+		return argModels;
+	}
+
+	public Element parseFunctionArg(Document document, UniArg arg, Element parent){
+		String genusName = this.resolver.getFunctionArgBlockName(arg.type);
+		if(genusName == null){
+			throw new RuntimeException("the parameter type can't use at BlockEditor");
+		}
+		Element element = createBlockElement(document, genusName, ID_COUNTER++, "param");
+		//label
+		addElement("Label", document, arg.name, element);
+		//name
+		addElement("Name", document, arg.name, element);
+		//type
+		addElement("Type", document, arg.type, element);
+		//plug
+		addPlugElement(document, element, parent, convertTypeToBlockConnectorType(arg.type), "single");
+
+		vnResolver.addLocalVariable(arg.name, element);
+
+		return element;
+	}
+
+
 	public boolean hasBody(UniMethodDec funcDec){
 		if(funcDec.block != null && funcDec.block.body != null && funcDec.block.body.size()>0){
 			return true;
@@ -255,6 +308,9 @@ public class BlockGenerator {
 
 	}
 
+	/*
+	 * ノードから属性値を取得する
+	 */
 	public String getBlockAttibuteByElement(Element element, String attributeName) {
 		if (element.getNodeName().equals("BlockStub")) {
 			Node blockNode = BlockMapper.getChildNode(element, "Block");
@@ -264,6 +320,9 @@ public class BlockGenerator {
 		}
 	}
 
+	/*
+	 * AfterBlockノードを追加する
+	 */
 	public static void addAfterBlockNode(Document document, Element blockNode, String id) {
 		Element element = document.createElement("AfterBlockId");
 		element.setTextContent(id);
