@@ -35,15 +35,14 @@ public class UniToBlockBlockTest {
 		List<UniExpr> blocks = new ArrayList<>();
 		blocks.add(abstractionblock);
 		UniBlock block = new UniBlock(blocks);
-		UniMethodDec method = new UniMethodDec("start", null, "void", null, block);
+		UniMethodDec method = new UniMethodDec("start", new ArrayList<>(), "void", new ArrayList<>(), block);
 
 		dec.members.add(method);
 
-		dec.className = "UniToBlockBlock";
+		dec.className = fileName;
 
 		File file = new File(filePath);
 		file.createNewFile();
-
 		PrintStream out = new PrintStream(file);
 
 		BlockGenerator parser = new BlockGenerator(out);

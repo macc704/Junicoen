@@ -1,6 +1,8 @@
 package net.unicoen.parser.blockeditor;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import net.unicoen.node.UniBoolLiteral;
@@ -16,7 +18,7 @@ import org.junit.Test;
 public class UniToBlockReturn {
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 		UniClassDec dec = new UniClassDec("UniToBlockReturn", new ArrayList<String>(), new ArrayList<>());
 
 		UniMethodDec voidMethod = UniToBlockTestUtil.createMethod("voidMethod", "void");
@@ -38,12 +40,12 @@ public class UniToBlockReturn {
 		intMethod.block.body.add(new UniReturn(new UniIntLiteral(1)));
 		dec.members.add(intMethod);
 
-		BlockGenerator generator = new BlockGenerator(true);
-		try {
-			generator.parse(dec, "blockeditor/");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		File file = new File("blockeditor/" + dec.className + ".xml");
+		file.createNewFile();
+		PrintStream out = new PrintStream(file);
+
+		BlockGenerator generator = new BlockGenerator(out);
+			generator.parse(dec);
 
 	}
 

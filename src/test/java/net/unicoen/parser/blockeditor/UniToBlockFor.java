@@ -37,7 +37,6 @@ public class UniToBlockFor {
 
 		File file = new File(filePath);
 		file.createNewFile();
-
 		PrintStream out = new PrintStream(file);
 
 		List<UniExpr> blocks = new ArrayList<>();

@@ -1,26 +1,20 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniExpr;
-import net.unicoen.node.UniFor;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniVariableDecWithValue;
 
 import org.junit.Test;

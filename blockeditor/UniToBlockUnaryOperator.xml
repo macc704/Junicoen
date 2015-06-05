@@ -5,10 +5,14 @@
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
 <Label>start</Label>
+<ReturnType>void</ReturnType>
 <Location>
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1001</AfterBlockId>
 </Block>
 <Block genus-name="local-var-int-number" id="1001" kind="local-variable">

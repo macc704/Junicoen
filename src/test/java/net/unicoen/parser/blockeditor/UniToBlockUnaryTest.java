@@ -67,7 +67,7 @@ public class UniToBlockUnaryTest {
 		args.add(new UniIdent(var.name));
 
 
-		UniMethodDec method = new UniMethodDec("start", null, "void", null, new UniBlock(body));
+		UniMethodDec method = new UniMethodDec("start", new ArrayList<>(), "void", new ArrayList<>(), new UniBlock(body));
 		members.add(method);
 
 		dec.members = members;

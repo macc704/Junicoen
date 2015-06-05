@@ -30,7 +30,7 @@ public class UniToBlockWhileTest {
 		String expect = "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
 
-		String fileName = dec.className;
+		String fileName = "UniToBlock" + dec.className;
 		String filePath = "blockeditor/" + fileName + ".xml";
 
 		File file = new File(filePath);

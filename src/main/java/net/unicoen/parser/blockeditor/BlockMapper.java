@@ -59,11 +59,9 @@ public class BlockMapper {
 
 		List<UniMemberDec> ret = new ArrayList<>();
 		for (Node procNode : procs) {
-			UniMethodDec d = new UniMethodDec();
-			d.methodName = getChildText(procNode, "Label");
-			d.modifiers = new ArrayList<>();
-			d.modifiers.add("");
-			d.returnType = methodsReturnTypes.get(getAttribute(procNode, "id"));
+			UniMethodDec d = new UniMethodDec(getChildText(procNode, "Label"), new ArrayList<>(), methodsReturnTypes.get(getAttribute(procNode, "id")), new ArrayList<>(), null);
+			d.args = new ArrayList<>();
+
 			List<UniExpr> body = new ArrayList<>();
 
 			String nextNodeId = getChildText(procNode, "AfterBlockId");
@@ -309,9 +307,9 @@ public class BlockMapper {
 		}
 	}
 
-	private boolean isCast(String blockType) {
-		return true;
-	}
+//	private boolean isCast(String blockType) {
+//		return true;
+//	}
 
 	private boolean isLessThanOperator(String blockType) {
 		return "lessthan".equals(blockType) || "lessthan-double".equals(blockType);
@@ -403,10 +401,10 @@ public class BlockMapper {
 		Node argsNode = getChildNode(node, "Sockets");
 		List<List<UniExpr>> args = parseSocket(argsNode, map);
 
-		if(args.get(2) != null){
-			return new UniIf(args.get(0).get(0), (UniBlock) args.get(1), null);
+		if(args.get(2) == null){
+			return new UniIf(args.get(0).get(0), new UniBlock(args.get(1)), null);
 		}else{
-			return new UniIf(args.get(0).get(0), (UniBlock) args.get(1), (UniBlock) args.get(2));
+			return new UniIf(args.get(0).get(0), new UniBlock(args.get(1)), new UniBlock(args.get(2)));
 		}
 	}
 
@@ -468,7 +466,7 @@ public class BlockMapper {
 			UniMethodCall mcall = new UniMethodCall(new UniIdent("MyLib"), methodName, null);
 			return mcall;
 		} else {
-			throw new RuntimeException("method name is null");
+			throw new RuntimeException("method name is null:" + methodName);
 		}
 	}
 

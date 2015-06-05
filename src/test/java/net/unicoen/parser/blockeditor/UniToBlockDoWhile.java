@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.unicoen.node.UniBlock;
+import net.unicoen.node.UniBoolLiteral;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniDoWhile;
 import net.unicoen.node.UniExpr;
@@ -23,7 +24,7 @@ public class UniToBlockDoWhile {
 
 	@Test
 	public void test() throws IOException {
-		String fileName = "UniToBlockWhile";
+		String fileName = "UniToBlockDoWhile";
 		String filePath = "blockeditor/" + fileName + ".xml";
 
 		File file = new File(filePath);
@@ -36,7 +37,7 @@ public class UniToBlockDoWhile {
 
 		List<UniExpr> blocks = new ArrayList<>();
 
-		UniVariableDecWithValue var = new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(0));
+		UniVariableDecWithValue var = new UniVariableDecWithValue(new ArrayList<>(), "int", "i", new UniIntLiteral(0));
 		blocks.add(var);
 
 		UniBlock block = new UniBlock();
@@ -47,16 +48,13 @@ public class UniToBlockDoWhile {
 		args.add(new UniStringLiteral("Hello World"));
 		block.body.add(new UniMethodCall(new UniIdent("MyLib"), "print", args));
 
-		//while(i<1)
-		UniDoWhile dowhile = new UniDoWhile(block, UniToBlockTestUtil.createBinOpModel("<", new UniIdent(var.name), new UniIntLiteral(1)));
+		//while(true)
+		UniDoWhile dowhile = new UniDoWhile(block, new UniBoolLiteral(true));
 		blocks.add(dowhile);
 
 
-		UniMethodDec main = new UniMethodDec("start", null, "void", null, new UniBlock(blocks));
+		UniMethodDec main = new UniMethodDec("start", null, "void", new ArrayList<>(), new UniBlock(blocks));
 		dec.members.add(main);
-
-
-		dec.className = "UniToBlockDoWhile";
 
 		BlockGenerator parser = new BlockGenerator(out);
 		parser.parse(dec);

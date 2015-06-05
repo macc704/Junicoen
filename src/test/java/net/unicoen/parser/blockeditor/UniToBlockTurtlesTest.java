@@ -1,18 +1,14 @@
 package net.unicoen.parser.blockeditor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.unicoen.interpreter.Engine;
 import net.unicoen.node.UniClassDec;
-import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniNode;
 
 import org.junit.Test;
 
@@ -22,17 +18,19 @@ public class UniToBlockTurtlesTest {
 	@Test
 	public void test() throws IOException {
 		String fileName = "Turtles.xml";
-		String filePath = "blockeditor/" + fileName;
-		File targetXml = new File(filePath);
+		String outputFileName = "UniToBlockTurtle.xml";
+		String filePath = "blockeditor/";
 
-		UniClassDec dec = new UniClassDec();
+		File targetXml = new File(filePath + fileName);
+
+		BlockMapper mapper = new BlockMapper();
+
+		UniClassDec dec = mapper.parse(targetXml);
 
 		// --------------------------
 		Engine engine = new Engine();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		engine.out = new PrintStream(baos);
-
-		dec.className = "UniToBlockTurtle";
 
 		engine.execute(dec);
 		String output = baos.toString("UTF8");
@@ -41,7 +39,7 @@ public class UniToBlockTurtlesTest {
 		assertEquals(expect, output);
 
 
-		File file = new File(filePath);
+		File file = new File(filePath + outputFileName);
 		file.createNewFile();
 
 		PrintStream out = new PrintStream(file);

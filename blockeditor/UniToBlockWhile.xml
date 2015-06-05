@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
 <Pages collapsible-pages="no">
-<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockWhile" page-width="1366">
+<Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="" page-width="1366">
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
 <Label>start</Label>
+<ReturnType>void</ReturnType>
 <Location>
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1001</AfterBlockId>
 </Block>
-<Block genus-name="while" id="1001" kind="command">
-<Sockets num-sockets="2">
-<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
-<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真の間" position-type="single"/>
+<Block genus-name="local-var-int-number" id="1001" kind="local-variable">
+<Label>i</Label>
+<Name>i</Name>
+<Type>int</Type>
+<Sockets num-sockets="1">
+<BlockConnector con-block-id="1002" connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
 </Sockets>
-<AfterBlockId>1007</AfterBlockId>
+<AfterBlockId>1003</AfterBlockId>
 <BeforeBlockId>1000</BeforeBlockId>
 </Block>
-<Block genus-name="false" id="1002" kind="data">
-<Label>偽</Label>
-<Plug>
-<BlockConnector con-block-id="1001" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
-</Plug>
-</Block>
-<Block genus-name="Turtle-print[@string]" id="1003" kind="command">
-<Sockets num-sockets="1">
-<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
+<Block genus-name="dowhile" id="1003" kind="command">
+<Sockets num-sockets="2">
+<BlockConnector con-block-id="1005" connector-kind="socket" connector-type="cmd" init-type="cmd" label="真の間" position-type="single"/>
+<BlockConnector con-block-id="1004" connector-kind="socket" connector-type="boolean" init-type="boolean" label="かどうか調べて" position-type="single"/>
 </Sockets>
-<AfterBlockId>1005</AfterBlockId>
 <BeforeBlockId>1001</BeforeBlockId>
-</Block>
-<Block genus-name="string" id="1004" kind="data">
-<Label>Hello World</Label>
-<Plug>
-<BlockConnector con-block-id="1003" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
-</Plug>
 </Block>
 <Block genus-name="Turtle-print[@string]" id="1005" kind="command">
 <Sockets num-sockets="1">
@@ -45,21 +39,15 @@
 <BeforeBlockId>1003</BeforeBlockId>
 </Block>
 <Block genus-name="string" id="1006" kind="data">
-<Label>Bye World</Label>
+<Label>Hello World</Label>
 <Plug>
 <BlockConnector con-block-id="1005" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
 </Plug>
 </Block>
-<Block genus-name="Turtle-print[@string]" id="1007" kind="command">
-<Sockets num-sockets="1">
-<BlockConnector con-block-id="1008" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
-</Sockets>
-<BeforeBlockId>1001</BeforeBlockId>
-</Block>
-<Block genus-name="string" id="1008" kind="data">
-<Label>Bye World</Label>
+<Block genus-name="true" id="1004" kind="data">
+<Label>真</Label>
 <Plug>
-<BlockConnector con-block-id="1007" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
+<BlockConnector con-block-id="1003" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
 </PageBlocks>

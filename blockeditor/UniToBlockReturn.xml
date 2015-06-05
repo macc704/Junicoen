@@ -10,6 +10,9 @@
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 </Block>
 <Block genus-name="procedure" id="1001" kind="procedure">
 <Label>stringMethod</Label>
@@ -18,16 +21,20 @@
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1002</AfterBlockId>
 </Block>
 <Block genus-name="return" id="1002" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+<BlockConnector con-block-id="1003" connector-kind="socket" connector-type="string" init-type="poly" label="" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1001</BeforeBlockId>
 </Block>
 <Block genus-name="string" id="1003" kind="data">
 <Label>hoge</Label>
+<Type>String</Type>
 <Plug>
 <BlockConnector con-block-id="1002" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
 </Plug>
@@ -39,16 +46,20 @@
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1005</AfterBlockId>
 </Block>
 <Block genus-name="return" id="1005" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+<BlockConnector con-block-id="1006" connector-kind="socket" connector-type="boolean" init-type="poly" label="" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1004</BeforeBlockId>
 </Block>
 <Block genus-name="true" id="1006" kind="data">
 <Label>真</Label>
+<Type>boolean</Type>
 <Plug>
 <BlockConnector con-block-id="1005" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
@@ -60,16 +71,20 @@
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1008</AfterBlockId>
 </Block>
 <Block genus-name="return" id="1008" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+<BlockConnector con-block-id="1009" connector-kind="socket" connector-type="double-number" init-type="poly" label="" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1007</BeforeBlockId>
 </Block>
 <Block genus-name="double-number" id="1009" kind="data">
 <Label>1.0</Label>
+<Type>double</Type>
 <Plug>
 <BlockConnector con-block-id="1008" connector-kind="plug" connector-type="double-number" init-type="double-number" label="" position-type="mirror"/>
 </Plug>
@@ -81,16 +96,20 @@
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1011</AfterBlockId>
 </Block>
 <Block genus-name="return" id="1011" kind="command">
 <Sockets num-sockets="1">
-<BlockConnector con-block-id="1012" connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+<BlockConnector con-block-id="1012" connector-kind="socket" connector-type="number" init-type="poly" label="" position-type="single"/>
 </Sockets>
 <BeforeBlockId>1010</BeforeBlockId>
 </Block>
 <Block genus-name="number" id="1012" kind="data">
 <Label>1</Label>
+<Type>int</Type>
 <Plug>
 <BlockConnector con-block-id="1011" connector-kind="plug" connector-type="number" init-type="number" label="" position-type="mirror"/>
 </Plug>

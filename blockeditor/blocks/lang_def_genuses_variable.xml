@@ -164,8 +164,7 @@
 	</description>
 	<Type>int</Type>
 	<BlockConnectors>
-		<BlockConnector label="初期値" connector-kind="socket"
-			connector-type="number">
+		<BlockConnector label="初期値" connector-kind="socket" connector-type="number">
 			<DefaultArg genus-name="number" label="1"></DefaultArg>
 		</BlockConnector>
 	</BlockConnectors>
@@ -188,25 +187,25 @@
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
 		</Stub>
-		<Stub stub-genus="preincdouble">
+		<Stub stub-genus="preinc">
 			<LangSpecProperties>
 				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
 		</Stub>
-		<Stub stub-genus="predecdouble">
+		<Stub stub-genus="predec">
 			<LangSpecProperties>
 				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
 		</Stub>
-		<Stub stub-genus="postincdouble">
+		<Stub stub-genus="postinc">
 			<LangSpecProperties>
 				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
 			</LangSpecProperties>
 		</Stub>
-		<Stub stub-genus="postdecdouble">
+		<Stub stub-genus="postdec">
 			<LangSpecProperties>
 				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
@@ -250,6 +249,30 @@
 			</LangSpecProperties>
 		</Stub>
 		<Stub stub-genus="inc">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="preinc">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="predec">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="postinc">
+			<LangSpecProperties>
+				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
+				<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+			</LangSpecProperties>
+		</Stub>
+		<Stub stub-genus="postdec">
 			<LangSpecProperties>
 				<LangSpecProperty key="vm-cmd-name" value="eval-inclocal"></LangSpecProperty>
 				<LangSpecProperty key="scope" value="local"></LangSpecProperty>

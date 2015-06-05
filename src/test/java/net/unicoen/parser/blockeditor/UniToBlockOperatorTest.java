@@ -24,7 +24,7 @@ public class UniToBlockOperatorTest {
 
 	@Test
 	public void test() throws IOException {
-		UniClassDec dec = new UniClassDec();
+		UniClassDec dec = new UniClassDec("UniToBlockOperator", new ArrayList<>(), new ArrayList<>());
 		dec.members = new ArrayList<>();
 
 		List<UniExpr> blocks = new ArrayList<>();
@@ -40,7 +40,7 @@ public class UniToBlockOperatorTest {
 		UniVariableDec vdecInt = UniToBlockTestUtil.createVariableDecModel("int", "i");
 		blocks.add(vdecInt);
 		//i = 1;
-		UniToBlockTestUtil.createBinOpModel(blocks, "=", new UniIdent(vdecInt.name), new UniIntLiteral(1));
+		UniToBlockTestUtil.createBinOpModel(blocks, "=", new UniIdent(vdecInt.name), new UniIdent(vdecInt.name));
 		//i = 1+1;
 		UniToBlockTestUtil.createBinOpModel(blocks, "=", new UniIdent(vdecInt.name), UniToBlockTestUtil.createBinOpModel("+", new UniIntLiteral(1), new UniIntLiteral(1)));
 		//i = 1+1+1;
@@ -116,11 +116,9 @@ public class UniToBlockOperatorTest {
 		UniToBlockTestUtil.createBinOpModel(blocks, "=", new UniIdent(vdecBoolean.name), UniToBlockTestUtil.createBinOpModel("!=", new UniStringLiteral("hello"), new UniStringLiteral("hello")));
 
 		UniBlock block = new UniBlock(blocks);
-		UniMethodDec method = new UniMethodDec("start", null, "void", null, block);
+		UniMethodDec method = new UniMethodDec("start", new ArrayList<>(), "void", new ArrayList<>(), block);
 
 		dec.members.add(method);
-
-		dec.className = "UniToBlockOperator";
 
 		String fileName = dec.className;
 		String filePath = "blockeditor/" + fileName + ".xml";

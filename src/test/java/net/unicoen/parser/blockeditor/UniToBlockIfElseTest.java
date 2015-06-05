@@ -18,8 +18,9 @@ public class UniToBlockIfElseTest {
 	public void test() throws IOException {
 
 		String fileName = "IfElse.xml";
-		String filePath = "blockeditor/" + fileName;
-		File targetXml = new File(filePath);
+		String outputFileName = "UniToBlockIfElse.xml";
+		String filePath = "blockeditor/";
+		File targetXml = new File(filePath+fileName);
 
 		BlockMapper mapper = new BlockMapper();
 		UniClassDec dec = mapper.parse(targetXml);
@@ -33,10 +34,10 @@ public class UniToBlockIfElseTest {
 		engine.execute(dec);
 		String output = baos.toString("UTF8");
 
-		String expect = "Hello World" + System.lineSeparator() + "Bye World" + System.lineSeparator();
+		String expect ="Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
 
-		File file = new File(filePath);
+		File file = new File(filePath + outputFileName);
 		file.createNewFile();
 
 		PrintStream out = new PrintStream(file);

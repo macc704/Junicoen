@@ -1,6 +1,5 @@
 package net.unicoen.parser.blockeditor;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +52,6 @@ public class SSSSampleTest {
 		//startメソッドにelementsを追加
 		startMethod.block.body = elements;
 
-		BlockGenerator parser = new BlockGenerator(true);
-		parser.setProjectPath("blockeditor/");
-		File file = parser.parse(classDec);
-
-		System.out.println("create xml file at " +  file.getAbsolutePath());
 
 
 	}
