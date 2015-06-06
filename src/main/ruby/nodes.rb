@@ -28,6 +28,9 @@ Dsl.define_node do |x|
       #
       # Expressions
       #
+      x.node "Array" do |d|
+        d.mem "items", "Expr", list: true
+      end
       x.node "FieldAccess" do |d|
         d.mem "receiver", "Expr"
         d.mem "fieldName", String
@@ -93,11 +96,6 @@ Dsl.define_node do |x|
       #
       # Var Dec
       #
-      x.node "VariableDec", doc: '変数宣言' do |d|
-        d.mem "modifiers", String, list: true
-        d.mem "type", String
-        d.mem "name", String
-      end
       x.node "VariableDecWithValue", doc: '変数宣言＋代入' do |d|
         d.mem "modifiers", String, list: true
         d.mem "type", String
@@ -107,6 +105,12 @@ Dsl.define_node do |x|
     end
 
     x.node "MemberDec", abstract: true do
+      x.node "FieldDec" do |d|
+        d.mem "modifiers", String, list: true
+        d.mem "type", String
+        d.mem "name", String
+        d.mem "value", "Expr"
+      end
       x.node "MethodDec" do |d|
         d.mem "methodName", String
         d.mem "modifiers", String, list: true

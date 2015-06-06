@@ -11,7 +11,6 @@ import net.unicoen.node.UniBreak;
 import net.unicoen.node.UniClassDec;
 import net.unicoen.node.UniTernaryOp;
 import net.unicoen.node.UniContinue;
-import net.unicoen.node.UniVariableDec;
 import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniDoWhile;
 import net.unicoen.node.UniDoubleLiteral;
@@ -34,7 +33,7 @@ public class JavaGeneratorTest {
 
 	private static Pattern whitespace = Pattern.compile("\\s+");
 
-	private static String normalize(String str) {
+	public static String normalize(String str) {
 		String replaced = whitespace.matcher(str).replaceAll(" ");
 		if (replaced.charAt(replaced.length() - 1) == ' ') {
 			replaced = replaced.substring(0, replaced.length() - 1);
@@ -86,7 +85,7 @@ public class JavaGeneratorTest {
 		UniClassDec cDec = new UniClassDec("Foo", list("public"), list(mDec));
 
 		String code = JavaGenerator.generate(cDec);
-		assertEquals(buff.toString(), code);
+		assertEquals(buff.toString(), code.replace("\r\n", "\n"));
 	}
 
 	@Test
@@ -237,13 +236,6 @@ public class JavaGeneratorTest {
 				"} while (false);",
 		};
 		assertGen(codes, body);
-	}
-
-	@Test
-	public void test_DecVar() {
-		UniExpr body = new UniVariableDec(list("final"), "int", "a");
-		String code = "final int a;";
-		assertGen(code, body);
 	}
 
 	@Test

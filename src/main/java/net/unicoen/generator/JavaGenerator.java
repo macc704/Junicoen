@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import net.unicoen.node.Traverser;
 import net.unicoen.node.UniArg;
+import net.unicoen.node.UniArray;
 import net.unicoen.node.UniBinOp;
 import net.unicoen.node.UniBlock;
 import net.unicoen.node.UniBoolLiteral;
@@ -18,6 +19,7 @@ import net.unicoen.node.UniDoWhile;
 import net.unicoen.node.UniDoubleLiteral;
 import net.unicoen.node.UniExpr;
 import net.unicoen.node.UniFieldAccess;
+import net.unicoen.node.UniFieldDec;
 import net.unicoen.node.UniFor;
 import net.unicoen.node.UniIdent;
 import net.unicoen.node.UniIf;
@@ -30,7 +32,6 @@ import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniTernaryOp;
 import net.unicoen.node.UniUnaryOp;
-import net.unicoen.node.UniVariableDec;
 import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 
@@ -78,13 +79,15 @@ public class JavaGenerator extends Traverser {
 		printlnIndent(String.format(format, args));
 	}
 
-	private void genBlockS(UniBlock block, String preStatement, Runnable afterBlock) {
+	private void genBlockS(UniBlock block, String preStatement,
+			Runnable afterBlock) {
 		genBlock(block, () -> {
 			print(preStatement);
 		}, afterBlock);
 	}
 
-	private void genBlock(UniBlock block, Runnable beforeBlock, Runnable afterBlock) {
+	private void genBlock(UniBlock block, Runnable beforeBlock,
+			Runnable afterBlock) {
 		if (beforeBlock != null) {
 			printIndent();
 			beforeBlock.run();
@@ -168,7 +171,8 @@ public class JavaGenerator extends Traverser {
 	}
 
 	public static String generate(UniClassDec dec) {
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream(); PrintStream printer = new PrintStream(out)) {
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+				PrintStream printer = new PrintStream(out)) {
 			generate(dec, printer);
 			return out.toString();
 		} catch (IOException e) {
@@ -191,8 +195,8 @@ public class JavaGenerator extends Traverser {
 	}
 
 	/* ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
-	 * overrides
-	 * ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** */
+	 * overrides ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
+	 */
 
 	@Override
 	public void traverseBoolLiteral(UniBoolLiteral node) {
@@ -358,12 +362,6 @@ public class JavaGenerator extends Traverser {
 	}
 
 	@Override
-	public void traverseVariableDec(UniVariableDec node) {
-		String mod = String.join(" ", node.modifiers);
-		print(String.join(" ", mod, node.type, node.name));
-	}
-
-	@Override
 	public void traverseVariableDecWithValue(UniVariableDecWithValue node) {
 		if (node.modifiers != null) {
 			for (String mod : node.modifiers) {
@@ -384,7 +382,8 @@ public class JavaGenerator extends Traverser {
 			args.add(arg.type + " " + arg.name);
 		}
 		String argWithParen = "(" + String.join(", ", args) + ")";
-		String declare = String.join(" ", mod, methDec.returnType, methDec.methodName, argWithParen);
+		String declare = String.join(" ", mod, methDec.returnType,
+				methDec.methodName, argWithParen);
 		genBlockS(methDec.block, declare, null);
 	}
 
@@ -403,5 +402,15 @@ public class JavaGenerator extends Traverser {
 		}
 		indent--;
 		printlnIndent("}");
+	}
+
+	@Override
+	public void traverseFieldDec(UniFieldDec node) {
+		throw new RuntimeException("Not Implemented");
+	}
+
+	@Override
+	public void traverseArray(UniArray node) {
+		throw new RuntimeException("Not Implemented");
 	}
 }

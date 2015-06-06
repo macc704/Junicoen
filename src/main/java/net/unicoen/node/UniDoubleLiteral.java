@@ -16,6 +16,12 @@ public class UniDoubleLiteral extends UniExpr {
 	}
 
 	@Override
+	public int hashCode() {
+		long valueHashCode = Double.doubleToLongBits(value);
+		return (int)(valueHashCode^(valueHashCode>>32));
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof UniDoubleLiteral)) return false;
 		UniDoubleLiteral that = (UniDoubleLiteral)obj;
@@ -25,5 +31,8 @@ public class UniDoubleLiteral extends UniExpr {
 	@Override
 	public boolean isStatement() {
 		return false;
+	}
+
+	public void merge(UniDoubleLiteral that) {
 	}
 }

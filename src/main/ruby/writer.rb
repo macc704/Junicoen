@@ -128,6 +128,8 @@ module Writer
         w.newline
         write_equals(dsl, node, w)
         write_conc_additional_member(dsl, node, w)
+        w.newline
+        write_merge(dsl, node, w)
       else
         write_abst_additional_member(dsl, node, w)
       end
@@ -189,6 +191,47 @@ module Writer
   # equals を生成します
   #
   def write_equals(dsl, node, w)
+    # hashCode()
+    w << "@Override"
+    pre_stmt = []
+    exprs = node.members.map do |name, type, opt|
+      case type.to_s
+      when /^[A-Z][A-Za-z_]+/
+        "(#{name} == null ? 0 : #{name}.hashCode())"
+      when /bool/
+        "#{name} ? 1 : 0"
+      when /int/
+        name
+      when /long/
+        "(int)(#{name}^(#{name}>>32))"
+      when /double/
+        tmp_name = name + "HashCode"
+        pre_stmt << "long #{tmp_name} = Double.doubleToLongBits(#{name});"
+        "(int)(#{tmp_name}^(#{tmp_name}>>32))"
+      else
+        raise "Unknown type: #{type}(#{type.class})"
+      end
+    end
+    w.block "public int hashCode()" do
+      pre_stmt.each do |stmt|
+        w << stmt
+      end
+      case exprs.size
+      when 0
+        w << "return 0;"
+      when 1
+        w << "return #{exprs.first};"
+      else
+        w << "int result = 17;"
+        exprs.each do |expr|
+          w << "result = result * 31 + #{expr};"
+        end
+        w << "return result;"
+      end
+    end
+    w.newline
+
+    # equals()
     w << "@Override"
     w.block "public boolean equals(Object obj)" do
       if node.members.size == 0
@@ -221,6 +264,37 @@ module Writer
     end
   end
 
+  #
+  # mergeメソッドを生成します
+  #
+  def write_merge(dsl, node, w)
+    w.block "public void merge(#{node.name} that)" do
+      node.members.each do |name, type, opt|
+        if /^[a-z]+/ !~ type.to_s
+          w.block "if (that.#{name} != null)" do
+            if opt[:list]
+              w << "if (this.#{name} != null) {"
+              w.with_indent do
+                w << "this.#{name} = that.#{name};"
+              end
+              w << "} else {"
+              w.with_indent do
+                w << "this.#{name}.addAll(that.#{name});"
+              end
+              w << "}"
+            else
+              w << "this.#{name} = that.#{name};"
+            end
+          end
+        end
+      end
+    end
+  end
+
+
+  #
+  # 抽象メソッドを生成します
+  #
   def write_abst_additional_member(dsl, node, w)
     node.opt.fetch(:member, {}).each do |name, type|
       m_name = (/bool/i =~ type ? 'is' : 'get') + name.to_s.pascalize
@@ -232,6 +306,10 @@ module Writer
     end
   end
 
+  #
+  # フラグをメンバー化させます
+  # 例: `isStatement()`を生成
+  #
   def write_conc_additional_member(dsl, node, w)
     node.parents.each do |parent|
       parent.opt.fetch(:member, {}).each do |name, type|
