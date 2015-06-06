@@ -92,6 +92,11 @@ public class BlockGenerator {
 		resolver = new BlockNameResolver(true);
 	}
 
+	public BlockGenerator(PrintStream out, String langDefFilePath) {
+		this.out = out;
+		resolver = new BlockNameResolver(true);
+	}
+
 	/*
 	 * Unicoenモデルを解析し、xmlファイルを作成し返す
 	 */

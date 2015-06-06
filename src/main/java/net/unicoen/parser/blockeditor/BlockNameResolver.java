@@ -22,7 +22,8 @@ public class BlockNameResolver {
 	private Map<String, String> availableFieldVariableDecralationTypes = new HashMap<>();
 	private Map<String, String> availableFunctionArgsTypes = new HashMap<>();
 
-	public BlockNameResolver(){
+	public BlockNameResolver(String path){
+		this.path = path;
 		parseGnuses();
 		parseTurtleXml();
 	}
