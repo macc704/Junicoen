@@ -44,7 +44,6 @@ import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
-import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 import net.unicoen.parser.blockeditor.blockmodel.BlockAbstractBlockModel;
 import net.unicoen.parser.blockeditor.blockmodel.BlockClassModel;
@@ -94,7 +93,7 @@ public class BlockGenerator {
 
 	public BlockGenerator(PrintStream out, String langDefFilePath) {
 		this.out = out;
-		resolver = new BlockNameResolver(true);
+		resolver = new BlockNameResolver(langDefFilePath);
 	}
 
 	/*
@@ -308,48 +307,54 @@ public class BlockGenerator {
 	}
 
 	public BlockElementModel parseExpr(UniExpr expr, Document document, Element parent) {
+		BlockElementModel model = null;
 		if (expr instanceof UniMethodCall) {
-			return parseMethodCall((UniMethodCall) expr, document, parent);
+			model = parseMethodCall((UniMethodCall) expr, document, parent);
 		} else if (expr instanceof UniStringLiteral) {
-			return parseStringLiteral((UniStringLiteral) expr, document, parent);
+			model = parseStringLiteral((UniStringLiteral) expr, document, parent);
 		} else if (expr instanceof UniIntLiteral) {
-			return parseIntLiteral((UniIntLiteral) expr, document, parent);
+			model =  parseIntLiteral((UniIntLiteral) expr, document, parent);
 		} else if (expr instanceof UniBoolLiteral) {
-			return parseBoolLiteral((UniBoolLiteral) expr, document, parent);
+			model = parseBoolLiteral((UniBoolLiteral) expr, document, parent);
 		} else if (expr instanceof UniDoubleLiteral) {
-			return parseDoubleLiteral((UniDoubleLiteral) expr, document, parent);
+			model = parseDoubleLiteral((UniDoubleLiteral) expr, document, parent);
 		} else if (expr instanceof UniIf) {
-			return parseIf((UniIf) expr, document, parent);
+			model = parseIf((UniIf) expr, document, parent);
 		} else if (expr instanceof UniWhile) {
-			return parseWhile((UniWhile) expr, document, parent);
+			model = parseWhile((UniWhile) expr, document, parent);
 		} else if (expr instanceof UniBinOp) {
-			return parseBinOp((UniBinOp) expr, document, parent);
+			model = parseBinOp((UniBinOp) expr, document, parent);
 		} else if (expr instanceof UniBreak) {
-			return parseContinueBreak("break", document, parent);
+			model = parseContinueBreak("break", document, parent);
 		} else if (expr instanceof UniContinue) {
-			return parseContinueBreak("continue", document, parent);
+			model = parseContinueBreak("continue", document, parent);
 		} else if (expr instanceof UniUnaryOp) {
-			return parseUnaryOperator((UniUnaryOp) expr, document, parent);
-		} else if (expr instanceof UniVariableDec) {
-			return parseVarDec(((UniVariableDec) expr).type, ((UniVariableDec) expr).name, document, parent);
-		} else if (expr instanceof UniVariableDecWithValue) {
-			return parseVarDec((UniVariableDecWithValue) expr, document, parent);
+			model = parseUnaryOperator((UniUnaryOp) expr, document, parent);
+		}
+//		else if (expr instanceof UniVariableDec) {
+//			return parseVarDec(((UniVariableDec) expr).type, ((UniVariableDec) expr).name, document, parent);
+//		}
+		else if (expr instanceof UniVariableDec) {
+			model = parseVarDec((UniVariableDec) expr, document, parent);
 		} else if (expr instanceof UniIdent) {
-			return parseIdent((UniIdent) expr, document, parent);
+			model = parseIdent((UniIdent) expr, document, parent);
 		} else if (expr instanceof UniLongLiteral) {
 			throw new RuntimeException("The expr has not been supported yet");
 		} else if (expr instanceof UniReturn) {
-			return parseReturn((UniReturn) expr, document, parent);
+			model = parseReturn((UniReturn) expr, document, parent);
 		} else if (expr instanceof UniFieldAccess) {
 			throw new RuntimeException("The expr has not been supported yet");
 		} else if (expr instanceof UniBlock) {
-			return parseBlock((UniBlock) expr, document, parent);
+			model = parseBlock((UniBlock) expr, document, parent);
 		} else if (expr instanceof UniDoWhile) {
-			return parseDoWhile((UniDoWhile) expr, document, parent);
+			model = parseDoWhile((UniDoWhile) expr, document, parent);
 		} else if (expr instanceof UniFor) {
-			return parseFor((UniFor) expr, document, parent);
+			model =  parseFor((UniFor) expr, document, parent);
 		}
-		return null;
+
+		addParsedModel((UniNode)expr, model.getElement());
+
+		return model;
 	}
 
 	public BlockElementModel parseIdent(UniIdent expr, Document document, Node parent) {
@@ -410,8 +415,6 @@ public class BlockGenerator {
 		// ソケットの出力
 		addSocketsNode(blockSockets, document, blockElement, socketsInfo);
 
-		addedModels.put(Integer.toString(((UniNode) doWhileExpr).hashCode()), blockElement);
-
 		return model;
 	}
 
@@ -457,9 +460,12 @@ public class BlockGenerator {
 
 	}
 
-	public BlockLocalVarDecModel parseVarDec(UniVariableDecWithValue varDec, Document document, Element parent) {
+	public BlockLocalVarDecModel parseVarDec(UniVariableDec varDec, Document document, Element parent) {
 		BlockLocalVarDecModel model = parseVarDec(varDec.type, varDec.name, document, parent);
-		BlockElementModel initializer = parseExpr(varDec.value, document, model.getElement());
+		BlockElementModel initializer = null;
+		if(varDec.value != null){
+			 initializer = parseExpr(varDec.value, document, model.getElement());
+		}
 
 		model.setInitializer((BlockExprModel) initializer);
 
@@ -468,10 +474,15 @@ public class BlockGenerator {
 		SocketsInfo sockets = calcSocketsInfo(socketNodes);
 
 		List<Element> args = new ArrayList<>();
-		args.add(initializer.getElement());
+		if(initializer != null){
+			args.add(initializer.getElement());
+		}else{
+			args.add(null);
+		}
 
 		addSocketsNode(args, document, model.getElement(), sockets);
 
+		addParsedModel((UniNode)varDec, model.getElement());
 		return model;
 	}
 
@@ -717,9 +728,11 @@ public class BlockGenerator {
 		SocketsInfo sockets = calcSocketsInfo(socketNodes);
 		addSocketsNode(args, document, blockElement, sockets);
 
-		addedModels.put(Integer.toString(((UniNode) binopExpr).hashCode()), blockElement);
-
 		return new BlockBinaryOperatorModel(blockElement, (BlockExprModel) leftBlock, (BlockExprModel) rightBlock);
+	}
+
+	public void addParsedModel(UniNode model, Element element){
+		addedModels.put(Integer.toString(model.hashCode()), element);
 	}
 
 	public String calcCompareOperatorGenusName(UniBinOp binopExpr, String type) {
@@ -927,8 +940,6 @@ public class BlockGenerator {
 		// ソケットの出力
 		addSocketsNode(blockSockets, document, blockElement, socketsInfo);
 
-		addedModels.put(Integer.toString(((UniNode) whileExpr).hashCode()), blockElement);
-
 		return model;
 	}
 
@@ -951,8 +962,6 @@ public class BlockGenerator {
 
 		addPlugElement(document, blockElement, parent, plugInfo.get("connector-type"), plugInfo.get("position-type"));
 
-		addedModels.put(Integer.toString(hash), blockElement);
-
 		return blockElement;
 	}
 
@@ -967,8 +976,6 @@ public class BlockGenerator {
 		BlockElementModel socket = parseExpr(ifexpr.cond, document, ifElement);
 		List<BlockCommandModel> trueBlock = parseBody(document, ifElement, ifexpr.trueBlock);
 		List<BlockCommandModel> falseBlock = parseBody(document, ifElement, ifexpr.falseBlock);
-
-		addedModels.put(Integer.toString(((UniNode) ifexpr).hashCode()), ifElement);
 
 		// if式のソケット情報を付与
 		addIfSocketInfo(document, ifElement, socket, trueBlock, falseBlock);
@@ -1046,6 +1053,9 @@ public class BlockGenerator {
 			Element element = createBlockElement(document, genusName, ID_COUNTER++, kind);
 			caller.setElement(element);
 
+			//Name
+			addElement("Name", document, method.methodName, element);
+
 			if (method.args != null) {
 				// 引数パース
 				for (UniExpr expr : method.args) {
@@ -1064,8 +1074,6 @@ public class BlockGenerator {
 				// socketの追加
 				addSocketsNode(exprs, document, element, socketsInfo);
 			}
-
-			addedModels.put(Integer.toString(((UniNode) method).hashCode()), element);
 
 			return caller;
 		} else {

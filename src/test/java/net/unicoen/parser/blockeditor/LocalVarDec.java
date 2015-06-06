@@ -11,7 +11,6 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniVariableDec;
-import net.unicoen.node.UniVariableDecWithValue;
 
 import org.junit.Test;
 
@@ -35,8 +34,8 @@ public class LocalVarDec {
 		}else{
 			assertTrue(false);
 		}
-		if(fdec.block.body.get(1) instanceof UniVariableDecWithValue){
-			UniVariableDecWithValue varDec = (UniVariableDecWithValue) fdec.block.body.get(1);
+		if(fdec.block.body.get(1) instanceof UniVariableDec){
+			UniVariableDec varDec = (UniVariableDec) fdec.block.body.get(1);
 			assertEquals("i1", varDec.name);
 			assertEquals("int", varDec.type);
 			assertEquals(1, ((UniIntLiteral)varDec.value).value);
@@ -68,8 +67,8 @@ public class LocalVarDec {
 			assertTrue(false);
 		}
 
-		if(fdec.block.body.get(3) instanceof UniVariableDecWithValue){
-			UniVariableDecWithValue varDec = (UniVariableDecWithValue) fdec.block.body.get(3);
+		if(fdec.block.body.get(3) instanceof UniVariableDec){
+			UniVariableDec varDec = (UniVariableDec) fdec.block.body.get(3);
 			assertEquals("s1", varDec.name);
 			assertEquals("String", varDec.type);
 			assertEquals("あいうえお", ((UniStringLiteral)varDec.value).value);
@@ -79,14 +78,14 @@ public class LocalVarDec {
 
 		//boolean
 		if(fdec.block.body.get(4) instanceof UniVariableDec){
-			assertEquals("b", ((UniVariableDecWithValue) fdec.block.body.get(4)).name);
-			assertEquals("boolean", ((UniVariableDecWithValue) fdec.block.body.get(4)).type);
+			assertEquals("b", ((UniVariableDec) fdec.block.body.get(4)).name);
+			assertEquals("boolean", ((UniVariableDec) fdec.block.body.get(4)).type);
 		}else{
 			assertTrue(false);
 		}
 
-		if(fdec.block.body.get(5) instanceof UniVariableDecWithValue){
-			UniVariableDecWithValue varDec = (UniVariableDecWithValue) fdec.block.body.get(5);
+		if(fdec.block.body.get(5) instanceof UniVariableDec){
+			UniVariableDec varDec = (UniVariableDec) fdec.block.body.get(5);
 			assertEquals("b1", varDec.name);
 			assertEquals("boolean", varDec.type);
 			assertEquals(false, ((UniBoolLiteral)varDec.value).value);

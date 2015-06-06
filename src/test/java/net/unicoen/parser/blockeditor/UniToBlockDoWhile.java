@@ -16,7 +16,7 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniStringLiteral;
-import net.unicoen.node.UniVariableDecWithValue;
+import net.unicoen.node.UniVariableDec;
 
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class UniToBlockDoWhile {
 
 		List<UniExpr> blocks = new ArrayList<>();
 
-		UniVariableDecWithValue var = new UniVariableDecWithValue(new ArrayList<>(), "int", "i", new UniIntLiteral(0));
+		UniVariableDec var = new UniVariableDec(new ArrayList<>(), "int", "i", new UniIntLiteral(0));
 		blocks.add(var);
 
 		UniBlock block = new UniBlock();

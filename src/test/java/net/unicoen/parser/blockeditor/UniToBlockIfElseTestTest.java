@@ -15,7 +15,7 @@ import net.unicoen.node.UniIf;
 import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
-import net.unicoen.node.UniVariableDecWithValue;
+import net.unicoen.node.UniVariableDec;
 
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class UniToBlockIfElseTestTest {
 		dec.members = new ArrayList<>();
 
 		List<UniExpr> blocks = new ArrayList<>();
-		UniVariableDecWithValue var = new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(0));
+		UniVariableDec var = new UniVariableDec(null, "int", "i", new UniIntLiteral(0));
 		blocks.add(var);
 		UniIf uniIf = new UniIf();
 

@@ -15,7 +15,7 @@ import net.unicoen.node.UniIntLiteral;
 import net.unicoen.node.UniMemberDec;
 import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniUnaryOp;
-import net.unicoen.node.UniVariableDecWithValue;
+import net.unicoen.node.UniVariableDec;
 
 import org.junit.Test;
 
@@ -31,10 +31,10 @@ public class UniToBlockUnaryTest {
 
 		List<UniExpr> body = new ArrayList<>();
 
-		UniVariableDecWithValue var =  new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(1));
+		UniVariableDec var =  new UniVariableDec(null, "int", "i", new UniIntLiteral(1));
 		body.add(var);
 
-		UniVariableDecWithValue dvar =  new UniVariableDecWithValue(null, "double", "d", new UniDoubleLiteral(1.0));
+		UniVariableDec dvar =  new UniVariableDec(null, "double", "d", new UniDoubleLiteral(1.0));
 		body.add(dvar);
 
 		UniUnaryOp op = new UniUnaryOp("_++", new UniIdent(var.name));

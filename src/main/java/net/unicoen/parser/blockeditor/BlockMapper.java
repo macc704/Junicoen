@@ -29,7 +29,6 @@ import net.unicoen.node.UniReturn;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
-import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -240,9 +239,9 @@ public class BlockMapper {
 
 		if (initValues.get(0) != null && initValues.get(0).size() > 0) {
 			// 初期値あり
-			return new UniVariableDecWithValue(null, type, name, initValues.get(0).get(0));
+			return new UniVariableDec(null, type, name, initValues.get(0).get(0));
 		} else {
-			return new UniVariableDec(null, type, name);
+			return new UniVariableDec(null, type, name, null);
 		}
 	}
 

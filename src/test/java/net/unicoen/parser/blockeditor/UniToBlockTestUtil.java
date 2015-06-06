@@ -13,7 +13,6 @@ import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
-import net.unicoen.node.UniVariableDecWithValue;
 import net.unicoen.node.UniWhile;
 
 public class UniToBlockTestUtil {
@@ -32,9 +31,9 @@ public class UniToBlockTestUtil {
 		return vdec;
 	}
 
-	public static UniVariableDecWithValue createVariableDecModelWithValue(String type, String name, String value){
+	public static UniVariableDec createVariableDecModelWithValue(String type, String name, String value){
 		//int 型の変数i作成
-		UniVariableDecWithValue vdec = new UniVariableDecWithValue(new ArrayList<String>(), type, name, createLiteral(type, value));
+		UniVariableDec vdec = new UniVariableDec(new ArrayList<String>(), type, name, createLiteral(type, value));
 		vdec.modifiers.add("");
 		return vdec;
 	}

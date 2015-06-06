@@ -20,7 +20,7 @@ import net.unicoen.node.UniMethodCall;
 import net.unicoen.node.UniMethodDec;
 import net.unicoen.node.UniStringLiteral;
 import net.unicoen.node.UniUnaryOp;
-import net.unicoen.node.UniVariableDecWithValue;
+import net.unicoen.node.UniVariableDec;
 
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class UniToBlockFor {
 		PrintStream out = new PrintStream(file);
 
 		List<UniExpr> blocks = new ArrayList<>();
-		UniVariableDecWithValue var = new UniVariableDecWithValue(null, "int", "i", new UniIntLiteral(0));
+		UniVariableDec var = new UniVariableDec(null, "int", "i", new UniIntLiteral(0));
 
 		UniFor uniFor = new UniFor();
 		//初期化子
