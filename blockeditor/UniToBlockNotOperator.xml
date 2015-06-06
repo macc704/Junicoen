@@ -5,10 +5,14 @@
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
 <Label>start</Label>
+<ReturnType>void</ReturnType>
 <Location>
 <X>50</X>
 <Y>50</Y>
 </Location>
+<Sockets num-sockets="1">
+<BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
+</Sockets>
 <AfterBlockId>1001</AfterBlockId>
 </Block>
 <Block genus-name="ifelse" id="1001" kind="command">
@@ -27,13 +31,15 @@
 <BlockConnector con-block-id="1003" connector-kind="socket" connector-type="boolean" init-type="boolean" label="" position-type="single"/>
 </Sockets>
 </Block>
-<Block genus-name="false" id="1003" kind="data">
-<Label>偽</Label>
+<Block genus-name="true" id="1003" kind="data">
+<Label>真</Label>
+<Type>boolean</Type>
 <Plug>
 <BlockConnector con-block-id="1002" connector-kind="plug" connector-type="boolean" init-type="boolean" label="" position-type="mirror"/>
 </Plug>
 </Block>
 <Block genus-name="Turtle-print[@string]" id="1004" kind="command">
+<Name>print</Name>
 <Sockets num-sockets="1">
 <BlockConnector con-block-id="1005" connector-kind="socket" connector-type="string" init-type="string" label="" position-type="single"/>
 </Sockets>
@@ -41,6 +47,7 @@
 </Block>
 <Block genus-name="string" id="1005" kind="data">
 <Label>Hello World</Label>
+<Type>String</Type>
 <Plug>
 <BlockConnector con-block-id="1004" connector-kind="plug" connector-type="string" init-type="string" label="" position-type="mirror"/>
 </Plug>

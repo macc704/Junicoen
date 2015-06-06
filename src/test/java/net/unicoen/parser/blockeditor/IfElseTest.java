@@ -31,7 +31,7 @@ public class IfElseTest {
 		engine.execute(dec);
 		String output = baos.toString("UTF8");
 
-		String expect = "Hello World" + System.lineSeparator() + "Bye World" + System.lineSeparator();
+		String expect = "Bye World" + System.lineSeparator();
 		assertEquals(expect, output);
 	}
 

@@ -47,20 +47,20 @@ public class UniToBlockUnaryTest {
 		UniToBlockTestUtil.createUnaryOpModel(body, "++_", new UniIdent(var.name));
 		UniToBlockTestUtil.createUnaryOpModel(body, "--_", new UniIdent(var.name));
 
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent(var.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("_--", new UniIdent(var.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("++_", new UniIdent(var.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("--_", new UniIdent(var.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent(var.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("_--", new UniIdent(var.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("++_", new UniIdent(var.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(var.name), UniToBlockTestUtil.createUnaryOpModel("--_", new UniIdent(var.name)));
 
 		UniToBlockTestUtil.createUnaryOpModel(body, "_++", new UniIdent(dvar.name));
 		UniToBlockTestUtil.createUnaryOpModel(body, "_--", new UniIdent(dvar.name));
 		UniToBlockTestUtil.createUnaryOpModel(body, "++_", new UniIdent(dvar.name));
 		UniToBlockTestUtil.createUnaryOpModel(body, "--_", new UniIdent(dvar.name));
 
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent(dvar.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("_--", new UniIdent(dvar.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("++_", new UniIdent(dvar.name)));
-		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("--_", new UniIdent(dvar.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent(dvar.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("_--", new UniIdent(dvar.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("++_", new UniIdent(dvar.name)));
+//		UniToBlockTestUtil.createBinOpModel(body, "=", new UniIdent(dvar.name), UniToBlockTestUtil.createUnaryOpModel("--_", new UniIdent(dvar.name)));
 
 
 		List<UniExpr> args = new ArrayList<>();

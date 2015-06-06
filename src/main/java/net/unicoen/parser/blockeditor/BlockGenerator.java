@@ -609,7 +609,7 @@ public class BlockGenerator {
 
 			List<Node> socketNodes = resolver.getSocketNodes("not");
 			SocketsInfo sockets = calcSocketsInfo(socketNodes);
-			addSocketsNode(args, document, elements.get(0), sockets);
+			addSocketsNode(args, document, blockElement, sockets);
 
 			return new BlockNotOperatorModel(blockElement, (BlockExprModel) value);
 		} else if ("_++".equals(uniOp.operator) || "_--".equals(uniOp.operator) || "++_".equals(uniOp.operator) || "--_".equals(uniOp.operator)) {

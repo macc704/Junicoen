@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cb:CODEBLOCKS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://education.mit.edu/openblocks/ns http://education.mit.edu/openblocks/codeblocks.xsd" xmlns:cb="http://education.mit.edu/openblocks/ns">
-<Pages collapsible-pages="no" drawer-with-page="yes">
+<Pages collapsible-pages="no">
 <Page page-color="40 40 40" page-drawer="" page-infullview="yes" page-name="UniToBlockVarDec" page-width="1366">
 <PageBlocks>
 <Block genus-name="procedure" id="1000" kind="procedure">
 <Label>start</Label>
+<ReturnType>void</ReturnType>
 <Location>
 <X>50</X>
 <Y>50</Y>
 </Location>
-<AfterBlockId>1001</AfterBlockId>
 <Sockets num-sockets="1">
 <BlockConnector connector-kind="socket" connector-type="poly" init-type="poly" label="" position-type="single"/>
 </Sockets>
+<AfterBlockId>1001</AfterBlockId>
 </Block>
 <Block genus-name="local-var-int-number" id="1001" kind="local-variable">
 <Label>i</Label>
-<Type>int</Type>
 <Name>i</Name>
-<Location>
-<X>50</X>
-<Y>80</Y>
-</Location>
-<BeforeBlockId>1000</BeforeBlockId>
-<AfterBlockId>1002</AfterBlockId>
+<Type>int</Type>
 <Sockets num-sockets="1">
 <BlockConnector connector-kind="socket" connector-type="number" init-type="number" label="初期値" position-type="single"/>
 </Sockets>
+<AfterBlockId>1002</AfterBlockId>
+<BeforeBlockId>1000</BeforeBlockId>
 </Block>
 <Block genus-name="local-var-string" id="1002" kind="local-variable">
 <Label>s</Label>
-<Type>String</Type>
 <Name>s</Name>
-<Location>
-<X>50</X>
-<Y>110</Y>
-</Location>
-<BeforeBlockId>1001</BeforeBlockId>
-<AfterBlockId>1003</AfterBlockId>
+<Type>String</Type>
 <Sockets num-sockets="1">
 <BlockConnector connector-kind="socket" connector-type="string" init-type="string" label="初期値" position-type="single"/>
 </Sockets>
+<AfterBlockId>1003</AfterBlockId>
+<BeforeBlockId>1001</BeforeBlockId>
 </Block>
 <Block genus-name="local-var-boolean" id="1003" kind="local-variable">
 <Label>b</Label>
-<Type>boolean</Type>
 <Name>b</Name>
-<Location>
-<X>50</X>
-<Y>140</Y>
-</Location>
-<BeforeBlockId>1002</BeforeBlockId>
+<Type>boolean</Type>
 <Sockets num-sockets="1">
 <BlockConnector connector-kind="socket" connector-type="boolean" init-type="boolean" label="初期値" position-type="single"/>
 </Sockets>
+<BeforeBlockId>1002</BeforeBlockId>
 </Block>
 </PageBlocks>
 </Page>
