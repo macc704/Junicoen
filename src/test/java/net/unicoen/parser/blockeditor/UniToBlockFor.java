@@ -53,7 +53,7 @@ public class UniToBlockFor {
 		args.add(new UniStringLiteral("Hello World"));
 
 		bodyBlocks.add(new UniMethodCall(new UniIdent("MyLib"), "print", args));
-		uniFor.block = new UniBlock(bodyBlocks);
+		uniFor.statement = new UniBlock(bodyBlocks);
 
 		blocks.add(uniFor);
 

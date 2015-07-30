@@ -37,20 +37,20 @@ public class SSSSampleTest {
 		//fd(50)
 		List<UniExpr> fdArgs = new ArrayList<>();
 		fdArgs.add(UniToBlockTestUtil.createLiteral("int", "50"));
-		whileModel.block.body.add(new UniMethodCall(new UniIdent("MyLib"), "fd", fdArgs));
-
-		//rt(90)
-		List<UniExpr> rtArgs = new ArrayList<>();
-		rtArgs.add(UniToBlockTestUtil.createLiteral("int", "90"));
-		whileModel.block.body.add(new UniMethodCall(new UniIdent("MyLib"), "rt", rtArgs));
-
-		//i++;
-		whileModel.block.body.add(UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent("i")));
-
-		elements.add(whileModel);
-
-		//startメソッドにelementsを追加
-		startMethod.block.body = elements;
+//		whileModel.block.body.add(new UniMethodCall(new UniIdent("MyLib"), "fd", fdArgs));
+//
+//		//rt(90)
+//		List<UniExpr> rtArgs = new ArrayList<>();
+//		rtArgs.add(UniToBlockTestUtil.createLiteral("int", "90"));
+//		whileModel.block.body.add(new UniMethodCall(new UniIdent("MyLib"), "rt", rtArgs));
+//
+//		//i++;
+//		whileModel.block.body.add(UniToBlockTestUtil.createUnaryOpModel("_++", new UniIdent("i")));
+//
+//		elements.add(whileModel);
+//
+//		//startメソッドにelementsを追加
+//		startMethod.block.body = elements;
 
 
 

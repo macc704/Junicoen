@@ -38,7 +38,7 @@ public class UniToBlockIfElseTestTest {
 		uniIf.cond = new UniBinOp("<", new UniIdent("i"), new UniIntLiteral(4));
 
 		bodyBlocks.add(new UniMethodCall(new UniIdent("MyLib"), "fd", args));
-		uniIf.trueBlock = new UniBlock(bodyBlocks);
+		uniIf.trueStatement = new UniBlock(bodyBlocks);
 
 		blocks.add(uniIf);
 

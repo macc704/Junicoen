@@ -420,12 +420,12 @@ public class BlockMapper {
 			UniWhile uniWhile = new UniWhile();
 			uniWhile.cond = args.get(0).get(0);
 			if (args.get(1) != null) {
-				uniWhile.block = new UniBlock(args.get(1));
+				uniWhile.statement = new UniBlock(args.get(1));
 			}
 			return uniWhile;
 		} else if ("dowhile".equals(blockGenusName)) {
 			UniDoWhile uniDoWhile = new UniDoWhile();
-			uniDoWhile.block = new UniBlock(args.get(0));
+			uniDoWhile.statement = new UniBlock(args.get(0));
 			uniDoWhile.cond = args.get(1).get(0);
 			return uniDoWhile;
 		} else if ("continue".equals(blockGenusName)) {

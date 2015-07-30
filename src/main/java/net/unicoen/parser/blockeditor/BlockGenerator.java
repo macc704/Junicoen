@@ -126,20 +126,18 @@ public class BlockGenerator {
 		return model;
 	}
 
-	public List<BlockCommandModel> parseBody(Document document, Element parentElement, UniBlock block) {
-		if (block == null) {
+	public List<BlockCommandModel> parseBody(Document document, Element parentElement, UniExpr statement) {
+		if (statement == null || !(statement instanceof UniBlock)) {
 			return new ArrayList<>(); // can be Collections.emptyList();
 		}
-		List<UniExpr> body = block.body;
-		if (body == null) {
-			return new ArrayList<>(); // can be Collections.emptyList();
-		}
+
+		UniBlock statementBlock = (UniBlock)statement;
 
 		// bodyを辿ってモデル作成
 		List<BlockCommandModel> blocks = new ArrayList<>();
 		String beforeId = parentElement.getAttribute("id");
-		for (int i = 0; i < body.size(); i++) {
-			UniExpr expr = body.get(i);
+		for (int i = 0; i < statementBlock.body.size(); i++) {
+			UniExpr expr = statementBlock.body.get(i);
 			BlockElementModel command = parseExpr(expr, document, null);
 
 			// statement以外は弾く
@@ -148,7 +146,7 @@ public class BlockGenerator {
 			}
 			addBeforeBlockNode(document, command.getElement(), beforeId);
 
-			if (i + 1 < body.size()) {
+			if (i + 1 < statementBlock.body.size()) {
 				addAfterBlockNode(document, command.getElement(), String.valueOf(ID_COUNTER));
 				beforeId = command.getElement().getAttribute("id");
 			}
@@ -384,8 +382,12 @@ public class BlockGenerator {
 			forBlock.body.add(forExpr.init);
 		}
 
-		UniWhile whileModel = new UniWhile(forExpr.cond, forExpr.block);
-		whileModel.block.body.add(forExpr.step);
+		if(forExpr.step != null){
+			UniBlock block = (UniBlock)forExpr.statement;
+			block.body.add(forExpr.step);
+		}
+
+		UniWhile whileModel = new UniWhile(forExpr.cond, forExpr.statement);
 
 		forBlock.body.add(whileModel);
 
@@ -395,7 +397,7 @@ public class BlockGenerator {
 	public BlockElementModel parseDoWhile(UniDoWhile doWhileExpr, Document document, Node parent) {
 		Element blockElement = createBlockElement(document, "dowhile", ID_COUNTER++, "command");
 		BlockElementModel socket = parseExpr(doWhileExpr.cond, document, blockElement);
-		List<BlockCommandModel> trueBlocks = parseBody(document, blockElement, doWhileExpr.block);
+		List<BlockCommandModel> trueBlocks = parseBody(document, blockElement, doWhileExpr.statement);
 
 		BlockDoWhileModel model = new BlockDoWhileModel(blockElement, (BlockExprModel) socket, trueBlocks);
 
@@ -922,7 +924,7 @@ public class BlockGenerator {
 		BlockElementModel socket = parseExpr(whileExpr.cond, document, blockElement);
 		model.addSocketBlock((BlockExprModel) socket);
 
-		List<BlockCommandModel> trueBlock = parseBody(document, blockElement, whileExpr.block);
+		List<BlockCommandModel> trueBlock = parseBody(document, blockElement, whileExpr.statement);
 		model.setTrueBlocks(trueBlock);
 
 		List<Element> blockSockets = new ArrayList<>();
@@ -974,8 +976,8 @@ public class BlockGenerator {
 		// Universal Modelの条件式，真ブロック式，偽ブロック式をそれぞれ解析し，BlockModel（xml
 		// Element）を作成する
 		BlockElementModel socket = parseExpr(ifexpr.cond, document, ifElement);
-		List<BlockCommandModel> trueBlock = parseBody(document, ifElement, ifexpr.trueBlock);
-		List<BlockCommandModel> falseBlock = parseBody(document, ifElement, ifexpr.falseBlock);
+		List<BlockCommandModel> trueBlock = parseBody(document, ifElement, ifexpr.trueStatement);
+		List<BlockCommandModel> falseBlock = parseBody(document, ifElement, ifexpr.falseStatement);
 
 		// if式のソケット情報を付与
 		addIfSocketInfo(document, ifElement, socket, trueBlock, falseBlock);

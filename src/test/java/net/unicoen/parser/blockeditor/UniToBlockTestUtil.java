@@ -39,8 +39,9 @@ public class UniToBlockTestUtil {
 	}
 
 	public static UniWhile createWhieDecModel(UniExpr cond){
-		UniWhile whileModel = new UniWhile(cond, new UniBlock());
-		whileModel.block.body = new ArrayList<>();
+		UniBlock block = new UniBlock();
+		block.body = new ArrayList<>();
+		UniWhile whileModel = new UniWhile(cond, block);
 		return whileModel;
 	}
 
