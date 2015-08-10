@@ -141,6 +141,8 @@ public class BlockGenerator {
 			UniExpr expr = statementBlock.body.get(i);
 			BlockElementModel command = parseExpr(expr, document, null);
 
+			System.out.println("parse" +  expr);
+
 			// statement以外は弾く
 			if (!(command instanceof BlockCommandModel)) {
 				throw new RuntimeException("cant use the expression" + expr.toString());

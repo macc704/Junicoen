@@ -23,16 +23,12 @@ class Main{void func(){int a=123;}}")
 		assertThat(node, instanceOf(typeof(UniClassDec)))
 		assertThat((node as UniClassDec).className, equalTo("Main"))
 	}
-	
+
 	@Test
 	def parseAddExpression(){
 		val node = mapper.parse("class Main{public static void main(int args){int a = 1+2+3+4+5;}}")
 	}
 
-	@Test
-	def parseAddExpression() {
-		val node = mapper.parse("class Main{public static void main(int args){int a = 1+2+3+4+5;}}")
-	}
 
 	@Test
 	def parseReal() {

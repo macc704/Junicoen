@@ -33,7 +33,7 @@ name:
 type:
 		VOID | INT | DOUBLE | TURTLE;
 statement:
-		ifStatement | variableDeclaration | whileStatement | setterStatement | methodCallStatement ;
+		ifStatement | variableDeclaration | whileStatement | setterStatement | exprStatement ;
 variableDeclaration:
 		type name EQUAL expression SEMICOLON | type name SEMICOLON;
 ifStatement :
@@ -42,8 +42,10 @@ whileStatement :
 		WHILE LEFTPAREN compareExp RIGHTPAREN LEFTBRACE statement* RIGHTBRACE;
 setterStatement :
 		identifier EQUAL expression SEMICOLON;
-methodCallStatement :
-		methodCallExpr SEMICOLON ;
+exprStatement :
+		(methodCallExpr | instanceCreationExpr ) SEMICOLON ;
+instanceCreationExpr:
+		NEW LEFTPAREN methodParam ? RIGHTPAREN ;
 expression :
 		compareExp | normalExp | methodCallExpr;
 compareExp :
@@ -146,6 +148,8 @@ COMMA:
 		',';
 WHILE:
 		'while';
+NEW :
+		'new';
 WS :
 		[ \t\r\n\u000C]+ -> skip;
 TURTLE:

@@ -128,11 +128,17 @@ public interface ExtendedExpressionVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSetterStatement(ExtendedExpressionParser.SetterStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ExtendedExpressionParser#methodCallStatement}.
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#exprStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMethodCallStatement(ExtendedExpressionParser.MethodCallStatementContext ctx);
+	T visitExprStatement(ExtendedExpressionParser.ExprStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#instanceCreationExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstanceCreationExpr(ExtendedExpressionParser.InstanceCreationExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExtendedExpressionParser#expression}.
 	 * @param ctx the parse tree

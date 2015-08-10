@@ -3,6 +3,8 @@ package net.unicoen.turtleexecuter;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 
+import net.unicoen.generator.JavaGenerator;
+import net.unicoen.generator.JavaGeneratorTest;
 import net.unicoen.interpreter.Engine;
 import net.unicoen.interpreter.ExecutionListener;
 import net.unicoen.interpreter.FunctionWithEngine;
@@ -23,6 +25,9 @@ public class TurtleMain {
 		Engine engine = new Engine();
 		engine.addListener(libOverrider);
 		engine.execute(dec);
+
+		System.out.println(JavaGenerator.generate(dec));
+
 	}
 
 	public static ExecutionListener libOverrider = new ExecutionListener() {

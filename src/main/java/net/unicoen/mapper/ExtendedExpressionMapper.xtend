@@ -259,7 +259,7 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 		var ident = new UniIdent
 		for (tree : ctx.children) {
 			switch tree {
-				ExtendedExpressionParser.NormalExpContext:
+				ExtendedExpressionParser.ExpressionContext:
 					ret.right = tree.visit as UniExpr
 				ExtendedExpressionParser.IdentifierContext:
 					ident = tree.visit as UniIdent
@@ -273,17 +273,17 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 		ret
 	}
 
-//	override public visitMethodCallStatement(ExtendedExpressionParser.MethodCallStatementContext ctx) {
-//		var ret = new UniMethodCall
-//		for (tree : ctx.children) {
-//			switch tree {
-//				ExtendedExpressionParser.MethodCallExprContext:
-//					ret = tree.visit as UniMethodCall
-//			}
-//		}
-//
-//		ret
-//	}
+	override public visitExprStatement(ExtendedExpressionParser.ExprStatementContext ctx) {
+		var ret = new UniMethodCall
+		for (tree : ctx.children) {
+			switch tree {
+				ExtendedExpressionParser.MethodCallExprContext:
+					ret = tree.visit as UniMethodCall
+			}
+		}
+
+		ret
+	}
 
 	override public visitMethodCallExpr(ExtendedExpressionParser.MethodCallExprContext ctx) {
 		var ret = new UniMethodCall
@@ -413,5 +413,4 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 
 		ret
 	}
-
 }
