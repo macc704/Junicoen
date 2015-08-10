@@ -35,23 +35,18 @@ import net.unicoen.node.UniUnaryOp;
 import net.unicoen.node.UniVariableDec;
 import net.unicoen.node.UniWhile;
 
-public class JavaGenerator extends Traverser {
+public class JavaScriptGenerator extends Traverser{
 
 	private final PrintStream out;
 	private int indent = 0;
 	private boolean indentAtThisLine = false;
 
 	private final IntStack exprPriority = new IntStack();
+	private String className = "";
 
-	private JavaGenerator(PrintStream out) {
+	public JavaScriptGenerator(PrintStream out) {
 		this.out = out;
 		exprPriority.push(0);
-	}
-
-	private void withIndent(Runnable runnable) {
-		indent++;
-		runnable.run();
-		indent--;
 	}
 
 	private void print(String str) {
@@ -62,16 +57,6 @@ public class JavaGenerator extends Traverser {
 			}
 		}
 		out.print(str);
-	}
-
-	private void newline() {
-		out.print("\n");
-		indentAtThisLine = false;
-	}
-
-	private void x_println(String str) {
-		print(str);
-		newline();
 	}
 
 	private int priorityTable(String operator) {
@@ -112,62 +97,6 @@ public class JavaGenerator extends Traverser {
 		return 0;
 	}
 
-	private void parseExpr(UniExpr node, int priority) {
-		exprPriority.push(priority);
-		traverseExpr(node);
-		exprPriority.pop();
-	}
-
-	private void parseExpr(UniExpr node) {
-		parseExpr(node, 0);
-	}
-
-	/**
-	 * ステートメントを出力し、改行します。 関数呼び出し等の場合は、セミコロンも出力します。
-	 */
-	private void parseStatement(UniExpr expr) {
-		parseExpr(expr);
-		if (expr.isStatement() == false) {
-			print(";");
-		}
-		newline();
-	}
-
-	/** インデントし、複数のステートメントを出力します */
-	private void parseBlockInner(UniBlock block) {
-		withIndent(() -> {
-			for (UniExpr expr : block.body)
-				parseStatement(expr);
-		});
-	}
-
-	public static String generate(UniClassDec dec) {
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream(); PrintStream printer = new PrintStream(out)) {
-			generate(dec, printer);
-			return out.toString();
-		} catch (IOException e) {
-			return null;
-		}
-	}
-
-	public static void generate(UniClassDec classDec, PrintStream out) {
-		JavaGenerator g = new JavaGenerator(out);
-		g.traverseClassDec(classDec);
-	}
-
-	// ----- ----- ----- ----- HELPER ----- ----- ----- -----
-
-	private static <T> Iterable<T> iter(Iterable<T> iter) {
-		if (iter == null) {
-			return Collections.emptyList();
-		}
-		return iter;
-	}
-
-	/* ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
-	 * overrides ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
-	 */
-
 	@Override
 	public void traverseBoolLiteral(UniBoolLiteral node) {
 		print(node.value ? "true" : "false");
@@ -195,25 +124,25 @@ public class JavaGenerator extends Traverser {
 	}
 
 	@Override
-	public void traverseIdent(UniIdent node) {
-		print(node.name);
+	public void traverseArray(UniArray node) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("not supported yet");
 	}
 
 	@Override
-	public void traverseFieldAccess(UniFieldAccess fa) {
-		parseExpr(fa.receiver);
-		print(".");
-		print(fa.fieldName);
+	public void traverseFieldAccess(UniFieldAccess node) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("not supported yet");
 	}
 
 	@Override
-	public void traverseMethodCall(UniMethodCall mCall) {
-		parseExpr(mCall.receiver);
+	public void traverseMethodCall(UniMethodCall node) {
+		parseExpr(node.receiver);
 		print(".");
-		print(mCall.methodName);
+		print(node.methodName);
 		print("(");
 		boolean isFirst = true;
-		for (UniExpr innerExpr : iter(mCall.args)) {
+		for (UniExpr innerExpr : iter(node.args)) {
 			if (isFirst) {
 				isFirst = false;
 			} else {
@@ -224,6 +153,15 @@ public class JavaGenerator extends Traverser {
 		print(")");
 	}
 
+	private void parseExpr(UniExpr node) {
+		parseExpr(node, 0);
+	}
+
+	private void parseExpr(UniExpr node, int priority) {
+		exprPriority.push(priority);
+		traverseExpr(node);
+		exprPriority.pop();
+	}
 	@Override
 	public void traverseUnaryOp(UniUnaryOp node) {
 		if (node.operator.startsWith("_")) {
@@ -258,11 +196,8 @@ public class JavaGenerator extends Traverser {
 
 	@Override
 	public void traverseTernaryOp(UniTernaryOp node) {
-		parseExpr(node.cond);
-		print(" ? ");
-		parseExpr(node.trueExpr);
-		print(" : ");
-		parseExpr(node.falseExpr);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -283,9 +218,39 @@ public class JavaGenerator extends Traverser {
 
 	@Override
 	public void traverseBlock(UniBlock node) {
-		x_println("{");
-		parseBlockInner(node);
-		x_println("}");
+		printlnIndent("{");
+		indent++;
+		for(UniExpr expr : node.body){
+			parseStatement(expr);
+		}
+		indent--;
+		printlnIndent("}");
+	}
+
+	public void parseBlockInnner(UniBlock node){
+		indent++;
+		parseExpr(node);
+		indent--;
+	}
+	private void withIndent(Runnable runnable) {
+		indent++;
+		runnable.run();
+		indent--;
+	}
+
+	private void parseBlockInner(UniBlock block) {
+		withIndent(() -> {
+			for (UniExpr expr : block.body)
+				parseStatement(expr);
+		});
+	}
+
+	private void parseStatement(UniExpr expr) {
+		parseExpr(expr);
+		if (expr.isStatement() == false) {
+			print(";");
+		}
+		newline();
 	}
 
 	@Override
@@ -326,16 +291,8 @@ public class JavaGenerator extends Traverser {
 
 	@Override
 	public void traverseFor(UniFor node) {
-		throw new RuntimeException("HOGE");
-		// genBlock(node.block, () -> {
-		// print("for (");
-		// parseExpr(node.init);
-		// print("; ");
-		// parseExpr(node.cond);
-		// print("; ");
-		// parseExpr(node.step);
-		// print(")");
-		// }, null);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -345,63 +302,6 @@ public class JavaGenerator extends Traverser {
 		 parseExpr(node.cond);
 		 print(")");
 		 }, null);
-	}
-
-	@Override
-	public void traverseDoWhile(UniDoWhile node) {
-		throw new RuntimeException("HOGE");
-//		genBlockS(node.statement, "do", () -> {
-//			print("while (");
-//			parseExpr(node.cond);
-//			print(");");
-//		});
-	}
-
-	@Override
-	public void traverseVariableDec(UniVariableDec node) {
-		if (node.modifiers != null) {
-			for (String mod : node.modifiers) {
-				print(mod);
-				print(" ");
-			}
-		}
-		print(String.join(" ", node.type, node.name));
-
-		if(node.value != null){
-			print(" = ");
-			parseExpr(node.value);
-		}
-	}
-
-	@Override
-	public void traverseMethodDec(UniMethodDec methDec) {
-		String mod = String.join(" ", methDec.modifiers);
-		ArrayList<String> args = new ArrayList<>();
-		for (UniArg arg : iter(methDec.args)) {
-			args.add(arg.type + " " + arg.name);
-		}
-		String argWithParen = "(" + String.join(", ", args) + ")";
-		String declare = String.join(" ", mod, methDec.returnType, methDec.methodName, argWithParen);
-		genBlockS(methDec.block, declare, null);
-	}
-
-	@Override
-	public void traverseArg(UniArg node) {
-		// TODO Auto-generated method stub
-	}
-
-	//copy old code
-	/**
-	 * インデント付きで出力する。
-	 */
-	private void printlnIndent(String format, Object... args) {
-		printlnIndent(String.format(format, args));
-	}
-
-	private void genBlockS(UniBlock block, String preStatement, Runnable afterBlock) {
-		genBlock(block, () -> {
-			print(preStatement);
-		}, afterBlock);
 	}
 
 	private void genBlock(UniBlock block, Runnable beforeBlock, Runnable afterBlock) {
@@ -423,20 +323,6 @@ public class JavaGenerator extends Traverser {
 		}
 	}
 
-	private void println(String str) {
-		out.println(str);
-	}
-
-	private void printlnIndent(String str) {
-		printIndent();
-		out.println(str);
-	}
-
-	private void printIndent() {
-		for (int i = 0; i < indent; i++) {
-			out.print("\t");
-		}
-	}
 	private void genBlockInner(UniBlock block) {
 		indent++;
 		if (block != null) {
@@ -452,27 +338,108 @@ public class JavaGenerator extends Traverser {
 		}
 		indent--;
 	}
-	//ここまで
 
 	@Override
-	public void traverseClassDec(UniClassDec classDec) {
-		String mod = String.join(" ", classDec.modifiers);
-		printlnIndent("%s class %s {", mod, classDec.className);
-		indent++;
-		for (UniMemberDec dec : iter(classDec.members)) {
-			traverseMemberDec(dec);
+	public void traverseDoWhile(UniDoWhile node) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void traverseVariableDec(UniVariableDec node) {
+		print(String.join(" ", "var", node.name));
+
+		if(node.value != null){
+			print(" = ");
+			parseExpr(node.value);
 		}
-		indent--;
-		printlnIndent("}");
 	}
 
 	@Override
 	public void traverseFieldDec(UniFieldDec node) {
-		throw new RuntimeException("Not Implemented");
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void traverseArray(UniArray node) {
-		throw new RuntimeException("Not Implemented");
+	public void traverseMethodDec(UniMethodDec node) {
+		ArrayList<String> args = new ArrayList<>();
+		out.print(className + ".prototype." + node.methodName + " = function");
+
+		if(node.args != null){
+			for(UniArg arg : node.args){
+				args.add(arg.name);
+			}
+		}
+
+		out.print("(" + String.join(", ", args) + ")");
+		traverseBlock(node.block);
 	}
+
+	@Override
+	public void traverseArg(UniArg node) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void traverseClassDec(UniClassDec node) {
+		out.println("var " + node.className + " = function() {};");
+		className = node.className;
+
+		for(UniMemberDec dec : iter(node.members)){
+			traverseMemberDec(dec);
+		}
+	}
+
+	private static <T> Iterable<T> iter(Iterable<T> iter) {
+		if (iter == null) {
+			return Collections.emptyList();
+		}
+		return iter;
+	}
+
+	private void printlnIndent(String str) {
+		printIndent();
+		out.println(str);
+	}
+
+	private void printIndent() {
+		for (int i = 0; i < indent; i++) {
+			out.print("\t");
+		}
+	}
+
+	@Override
+	public void traverseIdent(UniIdent node) {
+		print(node.name);
+	}
+
+	public static String generate(UniClassDec dec) {
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(); PrintStream printer = new PrintStream(out)) {
+			generate(dec, printer);
+			return out.toString();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public static void generate(UniClassDec classDec, PrintStream out) {
+		JavaScriptGenerator g = new JavaScriptGenerator(out);
+		g.traverseClassDec(classDec);
+	}
+
+	private void x_println(String str) {
+		print(str);
+		newline();
+	}
+	private void newline() {
+		out.print("\n");
+	}
+
+	private void println(String str) {
+		out.println(str);
+	}
+
+
 }

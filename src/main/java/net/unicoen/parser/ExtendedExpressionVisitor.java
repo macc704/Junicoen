@@ -122,6 +122,18 @@ public interface ExtendedExpressionVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWhileStatement(ExtendedExpressionParser.WhileStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#setterStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetterStatement(ExtendedExpressionParser.SetterStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#methodCallStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodCallStatement(ExtendedExpressionParser.MethodCallStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExtendedExpressionParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -146,6 +158,18 @@ public interface ExtendedExpressionVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNormalExp(ExtendedExpressionParser.NormalExpContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#methodCallExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodCallExpr(ExtendedExpressionParser.MethodCallExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#methodParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodParam(ExtendedExpressionParser.MethodParamContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExtendedExpressionParser#term}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -157,6 +181,12 @@ public interface ExtendedExpressionVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFactor(ExtendedExpressionParser.FactorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExtendedExpressionParser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(ExtendedExpressionParser.IdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExtendedExpressionParser#number}.
 	 * @param ctx the parse tree

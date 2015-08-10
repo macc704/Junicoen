@@ -776,7 +776,7 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableInitializerList(Java8Parser.VariableInitializerListContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Java8Parser#statement}.
+	 * Visit a parse tree produced by {@link Java8Parser#block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

@@ -1,6 +1,25 @@
 package net.unicoen.mapper
 
+import com.google.common.collect.Lists
 import java.io.FileInputStream
+import java.util.List
+import net.unicoen.node.UniArg
+import net.unicoen.node.UniBinOp
+import net.unicoen.node.UniBlock
+import net.unicoen.node.UniClassDec
+import net.unicoen.node.UniDoubleLiteral
+import net.unicoen.node.UniExpr
+import net.unicoen.node.UniIdent
+import net.unicoen.node.UniIf
+import net.unicoen.node.UniIntLiteral
+import net.unicoen.node.UniMemberDec
+import net.unicoen.node.UniMethodCall
+import net.unicoen.node.UniMethodDec
+import net.unicoen.node.UniVariableDec
+import net.unicoen.node.UniWhile
+import net.unicoen.parser.ExtendedExpressionBaseVisitor
+import net.unicoen.parser.ExtendedExpressionLexer
+import net.unicoen.parser.ExtendedExpressionParser
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CommonTokenStream
@@ -8,23 +27,8 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.RuleNode
 import org.antlr.v4.runtime.tree.TerminalNode
-import net.unicoen.parser.ExtendedExpressionLexer
-import net.unicoen.parser.ExtendedExpressionParser
-import net.unicoen.parser.ExtendedExpressionBaseVisitor
-import net.unicoen.node.UniBinOp
-import net.unicoen.node.UniExpr
-import net.unicoen.node.UniIntLiteral
-import net.unicoen.node.UniDoubleLiteral
-import net.unicoen.node.UniClassDec
-import net.unicoen.node.UniMemberDec
-import net.unicoen.node.UniMethodDec
-import net.unicoen.node.UniBlock
-import net.unicoen.node.UniVariableDec
-import net.unicoen.node.UniIf
-import net.unicoen.node.UniArg
-import net.unicoen.node.UniWhile
-import com.google.common.collect.Lists
-import java.util.List
+import java.util.ArrayList
+import org.antlr.v4.runtime.tree.TerminalNodeImpl
 
 class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 	var _isDebugMode = false
@@ -211,7 +215,7 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 					ret.type = it.visit as String
 				ExtendedExpressionParser.NameContext:
 					ret.name = it.visit as String
-				ExtendedExpressionParser.NormalExpContext:
+				ExtendedExpressionParser.ExpressionContext:
 					ret.value = it.visit as UniExpr
 			}
 		]
@@ -250,6 +254,72 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 		ret
 	}
 
+	override public visitSetterStatement(ExtendedExpressionParser.SetterStatementContext ctx) {
+		var ret = new UniBinOp
+		var ident = new UniIdent
+		for (tree : ctx.children) {
+			switch tree {
+				ExtendedExpressionParser.NormalExpContext:
+					ret.right = tree.visit as UniExpr
+				ExtendedExpressionParser.IdentifierContext:
+					ident = tree.visit as UniIdent
+			}
+		}
+		if (ret.right != null) {
+			ret.operator = "="
+		}
+
+		ret.left = ident
+		ret
+	}
+
+//	override public visitMethodCallStatement(ExtendedExpressionParser.MethodCallStatementContext ctx) {
+//		var ret = new UniMethodCall
+//		for (tree : ctx.children) {
+//			switch tree {
+//				ExtendedExpressionParser.MethodCallExprContext:
+//					ret = tree.visit as UniMethodCall
+//			}
+//		}
+//
+//		ret
+//	}
+
+	override public visitMethodCallExpr(ExtendedExpressionParser.MethodCallExprContext ctx) {
+		var ret = new UniMethodCall
+		var tmp = new UniIdent
+		ret.args = new ArrayList
+		for (tree : ctx.children) {
+			switch tree {
+				ExtendedExpressionParser.IdentifierContext :
+					tmp = tree.visit as UniIdent
+				TerminalNodeImpl :
+					if(".".equals(tree.symbol.text)){
+						ret.receiver = tmp
+						tmp = null
+					}else if("(".equals(tree.symbol.text)){
+						ret.methodName = tmp.name
+					}
+				ExtendedExpressionParser.MethodParamContext:
+					ret.args = tree.visit as List<UniExpr>
+			}
+		}
+		ret
+	}
+
+	override public visitMethodParam(ExtendedExpressionParser.MethodParamContext ctx) {
+		val list = Lists.newArrayList
+		if (ctx.children != null) {
+			ctx.children.forEach [
+				switch it {
+					ExtendedExpressionParser.NormalExpContext:
+						list += it.visit as UniExpr
+				}
+			]
+		}
+		list
+	}
+
 	override public visitCompareExp(ExtendedExpressionParser.CompareExpContext ctx) {
 		var ret = new UniBinOp
 		for (tree : ctx.children) {
@@ -260,7 +330,8 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 					val temp = new UniBinOp
 					temp.operator = visit(tree) as String
 					if (ret.operator == null) {
-						temp.left = ret.right
+						 temp.left = ret.right
+						 ret = temp
 					} else {
 						temp.left = ret
 						ret = temp
@@ -329,6 +400,18 @@ class ExtendedExpressionMapper extends ExtendedExpressionBaseVisitor<Object> {
 
 	override public visitDecimal(ExtendedExpressionParser.DecimalContext ctx) {
 		new UniDoubleLiteral(Double.parseDouble(ctx.text))
+	}
+
+	override public visitIdentifier(ExtendedExpressionParser.IdentifierContext ctx){
+		var ret = new UniIdent
+		for(tree : ctx.children){
+			switch tree{
+				ExtendedExpressionParser.NameContext:
+					ret.name = tree.visit as String
+			}
+		}
+
+		ret
 	}
 
 }

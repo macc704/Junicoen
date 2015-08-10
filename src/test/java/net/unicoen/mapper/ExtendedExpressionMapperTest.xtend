@@ -18,7 +18,8 @@ class ExtendedExpressionMapperTest extends MapperTest {
 
 	@Test
 	def parseInteger() {
-		val node = mapper.parse("class Main{void func(){int a=123;}}")
+		val node = mapper.parse("
+class Main{void func(){int a=123;}}")
 		assertThat(node, instanceOf(typeof(UniClassDec)))
 		assertThat((node as UniClassDec).className, equalTo("Main"))
 	}

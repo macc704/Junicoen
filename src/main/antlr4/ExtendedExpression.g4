@@ -29,29 +29,39 @@ methodArgument:
 methodBody:
 		LEFTBRACE statement* RIGHTBRACE;
 name:
-		ID*;
+		ID+;
 type:
-		VOID | INT | DOUBLE;
+		VOID | INT | DOUBLE | TURTLE;
 statement:
-		ifStatement | variableDeclaration | whileStatement;
+		ifStatement | variableDeclaration | whileStatement | setterStatement | methodCallStatement ;
 variableDeclaration:
-		type name EQUAL normalExp SEMICOLON;
+		type name EQUAL expression SEMICOLON | type name SEMICOLON;
 ifStatement :
 		IF LEFTPAREN compareExp RIGHTPAREN LEFTBRACE statement* RIGHTBRACE (  ELSE LEFTBRACE RIGHTBRACE ) ? ;
 whileStatement :
 		WHILE LEFTPAREN compareExp RIGHTPAREN LEFTBRACE statement* RIGHTBRACE;
+setterStatement :
+		identifier EQUAL expression SEMICOLON;
+methodCallStatement :
+		methodCallExpr SEMICOLON ;
 expression :
-		compareExp | normalExp ;
+		compareExp | normalExp | methodCallExpr;
 compareExp :
 		normalExp compareOp normalExp ;
 compareOp :
 		LARGER | LARGEROREQUALS | EQUALS | SMALLEROREQUALS | SMALLER ;
 normalExp :
 		term (  addSubOp term ) * ;
+methodCallExpr :
+		( identifier DOT ) * identifier LEFTPAREN methodParam ? RIGHTPAREN ;
+methodParam :
+		normalExp ( COMMA normalExp ) * ;
 term :
 		factor (  mulDivOp factor ) * ;
 factor :
-		number | LEFTPAREN normalExp RIGHTPAREN ;
+		number | LEFTPAREN normalExp RIGHTPAREN | identifier;
+identifier :
+		name ;
 number :
 		integer | decimal ;
 integer :
@@ -76,6 +86,10 @@ ADD :
 		'+' ;
 SUB :
 		'-' ;
+INC :
+		'++' ;
+DEC :
+		'--' ;
 MUL :
 		'*' ;
 DIV :
@@ -134,5 +148,5 @@ WHILE:
 		'while';
 WS :
 		[ \t\r\n\u000C]+ -> skip;
-
-		
+TURTLE:
+		'Turtle';
